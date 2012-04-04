@@ -5,7 +5,7 @@ setup(
     description='A very simple, yet powerful, Django captcha application',
     author='Marco Bonetti',
     author_email='mbonetti@gmail.com',
-    url='http://code.google.com/p/django-simple-captcha/',
+    url='https://github.com/mbi/django-simple-captcha',
     license='MIT',
     packages=find_packages(),
     classifiers=[
@@ -22,5 +22,5 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=['setuptools'],
-    requires= [ 'PIL (>=1.1.6)' ]
+    requires=['PIL (>=1.1.6)']
 )
