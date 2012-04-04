@@ -1,0 +1,30 @@
+# django-simple-captcha French translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Patrick Samson <maxcom@laposte.net>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: django-simple-captcha 0.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-09-16 12:38+0200\n"
+"PO-Revision-Date: 2010-09-16 12:16+0200\n"
+"Last-Translator: Patrick Samson <maxcom@laposte.net>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+
+#: .\fields.py:56
+msgid "Play captcha as audio file"
+msgstr "Jouer en tant que fichier audio"
+
+#: .\fields.py:71 .\fields.py:96 .\tests\__init__.py:70
+msgid "Invalid CAPTCHA"
+msgstr "Réponse invalide"
+
+#: .\tests\__init__.py:97
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
