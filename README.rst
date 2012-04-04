@@ -1,4 +1,3 @@
-
 ******************
 About this project
 ******************
@@ -21,3 +20,9 @@ Requirements
 * Django 1.0+
 * A fairly recent version of the Python Imaging Library (PIL) compiled with FreeType support
 * Flite is required for text-to-speech (audio) output, but not mandatory
+
+
+Documentation
++++++++++++++
+
+Read the `documentation online <http://readthedocs.org/docs/django-simple-captcha>`_.
