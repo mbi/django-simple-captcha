@@ -40,7 +40,7 @@ class CaptchaTextInput(MultiWidget):
         try:
             image_url = reverse('captcha-image', args=('dummy',))
         except NoReverseMatch,e:
-            raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://code.google.com/p/django-simple-captcha/')
+            raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
         
         
         challenge, response = settings.get_challenge()()
