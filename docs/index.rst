@@ -34,10 +34,3 @@ Contents:
    usage.rst
    advanced.rst
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
