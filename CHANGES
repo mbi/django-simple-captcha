@@ -1,0 +1,4 @@
+Version 0.3.2
+-------------
+* Added a test project to run tests
+* Added South migrations
