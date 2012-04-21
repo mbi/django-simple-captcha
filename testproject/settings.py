@@ -49,3 +49,12 @@ ROOT_URLCONF = 'testproject.urls'
 
 DEBUG = True
 TEMPLATE_DEBUG = True
+
+# Django 1.4 TZ support
+USE_TZ = True
+import warnings
+warnings.filterwarnings(
+        'error', r"DateTimeField received a naive datetime",
+        RuntimeWarning, r'django\.db\.models\.fields')
+
+CAPTCHA_FLITE_PATH='/Users/marco/tmp/flite-1.4-release/bin/flite'

@@ -1,3 +1,8 @@
+Version 0.3.3
+-------------
+* Django 1.4 Time zones compatibility
+* PEP 8 love 
+
 Version 0.3.2
 -------------
 * Added a test project to run tests
