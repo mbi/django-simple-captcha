@@ -1,3 +1,7 @@
+Version 0.3.4
+-------------
+Fixes issue #3: regression on Django 1.4 when USE_TZ is False
+
 Version 0.3.3
 -------------
 * Django 1.4 Time zones compatibility

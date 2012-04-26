@@ -1,5 +1,6 @@
 from captcha.conf import settings as captcha_settings
 from django.db import models
+from django.conf import settings
 import datetime
 import random
 import time
@@ -24,9 +25,11 @@ except ImportError:
 def get_safe_now():
     try:
         from django.utils.timezone import utc
-        return datetime.datetime.utcnow().replace(tzinfo=utc)
+        if settings.USE_TZ:
+            return datetime.datetime.utcnow().replace(tzinfo=utc)
     except:
-        return datetime.datetime.now()
+        pass
+    return datetime.datetime.now()
 
 
 class CaptchaStore(models.Model):
