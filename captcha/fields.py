@@ -49,9 +49,9 @@ class CaptchaTextInput(MultiWidget):
             self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (reverse('captcha-audio', kwargs=dict(key=key)), unicode(_('Play captcha as audio file')), self.image_and_audio)
         return super(CaptchaTextInput, self).render(name, value, attrs=attrs)
 
-    # This probably needs some more love
+    # This is probably all the love it needs
     def id_for_label(self, id_):
-        return 'id_captcha_1'
+        return id_ + '_1'
 
 
 class CaptchaField(MultiValueField):
