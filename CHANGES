@@ -1,3 +1,7 @@
+Version 0.3.5
+-------------
+Fixes issue #4: Fixes id_for_label malfunction with prefixed forms (thanks @lolek09)
+
 Version 0.3.4
 -------------
 Fixes issue #3: regression on Django 1.4 when USE_TZ is False
