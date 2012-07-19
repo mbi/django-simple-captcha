@@ -13,6 +13,13 @@ def math_challenge():
     return u'%s=' % (challenge), unicode(eval(challenge))
 
 
+def random_alphanumeric_challenge():
+    chars, ret = u'abcdefghijklmnopqrstuvwxyz1234567890', u''
+    for i in range(settings.CAPTCHA_LENGTH):
+        ret += random.choice(chars)
+    return ret.upper(), ret
+
+
 def random_char_challenge():
     chars, ret = u'abcdefghijklmnopqrstuvwxyz', u''
     for i in range(settings.CAPTCHA_LENGTH):
