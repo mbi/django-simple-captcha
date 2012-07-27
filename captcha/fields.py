@@ -15,9 +15,10 @@ class CaptchaTextInput(MultiWidget):
             HiddenInput(attrs),
             TextInput(attrs),
         )
+        self._args['output_format'] = self._args.get('output_format') or settings.CAPTCHA_OUTPUT_FORMAT
 
         for key in ('image', 'hidden_field', 'text_field'):
-            if '%%(%s)s' % key not in self._args.get('output_format'):
+            if '%%(%s)s' % key not in self._args['output_format']:
                 raise ImproperlyConfigured('All of %s must be present in your CAPTCHA_OUTPUT_FORMAT setting. Could not find %s' % (
                     ', '.join(['%%(%s)s' % k for k in ('image', 'hidden_field', 'text_field')]),
                     '%%(%s)s' % key
@@ -31,7 +32,7 @@ class CaptchaTextInput(MultiWidget):
 
     def format_output(self, rendered_widgets):
         hidden_field, text_field = rendered_widgets
-        return self._args.get('output_format') % dict(image=self.image_and_audio, hidden_field=hidden_field, text_field=text_field)
+        return self._args['output_format'] % dict(image=self.image_and_audio, hidden_field=hidden_field, text_field=text_field)
 
     def render(self, name, value, attrs=None):
         try:
@@ -65,13 +66,9 @@ class CaptchaField(MultiValueField):
                 kwargs['error_messages'] = dict()
             kwargs['error_messages'].update(dict(invalid=_('Invalid CAPTCHA')))
 
-        widget_kwargs = dict(
-            output_format=kwargs.get('output_format', None) or settings.CAPTCHA_OUTPUT_FORMAT
-        )
-        for k in ('output_format',):
-            if k in kwargs:
-                del(kwargs[k])
-        super(CaptchaField, self).__init__(fields=fields, widget=CaptchaTextInput(**widget_kwargs), *args, **kwargs)
+        widget = kwargs.pop('widget', None) or CaptchaTextInput(output_format=kwargs.pop('output_format', None))
+
+        super(CaptchaField, self).__init__(fields=fields, widget=widget, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:
