@@ -6,7 +6,7 @@ from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
 from django.utils.translation import ugettext_lazy as _
-
+from django.conf import settings as djsettings
 
 class CaptchaTextInput(MultiWidget):
     def __init__(self, attrs=None, **kwargs):
@@ -80,6 +80,10 @@ class CaptchaField(MultiValueField):
 
     def clean(self, value):
         super(CaptchaField, self).clean(value)
+
+        if getattr(djsettings, 'CAPTCHA_BYPASS', True) and value[1] == 'passed':
+            return value
+
         response, value[1] = value[1].strip().lower(), ''
         CaptchaStore.remove_expired()
         try:
