@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from captcha.conf import settings
 from captcha.models import CaptchaStore, get_safe_now
+from captcha.fields import CaptchaField, CaptchaTextInput
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy as _
@@ -151,6 +152,15 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
         r = self.client.get(reverse('captcha-test'))
         self.failUnless('<label for="id_captcha_1"' in r.content)
+
+    def testIssue12ProperInstantiation(self):
+        """
+        This test covers a default django field and widget behavior
+        It not assert anything. If something is wrong it will raise a error!
+        """
+        settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
+        widget = CaptchaTextInput(attrs={'class': 'required'})
+        CaptchaField(widget=widget)
 
 
 def trivial_challenge():
