@@ -6,6 +6,7 @@ from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings as django_settings
 
 
 class CaptchaTextInput(MultiWidget):
@@ -82,9 +83,18 @@ class CaptchaField(MultiValueField):
         super(CaptchaField, self).clean(value)
         response, value[1] = value[1].strip().lower(), ''
         CaptchaStore.remove_expired()
-        try:
-            store = CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now())
-            store.delete()
-        except Exception:
-            raise ValidationError(getattr(self, 'error_messages', dict()).get('invalid', _('Invalid CAPTCHA')))
+        if django_settings.DEBUG and response.lower() == 'passed':
+            # automatically pass the test
+            try:
+                # try to delete the captcha based on its hash
+                CaptchaStore.objects.get(hashkey=value[0]).delete()
+            except Exception:
+                # ignore errors
+                pass
+        else:
+            try:
+                store = CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now())
+                store.delete()
+            except Exception:
+                raise ValidationError(getattr(self, 'error_messages', dict()).get('invalid', _('Invalid CAPTCHA')))
         return value
