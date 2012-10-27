@@ -74,9 +74,9 @@ def captcha_image(request, key):
     image.save(out, "PNG")
     out.seek(0)
 
-    response = HttpResponse()
-    response['Content-Type'] = 'image/png'
+    response = HttpResponse(mimetype='image/png')
     response.write(out.read())
+    response['Content-length'] = out.tell()
 
     return response
 
