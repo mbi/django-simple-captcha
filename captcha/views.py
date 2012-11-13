@@ -9,12 +9,11 @@ import re
 import tempfile
 
 try:
+    from PIL import Image, ImageDraw, ImageFont
+except ImportError:
     import Image
     import ImageDraw
     import ImageFont
-except ImportError:
-    from PIL import Image, ImageDraw, ImageFont
-
 
 NON_DIGITS_RX = re.compile('[^\d]')
 
