@@ -26,4 +26,4 @@ msgstr "Parola di controllo sbagliata"
 
 #: .\tests\__init__.py:97
 msgid "This field is required."
-msgstr "Questo campo è obblicagatorio"
+msgstr "Questo campo è obbligatorio"
