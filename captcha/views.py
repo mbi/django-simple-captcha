@@ -5,10 +5,10 @@ from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.utils import simplejson as json
-import os
 import random
 import re
 import tempfile
+import os
 import subprocess
 
 
