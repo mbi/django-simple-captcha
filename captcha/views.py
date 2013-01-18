@@ -9,6 +9,7 @@ import os
 import random
 import re
 import tempfile
+import subprocess
 
 
 try:
@@ -92,8 +93,7 @@ def captcha_audio(request, key):
         else:
             text = ', '.join(list(text))
         path = str(os.path.join(tempfile.gettempdir(), '%s.wav' % key))
-        cline = '%s -t "%s" -o "%s"' % (settings.CAPTCHA_FLITE_PATH, text, path)
-        os.popen(cline).read()
+        subprocess.call([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
         if os.path.isfile(path):
             response = HttpResponse()
             f = open(path, 'rb')
