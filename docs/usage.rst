@@ -65,51 +65,58 @@ In your view, validate the form as usually: if the user didn't provide a valid r
 
 Example usage for ajax form
 ---------------------------
-from django.views.generic.edit import CreateView
-from captcha.models import CaptchaStore
-from captcha.helpers import captcha_image_url
-from django.http import HttpResponse
-import json
 
-class AjaxExampleForm(CreateView):
-    template_name = ''
-    form_class = AjaxForm
+An example CAPTCHA validation in AJAX::
 
-    def form_invalid(self, form):
-        if self.request.is_ajax():
-            to_json_responce = dict()
-            to_json_responce['status'] = 0
-            to_json_responce['form_errors'] = form.errors
+    from django.views.generic.edit import CreateView
+    from captcha.models import CaptchaStore
+    from captcha.helpers import captcha_image_url
+    from django.http import HttpResponse
+    import json
 
-            to_json_responce['new_cptch_key'] = CaptchaStore.generate_key()
-            to_json_responce['new_cptch_image'] = captcha_image_url(to_json_responce['new_cptch_key'])
+    class AjaxExampleForm(CreateView):
+        template_name = ''
+        form_class = AjaxForm
 
-            return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
+        def form_invalid(self, form):
+            if self.request.is_ajax():
+                to_json_responce = dict()
+                to_json_responce['status'] = 0
+                to_json_responce['form_errors'] = form.errors
 
-    def form_valid(self, form):
-        form.save()
-        if self.request.is_ajax():
-            to_json_responce = dict()
-            to_json_responce['status'] = 1
+                to_json_responce['new_cptch_key'] = CaptchaStore.generate_key()
+                to_json_responce['new_cptch_image'] = captcha_image_url(to_json_responce['new_cptch_key'])
 
-            to_json_responce['new_cptch_key'] = CaptchaStore.generate_key()
-            to_json_responce['new_cptch_image'] = captcha_image_url(to_json_responce['new_cptch_key'])
+                return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
 
-            return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
+        def form_valid(self, form):
+            form.save()
+            if self.request.is_ajax():
+                to_json_responce = dict()
+                to_json_responce['status'] = 1
 
-And in javascript your must update image and hidden input in form
+                to_json_responce['new_cptch_key'] = CaptchaStore.generate_key()
+                to_json_responce['new_cptch_image'] = captcha_image_url(to_json_responce['new_cptch_key'])
+
+                return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
+
+
+And in javascript your must update the image and hidden input in form
+
 
 Example usage ajax refresh button
 ---------------------------------
 
-# html
+# html::
+
     <form action='.' method='POST'>
         {{ form }}
         <input type="submit" />
         <button class='js-captcha-refresh'></button>
     </form>
 
-# javascript
+# javascript::
+
     $('.js-captcha-refresh').click(function(){
         $form = $(this).parents('form');
 

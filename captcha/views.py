@@ -1,14 +1,15 @@
-from captcha.conf import settings
-from captcha.models import CaptchaStore
-from captcha.helpers import captcha_image_url
 from cStringIO import StringIO
+from captcha.conf import settings
+from captcha.helpers import captcha_image_url
+from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.utils import simplejson as json
 import os
 import random
 import re
 import tempfile
-import json
+
 
 try:
     from PIL import Image, ImageDraw, ImageFont
