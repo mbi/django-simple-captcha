@@ -1,12 +1,15 @@
-from captcha.conf import settings
-from captcha.models import CaptchaStore
 from cStringIO import StringIO
+from captcha.conf import settings
+from captcha.helpers import captcha_image_url
+from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
+from django.utils import simplejson as json
 import os
 import random
 import re
 import tempfile
+
 
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -99,4 +102,17 @@ def captcha_audio(request, key):
             f.close()
             os.unlink(path)
             return response
+    raise Http404
+
+
+def captcha_refresh(request):
+    """  Return json with new captcha for ajax refresh request """
+    if request.is_ajax():
+        to_json_responce = dict()
+
+        new_key = CaptchaStore.generate_key()
+        to_json_responce['key'] = new_key
+        to_json_responce['image_url'] = captcha_image_url(new_key)
+
+        return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
     raise Http404

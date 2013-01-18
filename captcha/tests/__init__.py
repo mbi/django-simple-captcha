@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from captcha.conf import settings
 from captcha.models import CaptchaStore, get_safe_now
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
-from django.core.exceptions import ImproperlyConfigured
 import datetime
 
 
@@ -151,6 +152,21 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
         r = self.client.get(reverse('captcha-test'))
         self.failUnless('<label for="id_captcha_1"' in r.content)
+
+    def testRefreshView(self):
+        r = self.client.get(reverse('captcha-refresh'), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        try:
+            new_data = simplejson.loads(r.content)
+            self.assertTrue('image_url' in new_data)
+        except:
+            self.fail()
+
+    def testContentLength(self):
+        for key in (self.math_store.hashkey, self.chars_store.hashkey, self.default_store.hashkey, self.unicode_store.hashkey):
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertTrue(response.has_header('content-length'))
+            self.assertTrue(response['content-length'].isdigit())
+            self.assertTrue(int(response['content-length']))
 
 
 def trivial_challenge():

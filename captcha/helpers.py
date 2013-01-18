@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 from captcha.conf import settings
+from django.core.urlresolvers import reverse
 
 
 def math_challenge():
@@ -75,3 +76,8 @@ def post_smooth(image):
     except ImportError:
         from PIL import ImageFilter
     return image.filter(ImageFilter.SMOOTH)
+
+
+def captcha_image_url(key):
+    """ Return url to image. Need for ajax refresh and, etc"""
+    return reverse('captcha-image', args=[key])
