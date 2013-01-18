@@ -1,3 +1,9 @@
+Version 0.3.6
+-------------
+Django 1.5 compatibility (only affects tests)
+Italian localization (thanks @arjunadeltoso)
+Russian localization (thanks @mikek)
+
 Version 0.3.5
 -------------
 Fixes issue #4: Fixes id_for_label malfunction with prefixed forms (thanks @lolek09)
