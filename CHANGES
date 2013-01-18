@@ -5,6 +5,7 @@ Italian localization (thanks @arjunadeltoso)
 Russian localization (thanks @mikek)
 Fixed issue #17 - Append content-length to response (thanks @shchemelevev)
 Merged PR #19 - AJAX refresh of captcha (thanks @artofhuman)
+Merged PR #22 - Use op.popen instead of subprocess.call to generate the audio CAPTCHA
 
 Version 0.3.5
 -------------
