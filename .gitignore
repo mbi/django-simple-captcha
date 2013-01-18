@@ -3,4 +3,6 @@ dist
 docs/_build/
 venv*
 testproject/django-simple-captcha.db
-
+testproject/.coverage
+testproject/coverage.xml
+testproject/htmlcov/

@@ -1,0 +1,10 @@
+[run]
+branch = True
+source =
+    captcha
+omit =
+    ../*migrations*
+    ../*tests*
+    ../*management*
+[report]
+precision = 2
