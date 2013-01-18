@@ -54,7 +54,7 @@ In your view, validate the form as usually: if the user didn't provide a valid r
         if request.POST:
             form = CaptchaTestForm(request.POST)
 
-            # Validate the form: the captcha field will automatically 
+            # Validate the form: the captcha field will automatically
             # check the input
             if form.is_valid():
                 human = True

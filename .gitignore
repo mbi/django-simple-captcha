@@ -1,4 +1,6 @@
 dist
 *.egg-info
 docs/_build/
+venv*
+testproject/django-simple-captcha.db
 
