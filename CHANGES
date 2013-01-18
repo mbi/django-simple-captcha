@@ -3,6 +3,7 @@ Version 0.3.6
 Django 1.5 compatibility (only affects tests)
 Italian localization (thanks @arjunadeltoso)
 Russian localization (thanks @mikek)
+Fixed issue #17 - Append content-length to response (thanks @shchemelevev)
 
 Version 0.3.5
 -------------
@@ -15,7 +16,7 @@ Fixes issue #3: regression on Django 1.4 when USE_TZ is False
 Version 0.3.3
 -------------
 * Django 1.4 Time zones compatibility
-* PEP 8 love 
+* PEP 8 love
 
 Version 0.3.2
 -------------
