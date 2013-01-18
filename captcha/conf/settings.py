@@ -22,6 +22,7 @@ if CAPTCHA_IMAGE_BEFORE_FIELD:
 else:
     CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', u'%(hidden_field)s %(text_field)s %(image)s')
 
+CATPCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', False)
 
 # Failsafe
 if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:

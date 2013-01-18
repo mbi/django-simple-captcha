@@ -178,6 +178,26 @@ class CaptchaCase(TestCase):
         widget = CaptchaTextInput(attrs={'class': 'required'})
         CaptchaField(widget=widget)
 
+    def testTestMode_Issue15(self):
+        settings.CATPCHA_TEST_MODE = False
+        r = self.client.get(reverse('captcha-test'))
+        self.failUnlessEqual(r.status_code, 200)
+        r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
+        self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
+
+        settings.CATPCHA_TEST_MODE = True
+        # Test mode, only 'PASSED' is accepted
+        r = self.client.get(reverse('captcha-test'))
+        self.failUnlessEqual(r.status_code, 200)
+        r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
+        self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
+
+        r = self.client.get(reverse('captcha-test'))
+        self.failUnlessEqual(r.status_code, 200)
+        r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='passed', subject='xxx', sender='asasd@asdasd.com'))
+        self.assertTrue(r.content.find('Form validated') > 0)
+        settings.CATPCHA_TEST_MODE = False
+
 
 def trivial_challenge():
     return 'trivial', 'trivial'

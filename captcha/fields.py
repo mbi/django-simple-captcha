@@ -79,7 +79,7 @@ class CaptchaField(MultiValueField):
         super(CaptchaField, self).clean(value)
         response, value[1] = value[1].strip().lower(), ''
         CaptchaStore.remove_expired()
-        if django_settings.DEBUG and response.lower() == 'passed':
+        if settings.CATPCHA_TEST_MODE and response.lower() == 'passed':
             # automatically pass the test
             try:
                 # try to delete the captcha based on its hash
@@ -89,8 +89,7 @@ class CaptchaField(MultiValueField):
                 pass
         else:
             try:
-                store = CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now())
-                store.delete()
+                CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()
             except Exception:
                 raise ValidationError(getattr(self, 'error_messages', dict()).get('invalid', _('Invalid CAPTCHA')))
         return value
