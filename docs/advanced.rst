@@ -185,7 +185,3 @@ This sample generator that returns six random digits::
         return ret, ret
 
 
-Testing support
-+++++++++++++++
-
-For testing purposes, it is possible to bypass CAPTCHA validation when ``DEBUG`` is set to ``True`` in the project settings. To do this, use ``'PASSED'`` as value of the CAPTCHA field.
