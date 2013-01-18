@@ -1,20 +1,21 @@
 Version 0.3.6
 -------------
-Django 1.5 compatibility (only affects tests)
-Italian localization (thanks @arjunadeltoso)
-Russian localization (thanks @mikek)
-Fixed issue #17 - Append content-length to response (thanks @shchemelevev)
-Merged PR #19 - AJAX refresh of captcha (thanks @artofhuman)
-Merged PR #22 - Use op.popen instead of subprocess.call to generate the audio CAPTCHA (thanks @beda42)
-Fixed issue #10 - uniformize spelling of "CAPTCHA" (thanks @mikek)
+* Django 1.5 compatibility (only affects tests)
+* Italian localization (thanks @arjunadeltoso)
+* Russian localization (thanks @mikek)
+* Fixed issue #17 - Append content-length to response (thanks @shchemelevev)
+* Merged PR #19 - AJAX refresh of captcha (thanks @artofhuman)
+* Merged PR #22 - Use op.popen instead of subprocess.call to generate the audio CAPTCHA (thanks @beda42)
+* Fixed issue #10 - uniformize spelling of "CAPTCHA" (thanks @mikek)
+* Fixed issue #12 - Raise error when try to initialize CaptchaTextInput alone and/or when try to initialize CaptchaField with widget keyword argument (thanks @vstoykov)
 
 Version 0.3.5
 -------------
-Fixes issue #4: Fixes id_for_label malfunction with prefixed forms (thanks @lolek09)
+* Fixes issue #4: Fixes id_for_label malfunction with prefixed forms (thanks @lolek09)
 
 Version 0.3.4
 -------------
-Fixes issue #3: regression on Django 1.4 when USE_TZ is False
+* Fixes issue #3: regression on Django 1.4 when USE_TZ is False
 
 Version 0.3.3
 -------------

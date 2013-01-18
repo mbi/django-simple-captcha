@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from captcha.conf import settings
+from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore, get_safe_now
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
@@ -167,6 +168,15 @@ class CaptchaCase(TestCase):
             self.assertTrue(response.has_header('content-length'))
             self.assertTrue(response['content-length'].isdigit())
             self.assertTrue(int(response['content-length']))
+
+    def testIssue12ProperInstantiation(self):
+        """
+        This test covers a default django field and widget behavior
+        It not assert anything. If something is wrong it will raise a error!
+        """
+        settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
+        widget = CaptchaTextInput(attrs={'class': 'required'})
+        CaptchaField(widget=widget)
 
 
 def trivial_challenge():
