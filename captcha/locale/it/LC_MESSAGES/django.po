@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n>1;\n"
 
 #: .\fields.py:56
-msgid "Play captcha as audio file"
+msgid "Play CAPTCHA as audio file"
 msgstr "Ascolta la parola di controllo"
 
 #: .\fields.py:71 .\fields.py:96 .\tests\__init__.py:70

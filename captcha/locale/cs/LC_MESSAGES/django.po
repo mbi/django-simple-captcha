@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: fields.py:50
-msgid "Play captcha as audio file"
+msgid "Play CAPTCHA as audio file"
 msgstr "Přehrát captchu jako audio soubor"
 
 #: fields.py:67 fields.py:99 tests/__init__.py:62
