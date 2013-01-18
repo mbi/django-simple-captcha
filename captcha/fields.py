@@ -39,9 +39,8 @@ class CaptchaTextInput(MultiWidget):
         except NoReverseMatch:
             raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
 
-        challenge, response = settings.get_challenge()()
-        store = CaptchaStore.objects.create(challenge=challenge, response=response)
-        key = store.hashkey
+        # store = CaptchaStore()
+        key = CaptchaStore.generate_key()
         value = [key, u'']
 
         self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % reverse('captcha-image', kwargs=dict(key=key))
@@ -49,9 +48,9 @@ class CaptchaTextInput(MultiWidget):
             self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (reverse('captcha-audio', kwargs=dict(key=key)), unicode(_('Play captcha as audio file')), self.image_and_audio)
         return super(CaptchaTextInput, self).render(name, value, attrs=attrs)
 
-    # This is probably all the love it needs
+    # This probably needs some more love
     def id_for_label(self, id_):
-        return id_ + '_1'
+        return 'id_captcha_1'
 
 
 class CaptchaField(MultiValueField):
