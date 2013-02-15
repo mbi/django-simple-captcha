@@ -1,0 +1,30 @@
+# django-simple-captcha Dutch translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Leon de Rijke <leon@cmsworks.nl>, 2013.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: django-simple-captcha 0.3.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-15 13:26+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Leon de Rijke <leon@cmsworks.nl>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: fields.py:50
+msgid "Play CAPTCHA as audio file"
+msgstr "Speel CAPTCHA als audiobestand af"
+
+#: fields.py:67 fields.py:94 tests/__init__.py:64 tests/__init__.py:186
+#: tests/__init__.py:193
+msgid "Invalid CAPTCHA"
+msgstr "CAPTCHA ongeldig, probeer het opnieuw"
+
+#: tests/__init__.py:90
+msgid "This field is required."
+msgstr "Dit veld is verplicht."
