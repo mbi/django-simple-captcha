@@ -10,6 +10,7 @@ Version 0.3.6
 * Fixed issue #12 - Raise error when try to initialize CaptchaTextInput alone and/or when try to initialize CaptchaField with widget keyword argument (thanks @vstoykov)
 * Merged PR #15 - Allow a 'test mode' where the string 'PASSED' always validates the CAPTCHA (thanks @beda42)
 * Dutch translation (thanks @leonderijke)
+* Turkish translation (thanks @gkmngrgn)
 
 Version 0.3.5
 -------------
