@@ -87,7 +87,7 @@ An example CAPTCHA validation in AJAX::
                 to_json_responce['new_cptch_key'] = CaptchaStore.generate_key()
                 to_json_responce['new_cptch_image'] = captcha_image_url(to_json_responce['new_cptch_key'])
 
-                return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
+                return HttpResponse(json.dumps(to_json_responce), content_type='application/json')
 
         def form_valid(self, form):
             form.save()
@@ -98,7 +98,7 @@ An example CAPTCHA validation in AJAX::
                 to_json_responce['new_cptch_key'] = CaptchaStore.generate_key()
                 to_json_responce['new_cptch_image'] = captcha_image_url(to_json_responce['new_cptch_key'])
 
-                return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
+                return HttpResponse(json.dumps(to_json_responce), content_type='application/json')
 
 
 And in javascript your must update the image and hidden input in form
