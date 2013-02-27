@@ -12,7 +12,7 @@ if hasattr(random, 'SystemRandom'):
     randrange = random.SystemRandom().randrange
 else:
     randrange = random.randrange
-MAX_RANDOM_KEY = 18446744073709551616L     # 2 << 63
+MAX_RANDOM_KEY = 18446744073709551616     # 2 << 63
 
 
 try:

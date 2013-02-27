@@ -139,7 +139,7 @@ class CaptchaCase(TestCase):
         try:
             self.client.get(reverse('captcha-test'))
             self.fail()
-        except ImproperlyConfigured, e:
+        except ImproperlyConfigured as e:
             self.failUnless('CAPTCHA_OUTPUT_FORMAT' in unicode(e))
 
     def testPerFormFormat(self):

@@ -11,7 +11,7 @@ def math_challenge():
     if operands[0] < operands[1] and '-' == operator:
         operands = (operands[1], operands[0])
     challenge = '%d%s%d' % (operands[0], operator, operands[1])
-    return u'%s=' % (challenge), unicode(eval(challenge))
+    return '%s=' % (challenge), eval(challenge)
 
 
 def random_char_challenge():
