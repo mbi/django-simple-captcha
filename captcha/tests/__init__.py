@@ -39,7 +39,7 @@ class CaptchaCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertTrue(len(response.content) > 1024)
             self.assertTrue(response.has_header('content-type'))
-            self.assertEquals(response._headers.get('content-type'), ('Content-Type', 'audio/x-wav'))
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'audio/x-wav'))
 
     def testFormSubmit(self):
         r = self.client.get(reverse('captcha-test'))

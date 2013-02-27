@@ -26,3 +26,11 @@ python manage.py test captcha
 cd ..
 deactivate
 
+
+. venv_15_p3/bin/activate
+cd testproject
+python manage.py --version
+python --version
+python manage.py test captcha
+cd ..
+deactivate
