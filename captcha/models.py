@@ -5,6 +5,7 @@ import datetime
 import random
 import time
 import unicodedata
+import six
 
 # Heavily based on session key generation in Django
 # Use the system (hardware-based) random number generator if it exists.
@@ -45,7 +46,7 @@ class CaptchaStore(models.Model):
             #self.expiration = datetime.datetime.now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
             self.expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
         if not self.hashkey:
-            key_ = unicodedata.normalize('NFKD', str(randrange(0, MAX_RANDOM_KEY)) + str(time.time()) + str(self.challenge)).encode('ascii', 'ignore') + unicodedata.normalize('NFKD', str(self.response)).encode('ascii', 'ignore')
+            key_ = unicodedata.normalize('NFKD', str(randrange(0, MAX_RANDOM_KEY)) + str(time.time()) + six.text_type(self.challenge)).encode('ascii', 'ignore') + unicodedata.normalize('NFKD', six.text_type(self.response)).encode('ascii', 'ignore')
             if hashlib:
                 self.hashkey = hashlib.sha1(key_).hexdigest()
             else:

@@ -5,10 +5,11 @@ from captcha.models import CaptchaStore, get_safe_now
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-import json
 from django.utils.translation import ugettext_lazy as _
 import datetime
+import json
 import re
+import six
 
 
 class CaptchaCase(TestCase):
@@ -168,7 +169,7 @@ class CaptchaCase(TestCase):
     def testRefreshView(self):
         r = self.client.get(reverse('captcha-refresh'), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         try:
-            new_data = json.loads(str(r.content, encoding='ascii'))
+            new_data = json.loads(six.text_type(r.content, encoding='ascii'))
             self.assertTrue('image_url' in new_data)
         except:
             self.fail()
