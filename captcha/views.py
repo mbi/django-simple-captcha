@@ -1,4 +1,3 @@
-from cStringIO import StringIO
 from captcha.conf import settings
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
@@ -11,6 +10,10 @@ import tempfile
 import os
 import subprocess
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import BytesIO as StringIO
 
 try:
     from PIL import Image, ImageDraw, ImageFont

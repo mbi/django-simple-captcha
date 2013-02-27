@@ -5,9 +5,10 @@ from captcha.models import CaptchaStore, get_safe_now
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.utils import simplejson
+import json
 from django.utils.translation import ugettext_lazy as _
 import datetime
+import re
 
 
 class CaptchaCase(TestCase):
@@ -19,47 +20,50 @@ class CaptchaCase(TestCase):
         self.chars_challenge = settings._callable_from_string('captcha.helpers.random_char_challenge')()
         self.unicode_challenge = settings._callable_from_string('captcha.helpers.unicode_challenge')()
         self.default_store, created = CaptchaStore.objects.get_or_create(challenge=self.default_challenge[0], response=self.default_challenge[1])
-        self.math_store, created = CaptchaStore.objects.get_or_create(challenge=self.math_challenge[0], response=self.math_challenge[1])
+        self.math_store, created = CaptchaStore.objects.get_or_create(challenge=self.math_challenge[0], response=str(self.math_challenge[1]))
         self.chars_store, created = CaptchaStore.objects.get_or_create(challenge=self.chars_challenge[0], response=self.chars_challenge[1])
         self.unicode_store, created = CaptchaStore.objects.get_or_create(challenge=self.unicode_challenge[0], response=self.unicode_challenge[1])
 
     def testImages(self):
         for key in (self.math_store.hashkey, self.chars_store.hashkey, self.default_store.hashkey, self.unicode_store.hashkey):
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
-            self.failUnlessEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header('content-type'))
-            self.assertEquals(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
 
     def testAudio(self):
         if not settings.CAPTCHA_FLITE_PATH:
             return
         for key in (self.math_store.hashkey, self.chars_store.hashkey, self.default_store.hashkey):
             response = self.client.get(reverse('captcha-audio', kwargs=dict(key=key)))
-            self.failUnlessEqual(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
             self.assertTrue(len(response.content) > 1024)
             self.assertTrue(response.has_header('content-type'))
             self.assertEquals(response._headers.get('content-type'), ('Content-Type', 'audio/x-wav'))
 
     def testFormSubmit(self):
         r = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r.status_code, 200)
-        hash_ = r.content[r.content.find('value="') + 7:r.content.find('value="') + 47]
-        try:
-            response = CaptchaStore.objects.get(hashkey=hash_).response
-        except:
+        self.assertEqual(r.status_code, 200)
+        if re.findall(r'value="([0-9a-f]+)"', str(r.content)):
+            hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
+            try:
+                response = CaptchaStore.objects.get(hashkey=hash_).response
+            except:
+                self.fail()
+        else:
             self.fail()
 
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
-        self.failUnlessEqual(r.status_code, 200)
-        self.assertTrue(r.content.find('Form validated') > 0)
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(str(r.content).find('Form validated') > 0)
 
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
-        self.failUnlessEqual(r.status_code, 200)
-        self.assertFalse(r.content.find('Form validated') > 0)
+        self.assertEqual(r.status_code, 200)
+        self.assertFalse(str(r.content).find('Form validated') > 0)
 
     def testWrongSubmit(self):
         r = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
         self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
 
@@ -69,8 +73,8 @@ class CaptchaCase(TestCase):
         hash_ = self.default_store.hashkey
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=self.default_store.response, subject='xxx', sender='asasd@asdasd.com'))
 
-        self.failUnlessEqual(r.status_code, 200)
-        self.assertFalse(r.content.find('Form validated') > 0)
+        self.assertEqual(r.status_code, 200)
+        self.assertFalse('Form validated' in str(r.content))
 
         # expired -> deleted
         try:
@@ -81,7 +85,7 @@ class CaptchaCase(TestCase):
 
     def testCustomErrorMessage(self):
         r = self.client.get(reverse('captcha-test-custom-error-message'))
-        self.failUnlessEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 200)
         # Wrong answer
         r = self.client.post(reverse('captcha-test-custom-error-message'), dict(captcha_0='abc', captcha_1='wrong response'))
         self.assertFormError(r, 'form', 'captcha', 'TEST CUSTOM ERROR MESSAGE')
@@ -101,10 +105,17 @@ class CaptchaCase(TestCase):
 
         r1 = self.client.get(reverse('captcha-test'))
         r2 = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r1.status_code, 200)
-        self.failUnlessEqual(r2.status_code, 200)
-        hash_1 = r1.content[r1.content.find('value="') + 7:r1.content.find('value="') + 47]
-        hash_2 = r2.content[r2.content.find('value="') + 7:r2.content.find('value="') + 47]
+        self.assertEqual(r1.status_code, 200)
+        self.assertEqual(r2.status_code, 200)
+        if re.findall(r'value="([0-9a-f]+)"', str(r1.content)):
+            hash_1 = re.findall(r'value="([0-9a-f]+)"', str(r1.content))[0]
+        else:
+            self.fail()
+
+        if re.findall(r'value="([0-9a-f]+)"', str(r2.content)):
+            hash_2 = re.findall(r'value="([0-9a-f]+)"', str(r2.content))[0]
+        else:
+            self.fail()
         try:
             store_1 = CaptchaStore.objects.get(hashkey=hash_1)
             store_2 = CaptchaStore.objects.get(hashkey=hash_2)
@@ -116,8 +127,8 @@ class CaptchaCase(TestCase):
         self.assertTrue(hash_1 != hash_2)
 
         r1 = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_1, captcha_1=store_1.response, subject='xxx', sender='asasd@asdasd.com'))
-        self.failUnlessEqual(r1.status_code, 200)
-        self.assertTrue(r1.content.find('Form validated') > 0)
+        self.assertEqual(r1.status_code, 200)
+        self.assertTrue(str(r1.content).find('Form validated') > 0)
 
         try:
             store_2 = CaptchaStore.objects.get(hashkey=hash_2)
@@ -125,14 +136,14 @@ class CaptchaCase(TestCase):
             self.fail()
 
         r2 = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_2, captcha_1=store_2.response, subject='xxx', sender='asasd@asdasd.com'))
-        self.failUnlessEqual(r2.status_code, 200)
-        self.assertTrue(r2.content.find('Form validated') > 0)
+        self.assertEqual(r2.status_code, 200)
+        self.assertTrue(str(r2.content).find('Form validated') > 0)
 
     def testOutputFormat(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s'
         r = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r.status_code, 200)
-        self.assertTrue('<p>Hello, captcha world</p>' in r.content)
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue('<p>Hello, captcha world</p>' in str(r.content))
 
     def testInvalidOutputFormat(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s'
@@ -140,24 +151,24 @@ class CaptchaCase(TestCase):
             self.client.get(reverse('captcha-test'))
             self.fail()
         except ImproperlyConfigured as e:
-            self.failUnless('CAPTCHA_OUTPUT_FORMAT' in unicode(e))
+            self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(e))
 
     def testPerFormFormat(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s testCustomFormatString %(hidden_field)s %(text_field)s'
         r = self.client.get(reverse('captcha-test'))
-        self.failUnless('testCustomFormatString' in r.content)
+        self.assertTrue('testCustomFormatString' in str(r.content))
         r = self.client.get(reverse('test_per_form_format'))
-        self.failUnless('testPerFieldCustomFormatString' in r.content)
+        self.assertTrue('testPerFieldCustomFormatString' in str(r.content))
 
     def testIssue31ProperLabel(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
         r = self.client.get(reverse('captcha-test'))
-        self.failUnless('<label for="id_captcha_1"' in r.content)
+        self.assertTrue('<label for="id_captcha_1"' in str(r.content))
 
     def testRefreshView(self):
         r = self.client.get(reverse('captcha-refresh'), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         try:
-            new_data = simplejson.loads(r.content)
+            new_data = json.loads(str(r.content, encoding='ascii'))
             self.assertTrue('image_url' in new_data)
         except:
             self.fail()
@@ -181,21 +192,21 @@ class CaptchaCase(TestCase):
     def testTestMode_Issue15(self):
         settings.CATPCHA_TEST_MODE = False
         r = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
         self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
 
         settings.CATPCHA_TEST_MODE = True
         # Test mode, only 'PASSED' is accepted
         r = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
         self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
 
         r = self.client.get(reverse('captcha-test'))
-        self.failUnlessEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='passed', subject='xxx', sender='asasd@asdasd.com'))
-        self.assertTrue(r.content.find('Form validated') > 0)
+        self.assertTrue(str(r.content).find('Form validated') > 0)
         settings.CATPCHA_TEST_MODE = False
 
 

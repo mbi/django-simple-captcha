@@ -6,7 +6,6 @@ from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings as django_settings
 
 
 class CaptchaTextInput(MultiWidget):
