@@ -22,6 +22,12 @@ Requirements
 * A fairly recent version of the Python Imaging Library (PIL) compiled with FreeType support
 * Flite is required for text-to-speech (audio) output, but not mandatory
 
+Python 3 compatibility
+++++++++++++++++++++++
+
+The current development version supports Python3 via the `six <https://pypi.python.org/pypi/six>`_ compatibility layer.
+You will need to install `Pillow HEAD <https://github.com/python-imaging/Pillow>`_ because PIL doesn't support Python3 yet.
+
 
 Documentation
 +++++++++++++

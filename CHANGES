@@ -1,6 +1,7 @@
 Version 0.3.7
 -------------
 * Improved Django 1.5 and Django HEAD (1.6) compatibility (thanks @uruz)
+* Python3 compatibility (requires six and Pillow HEAD)
 
 Version 0.3.6
 -------------
