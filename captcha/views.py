@@ -77,7 +77,7 @@ def captcha_image(request, key):
     image.save(out, "PNG")
     out.seek(0)
 
-    response = HttpResponse(mimetype='image/png')
+    response = HttpResponse(content_type='image/png')
     response.write(out.read())
     response['Content-length'] = out.tell()
 
@@ -114,5 +114,5 @@ def captcha_refresh(request):
         to_json_responce['key'] = new_key
         to_json_responce['image_url'] = captcha_image_url(new_key)
 
-        return HttpResponse(json.dumps(to_json_responce), mimetype='application/json')
+        return HttpResponse(json.dumps(to_json_responce), content_type='application/json')
     raise Http404
