@@ -1,0 +1,32 @@
+# django-simple-captcha Chinese Simplified translation.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Ming Chen <c.ming@live.com>, 2013.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: django-simple-captcha 0.3.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-01 05:04+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Ming Chen <c.ming@live.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: fields.py:49
+msgid "Play CAPTCHA as audio file"
+msgstr "使用语音方式播放认证码"
+
+#: fields.py:66 fields.py:93 tests/__init__.py:69 tests/__init__.py:198
+#: tests/__init__.py:205
+msgid "Invalid CAPTCHA"
+msgstr "认证码错误"
+
+#: tests/__init__.py:95
+msgid "This field is required."
+msgstr "这个字段是必须的"
+
