@@ -5,11 +5,9 @@ python:
  # - "2.6"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - sudo apt-get install libjpeg libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+  - sudo apt-get install libfreetype6 libfreetype6-dev zlib1g-dev
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so /usr/lib/
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libjpeg.so ~/virtualenv/python2.7/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so /usr/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so ~/virtualenv/python2.7/lib/
   - pip install Django==1.5 PIL six  --use-mirrors
