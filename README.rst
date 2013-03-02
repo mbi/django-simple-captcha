@@ -1,6 +1,8 @@
-******************
-About this project
-******************
+*********************
+Django Simple Captcha
+*********************
+
+.. image:: https://travis-ci.org/mbi/django-simple-captcha.png?branch=master
 
 Django Simple Captcha is an extremely simple, yet highly customizable Django application to add captcha images to any Django form.
 
