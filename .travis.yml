@@ -2,13 +2,13 @@ language: python
 python:
 #  - "3.3"
   - "2.7"
-  - "2.6"
+ # - "2.6"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
-before_install:
-  - sudo apt-get install libjpeg62-dev libfreetype6-dev libpng12-dev
-install: 
+install:
+  - sudo apt-get install zlib1g zlib1g-dev
+  - sudo ln -s /usr/lib/i386-linux-gnu/libz.so /usr/lib/ 
   - pip install Django==1.5 PIL six  --use-mirrors
 # command to run tests, e.g. python setup.py test
-script:  sh runtests.sh
+script: cd testproject && python manage.py test captcha 
 
 
