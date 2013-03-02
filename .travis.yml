@@ -6,7 +6,8 @@ python:
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
   - sudo apt-get install zlib1g zlib1g-dev
-  - sudo ln -s /usr/lib/i386-linux-gnu/libz.so /usr/lib/ 
+  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so /usr/lib/
+  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/ 
   - pip install Django==1.5 PIL six  --use-mirrors
 # command to run tests, e.g. python setup.py test
 script: cd testproject && python manage.py test captcha 
