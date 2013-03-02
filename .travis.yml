@@ -5,7 +5,7 @@ python:
   - "2.6"
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 before_script:
-  - sudo apt-get install foo bar baz
+  - sudo apt-get install libjpeg62-dev libfreetype6-dev libpng12-dev
 install: 
   - pip install Django==1.5 PIL six
 # command to run tests, e.g. python setup.py test
