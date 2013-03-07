@@ -51,7 +51,9 @@ class CaptchaTextInput(MultiWidget):
 
     # This probably needs some more love
     def id_for_label(self, id_):
-        return 'id_captcha_1'
+        if id_:
+            id_ += '_1'
+        return id_
 
 
 class CaptchaField(MultiValueField):
