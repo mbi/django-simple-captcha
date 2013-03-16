@@ -41,7 +41,7 @@ class CaptchaStore(models.Model):
 
     def save(self, *args, **kwargs):
         #import ipdb; ipdb.set_trace()
-        self.response = self.response.lower()
+        self.response = six.text_type(self.response).lower()
         if not self.expiration:
             #self.expiration = datetime.datetime.now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
             self.expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))

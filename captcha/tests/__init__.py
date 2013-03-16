@@ -21,7 +21,7 @@ class CaptchaCase(TestCase):
         self.chars_challenge = settings._callable_from_string('captcha.helpers.random_char_challenge')()
         self.unicode_challenge = settings._callable_from_string('captcha.helpers.unicode_challenge')()
         self.default_store, created = CaptchaStore.objects.get_or_create(challenge=self.default_challenge[0], response=self.default_challenge[1])
-        self.math_store, created = CaptchaStore.objects.get_or_create(challenge=self.math_challenge[0], response=str(self.math_challenge[1]))
+        self.math_store, created = CaptchaStore.objects.get_or_create(challenge=self.math_challenge[0], response=self.math_challenge[1])
         self.chars_store, created = CaptchaStore.objects.get_or_create(challenge=self.chars_challenge[0], response=self.chars_challenge[1])
         self.unicode_store, created = CaptchaStore.objects.get_or_create(challenge=self.unicode_challenge[0], response=self.unicode_challenge[1])
 

@@ -3,6 +3,7 @@ Version 0.3.7
 * Improved Django 1.5 and Django HEAD (1.6) compatibility (thanks @uruz)
 * Python3 compatibility (requires six and Pillow >= 2.0)
 * Added zh_CN localization (thanks @mingchen)
+* Make sure the generated challenge is a string type (the math challenge was probably broken -- Issue #33, thanks @YDS19872712)
 
 Version 0.3.6
 -------------
