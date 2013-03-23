@@ -35,3 +35,8 @@ Documentation
 +++++++++++++
 
 Read the `documentation online <http://readthedocs.org/docs/django-simple-captcha>`_.
+<pre>
+增加了ajax验证用户输入字符是否正确的功能，使用方法:
+  ajax发送信息包括:verify_data = $('#id_captcha_1').val()  key = $('#id_captcha_0').val(),如果返回结果为"true"，则正确，
+若返回"false"则表示错误.
+</pre>
