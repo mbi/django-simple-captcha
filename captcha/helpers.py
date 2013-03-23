@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import random
 from captcha.conf import settings
 from django.core.urlresolvers import reverse
-
+from django.utils.translation import ugettext as _
 
 def math_challenge():
     operators = ('+', '*', '-',)
@@ -11,21 +11,21 @@ def math_challenge():
     if operands[0] < operands[1] and '-' == operator:
         operands = (operands[1], operands[0])
     challenge = '%d%s%d' % (operands[0], operator, operands[1])
-    return '%s=' % (challenge), eval(challenge)
+    return '%s=' % (challenge), eval(challenge), _('Type the solution')
 
 
 def random_char_challenge():
     chars, ret = u'abcdefghijklmnopqrstuvwxyz', u''
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
-    return ret.upper(), ret
+    return ret.upper(), ret, _('Type the letters')
 
 
 def unicode_challenge():
     chars, ret = u'äàáëéèïíîöóòüúù', u''
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
-    return ret.upper(), ret
+    return ret.upper(), ret, _('Type the letters')
 
 
 def word_challenge():
@@ -36,7 +36,7 @@ def word_challenge():
         word = random.choice(l).strip()
         if len(word) >= settings.CAPTCHA_DICTIONARY_MIN_LENGTH and len(word) <= settings.CAPTCHA_DICTIONARY_MAX_LENGTH:
             break
-    return word.upper(), word.lower()
+    return word.upper(), word.lower(), _('Type the word')
 
 
 def huge_words_and_punctuation_challenge():

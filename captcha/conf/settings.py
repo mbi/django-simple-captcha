@@ -1,5 +1,7 @@
-import os
+﻿import os
 from django.conf import settings
+
+ugettext = lambda  x :x #dummy ugettext
 
 CAPTCHA_FONT_PATH = getattr(settings, 'CAPTCHA_FONT_PATH', os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'fonts/Vera.ttf')))
 CAPTCHA_FONT_SIZE = getattr(settings, 'CAPTCHA_FONT_SIZE', 22)
@@ -21,6 +23,7 @@ if CAPTCHA_IMAGE_BEFORE_FIELD:
     CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', u'%(image)s %(hidden_field)s %(text_field)s')
 else:
     CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', u'%(hidden_field)s %(text_field)s %(image)s')
+CAPTCHA_DEFAULT_CHALLENGE_MESSAGE =getattr(settings, 'CAPTCHA_DEFAULT_CHALLENGE_MESSAGE', ugettext(u'Type the CAPTCHA'))
 
 CATPCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', False)
 
@@ -43,10 +46,10 @@ def get_challenge():
 def noise_functions():
     if CAPTCHA_NOISE_FUNCTIONS:
         return map(_callable_from_string, CAPTCHA_NOISE_FUNCTIONS)
-    return list()
+    return []
 
 
 def filter_functions():
     if CAPTCHA_FILTER_FUNCTIONS:
         return map(_callable_from_string, CAPTCHA_FILTER_FUNCTIONS)
-    return list()
+    return []

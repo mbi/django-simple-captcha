@@ -1,4 +1,4 @@
-from captcha.conf import settings
+﻿from captcha.conf import settings
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
@@ -110,12 +110,13 @@ def captcha_audio(request, key):
 
 def captcha_refresh(request):
     """  Return json with new captcha for ajax refresh request """
-    if request.is_ajax():
-        to_json_responce = dict()
+    if not request.is_ajax():
+        raise Http404
 
-        new_key = CaptchaStore.generate_key()
-        to_json_responce['key'] = new_key
-        to_json_responce['image_url'] = captcha_image_url(new_key)
-
-        return HttpResponse(json.dumps(to_json_responce), content_type='application/json')
-    raise Http404
+    new_key, challenge_msg = CaptchaStore.generate_key()
+    to_json_response = {
+        'key' : new_key,
+        'image_url' : captcha_image_url(new_key),
+        'challenge_msg' : challenge_msg,
+    }
+    return HttpResponse(json.dumps(to_json_response), content_type='application/json')

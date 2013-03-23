@@ -1,57 +1,113 @@
-from captcha.conf import settings
+﻿from captcha.conf import settings
+from django.conf import settings as django_settings
 from captcha.models import CaptchaStore, get_safe_now
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse,  NoReverseMatch
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
+
+from django.template import Context
+from django.template.loader import get_template
 
 
-class CaptchaTextInput(MultiWidget):
-    def __init__(self, attrs=None, **kwargs):
-        self._args = kwargs
+class BaseCaptchaTextInput(MultiWidget):
+    """
+    Base class for Captcha widgets
+    """
+    def __init__(self, attrs=None):
         widgets = (
             HiddenInput(attrs),
             TextInput(attrs),
         )
-        self._args['output_format'] = self._args.get('output_format') or settings.CAPTCHA_OUTPUT_FORMAT
-
-        for key in ('image', 'hidden_field', 'text_field'):
-            if '%%(%s)s' % key not in self._args['output_format']:
-                raise ImproperlyConfigured('All of %s must be present in your CAPTCHA_OUTPUT_FORMAT setting. Could not find %s' % (
-                    ', '.join(['%%(%s)s' % k for k in ('image', 'hidden_field', 'text_field')]),
-                    '%%(%s)s' % key
-                ))
-        super(CaptchaTextInput, self).__init__(widgets, attrs)
+        super(BaseCaptchaTextInput, self).__init__(widgets, attrs)
 
     def decompress(self, value):
         if value:
             return value.split(',')
         return [None, None]
 
-    def format_output(self, rendered_widgets):
-        hidden_field, text_field = rendered_widgets
-        return self._args['output_format'] % dict(image=self.image_and_audio, hidden_field=hidden_field, text_field=text_field)
+    def pre_render(self, name, value, attrs=None):
+        """
+        Gets new CaptchaStore
+        This has to be called inside render
+        """
+        if django_settings.DEBUG:
+            try:
+                reverse('captcha-image', args=('dummy',))
+            except NoReverseMatch:
+                raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
+
+        key, challenge_msg = CaptchaStore.generate_key()
+
+        # these can be used by format_output and render
+        self._value = [key, u'']
+        self._key = key
+        self._id_ = self.build_attrs(attrs).get('id', None)
+        self._challenge_msg = challenge_msg
 
     def render(self, name, value, attrs=None):
-        try:
-            reverse('captcha-image', args=('dummy',))
-        except NoReverseMatch:
-            raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
+        self.pre_render(name, value, attrs)
+        return super(BaseCaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
-        # store = CaptchaStore()
-        key = CaptchaStore.generate_key()
-        value = [key, u'']
-
-        self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % reverse('captcha-image', kwargs=dict(key=key))
-        if settings.CAPTCHA_FLITE_PATH:
-            self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (reverse('captcha-audio', kwargs=dict(key=key)), str(_('Play CAPTCHA as audio file')), self.image_and_audio)
-        return super(CaptchaTextInput, self).render(name, value, attrs=attrs)
-
-    # This probably needs some more love
     def id_for_label(self, id_):
-        return 'id_captcha_1'
+        return id_ + '_1'
+
+
+
+class CaptchaTextInput(BaseCaptchaTextInput):
+    def __init__(self, attrs=None, **kwargs):
+        self._args = kwargs
+        self._args['output_format'] = self._args.get('output_format', settings.CAPTCHA_OUTPUT_FORMAT)
+        if django_settings.DEBUG:
+            for key in ('image', 'hidden_field', 'text_field'):
+                if '%%(%s)s' % key not in self._args['output_format']:
+                    raise ImproperlyConfigured('All of %s must be present in your CAPTCHA_OUTPUT_FORMAT setting. Could not find %s' % (
+                        ', '.join(['%%(%s)s' % k for k in ('image', 'hidden_field', 'text_field')]),
+                        '%%(%s)s' % key
+                    ))
+        super(CaptchaTextInput, self).__init__(attrs)
+
+    def format_output(self, rendered_widgets):
+        hidden_field, text_field = rendered_widgets
+        return self._args['output_format'] % {
+            'image' : self.image_and_audio,
+            'hidden_field' : hidden_field,
+            'text_field'  : text_field}
+
+    def render(self, name, value, attrs=None):
+        self.pre_render(name, value, attrs)
+
+        self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % reverse('captcha-image', kwargs={'key' : self._key})
+        if settings.CAPTCHA_FLITE_PATH:
+            self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (reverse('captcha-audio', kwargs={'key' : self._key}), str(_('Play CAPTCHA as audio file')), self.image_and_audio)
+
+        return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
+
+
+class BootstrapCaptchaTextInput(BaseCaptchaTextInput):
+    template = 'bootstrap_captcha.html'
+
+    def format_output(self, rendered_widgets):
+
+        if not self._id_:
+            raise AttributeError('BootstrapCaptchaTextInput can not be rendered without an id')
+
+        image_url = reverse('captcha-image', kwargs={'key' : self._key})
+        audio_url = reverse('captcha-audio', kwargs={'key' : self._key}) if settings.CAPTCHA_FLITE_PATH else None
+
+        c = Context({
+            'image_url' : image_url,
+            'audio_url' : audio_url,
+            'refresh_url' : reverse('captcha-refresh'),
+            'id_' : self._id_,
+            'hidden_field' : rendered_widgets[0],
+            'text_field' : rendered_widgets[1],
+            'challenge_msg' : self._challenge_msg,
+        })
+        return get_template(self.template).render(c)
+
 
 
 class CaptchaField(MultiValueField):
@@ -62,12 +118,13 @@ class CaptchaField(MultiValueField):
         )
         if 'error_messages' not in kwargs or 'invalid' not in kwargs.get('error_messages'):
             if 'error_messages' not in kwargs:
-                kwargs['error_messages'] = dict()
-            kwargs['error_messages'].update(dict(invalid=_('Invalid CAPTCHA')))
+                kwargs['error_messages'] = {}
+            kwargs['error_messages'].update({'invalid' : _('Invalid CAPTCHA')})
 
-        widget = kwargs.pop('widget', None) or CaptchaTextInput(output_format=kwargs.pop('output_format', None))
+        if 'widget' not in kwargs:
+            kwargs['widget'] = CaptchaTextInput(output_format=kwargs.pop('output_format', None))
 
-        super(CaptchaField, self).__init__(fields=fields, widget=widget, *args, **kwargs)
+        super(CaptchaField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:
@@ -83,12 +140,12 @@ class CaptchaField(MultiValueField):
             try:
                 # try to delete the captcha based on its hash
                 CaptchaStore.objects.get(hashkey=value[0]).delete()
-            except Exception:
+            except CaptchaStore.DoesNotExist:
                 # ignore errors
                 pass
         else:
             try:
                 CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()
-            except Exception:
-                raise ValidationError(getattr(self, 'error_messages', dict()).get('invalid', _('Invalid CAPTCHA')))
+            except CaptchaStore.DoesNotExist:
+                raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', _('Invalid CAPTCHA')))
         return value
