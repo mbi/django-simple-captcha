@@ -1,0 +1,45 @@
+{% load i18n %}
+
+<div class="control-group">
+    <label class="control-label" for="{{ id_ }}_1">{% trans 'Challenge' %}</label>
+    <div class="controls">
+        <img src="{{ image_url }}" id="{{ id_ }}_img">
+    </div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="{{ id_ }}_1" id="{{ id_ }}_challenge_msg">{{ challenge_msg }}</label>
+
+    <div class="controls">
+        <div class="input-append">
+            <span style="display: none;">{{ hidden_field }}</span>
+            {{ text_field }}
+
+            <button class="btn" type="button" id="{{ id_ }}_refresh" title="{% trans 'Get a new challenge' %}">
+                <i class="icon-refresh"></i>
+            </button>
+
+            {%  if audio_url %}
+                <a class="btn recaptcha_only_if_image" href="{{ audio_url }}" title="{% trans 'Play challenge as audio' %}">
+                    <i class="icon-headphones"></i>
+                </a>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+    $(function () {
+        $("#{{ id_ }}_refresh").click(function(){
+            $.getJSON("{{ refresh_url }}", {}, function(data) {
+                $("#{{ id_ }}_img").attr("src", data.image_url);
+                $("#{{ id_ }}_0").val(data.key);
+                $("#{{ id_ }}_1").val("");
+                $("#{{ id_ }}_challenge_msg").html(data.challenge_msg)
+            });
+            return false;
+        });
+    });
+</script>
