@@ -1,4 +1,4 @@
-from captcha.conf import settings as captcha_settings
+﻿from captcha.conf import settings as captcha_settings
 from django.db import models
 from django.conf import settings
 import datetime
@@ -63,7 +63,12 @@ class CaptchaStore(models.Model):
 
     @classmethod
     def generate_key(cls):
-        challenge, response = captcha_settings.get_challenge()()
+        challenge = captcha_settings.get_challenge()()
+        if len(challenge) == 2: # challenge does not have a custome message, use default
+            challenge, response = challenge
+            message = captcha_settings.CAPTCHA_DEFAULT_CHALLENGE_MESSAGE
+        else: # challenge has a custom message
+            challenge, response, message = challenge
         store = cls.objects.create(challenge=challenge, response=response)
 
-        return store.hashkey
+        return store.hashkey, message
