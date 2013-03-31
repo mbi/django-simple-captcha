@@ -119,3 +119,21 @@ def captcha_refresh(request):
 
         return HttpResponse(json.dumps(to_json_responce), content_type='application/json')
     raise Http404
+    
+def captcha_verify(request):
+    """
+        Check whether the input is right for ajax verify request
+    """
+    
+    if request.is_ajax():
+        try:
+            response = request.GET.get('verify_data')
+            key = request.GET.get('key')
+        except Exception,e:
+            traceback.print_stack()
+            raise Http404
+        store = get_object_or_404(CaptchaStore, hashkey=key)
+        result = 'true' if store.response == response else 'false'
+        
+        return HttpResponse(json.dumps([result]), mimetype='application/json')
+    raise Http404
