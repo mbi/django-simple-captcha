@@ -38,10 +38,10 @@ Read the `documentation online <http://readthedocs.org/docs/django-simple-captch
 
 add the method through ajax verify what the user input whether right,how to use:
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+<pre>
   ajax send messages:
-  * verify_data = $('#id_captcha_1').val()  
-  * key = $('#id_captcha_0').val(),
+    verify_data = $('#id_captcha_1').val()  
+    key = $('#id_captcha_0').val(),
 
   if the return result is "true"，right，or "false" then not true.
-
+</pre>
