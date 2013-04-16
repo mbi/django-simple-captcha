@@ -1,5 +1,6 @@
 import os
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 CAPTCHA_FONT_PATH = getattr(settings, 'CAPTCHA_FONT_PATH', os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'fonts/Vera.ttf')))
 CAPTCHA_FONT_SIZE = getattr(settings, 'CAPTCHA_FONT_SIZE', 22)
@@ -22,7 +23,11 @@ if CAPTCHA_IMAGE_BEFORE_FIELD:
 else:
     CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', u'%(hidden_field)s %(text_field)s %(image)s')
 
-CATPCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', False)
+CAPTCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', False)
+
+# alerting old users of renamed settings
+if hasattr(settings, 'CATPCHA_TEST_MODE'):
+    raise ImproperlyConfigured('Rename your CATPCHA_TEST_MODE settings to CAPTCHA_TEST_MODE')
 
 # Failsafe
 if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:
