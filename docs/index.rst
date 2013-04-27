@@ -30,4 +30,12 @@ Python 3 compatibility
 The current development version supports Python3 via the `six <https://pypi.python.org/pypi/six>`_ compatibility layer.
 You will need to install `Pillow HEAD <https://github.com/python-imaging/Pillow>`_ because PIL doesn't support Python3 yet.
 
+******************
+Contents:
+******************
 
+.. toctree::
+   :maxdepth: 2
+
+   usage.rst
+   advanced.rst
