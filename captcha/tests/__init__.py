@@ -1,7 +1,8 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore, get_safe_now
+from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -147,12 +148,16 @@ class CaptchaCase(TestCase):
         self.assertTrue('<p>Hello, captcha world</p>' in str(r.content))
 
     def testInvalidOutputFormat(self):
+        # we turn on DEBUG because CAPTCHA_OUTPUT_FORMAT is only checked debug
+        old_debug= django_settings.DEBUG
+        django_settings.DEBUG = True
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s'
         try:
             self.client.get(reverse('captcha-test'))
             self.fail()
         except ImproperlyConfigured as e:
             self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(e))
+        django_settings.DEBUG = old_debug
 
     def testPerFormFormat(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s testCustomFormatString %(hidden_field)s %(text_field)s'
