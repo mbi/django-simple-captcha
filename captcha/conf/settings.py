@@ -1,4 +1,4 @@
-import os
+﻿import os
 from django.conf import settings
 
 CAPTCHA_FONT_PATH = getattr(settings, 'CAPTCHA_FONT_PATH', os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'fonts/Vera.ttf')))
@@ -43,10 +43,10 @@ def get_challenge():
 def noise_functions():
     if CAPTCHA_NOISE_FUNCTIONS:
         return map(_callable_from_string, CAPTCHA_NOISE_FUNCTIONS)
-    return list()
+    return []
 
 
 def filter_functions():
     if CAPTCHA_FILTER_FUNCTIONS:
         return map(_callable_from_string, CAPTCHA_FILTER_FUNCTIONS)
-    return list()
+    return []
