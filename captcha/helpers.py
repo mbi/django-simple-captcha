@@ -29,7 +29,7 @@ def unicode_challenge():
 
 
 def word_challenge():
-    fd = file(settings.CAPTCHA_WORDS_DICTIONARY, 'rb')
+    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, 'rb')
     l = fd.readlines()
     fd.close()
     while True:
@@ -41,7 +41,7 @@ def word_challenge():
 
 def huge_words_and_punctuation_challenge():
     "Yay, undocumneted. Mostly used to test Issue 39 - http://code.google.com/p/django-simple-captcha/issues/detail?id=39"
-    fd = file(settings.CAPTCHA_WORDS_DICTIONARY, 'rb')
+    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, 'rb')
     l = fd.readlines()
     fd.close()
     word = ''

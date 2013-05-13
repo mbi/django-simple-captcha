@@ -29,14 +29,13 @@ class CaptchaCase(TestCase):
             tested_helpers.append('captcha.helpers.huge_words_and_punctuation_challenge')
         for helper in tested_helpers:
             challenge, response = settings._callable_from_string(helper)()
-            print challenge, response
             self.stores[helper.rsplit('.', 1)[-1].replace('_challenge', '_store')], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
         challenge, response = settings.get_challenge()()
         self.stores['default_store'], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
         self.default_store = self.stores['default_store']
 
     def testImages(self):
-        for key in [store.hashkey for store in self.stores.itervalues()]:
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header('content-type'))
@@ -189,7 +188,7 @@ class CaptchaCase(TestCase):
             self.fail()
 
     def testContentLength(self):
-        for key in [store.hashkey for store in self.stores.itervalues()]:
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertTrue(response.has_header('content-length'))
             self.assertTrue(response['content-length'].isdigit())
