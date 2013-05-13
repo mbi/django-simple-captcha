@@ -4,6 +4,8 @@ Version 0.3.7
 * Python3 compatibility (requires six and Pillow >= 2.0)
 * Added zh_CN localization (thanks @mingchen)
 * Make sure the generated challenge is a string type (the math challenge was probably broken -- Issue #33, thanks @YDS19872712)
+* Massive cleanup and refactoring (Issue #38, thanks @tepez)
+* Test refactoring to test a couple generators that weren't tested by default
 
 Version 0.3.6
 -------------
