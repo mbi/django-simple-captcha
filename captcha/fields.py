@@ -51,13 +51,14 @@ class BaseCaptchaTextInput(MultiWidget):
         return id_ + '_1'
 
     def image_url(self):
-        return reverse('captcha-image', kwargs={'key' : self._key})
+        return reverse('captcha-image', kwargs={'key': self._key})
 
     def audio_url(self):
-        return reverse('captcha-audio', kwargs={'key' : self._key}) if settings.CAPTCHA_FLITE_PATH else None
+        return reverse('captcha-audio', kwargs={'key': self._key}) if settings.CAPTCHA_FLITE_PATH else None
 
     def refresh_url(self):
         return reverse('captcha-refresh')
+
 
 class CaptchaTextInput(BaseCaptchaTextInput):
     def __init__(self, attrs=None, **kwargs):
@@ -75,9 +76,9 @@ class CaptchaTextInput(BaseCaptchaTextInput):
     def format_output(self, rendered_widgets):
         hidden_field, text_field = rendered_widgets
         return self._args['output_format'] % {
-            'image' : self.image_and_audio,
-            'hidden_field' : hidden_field,
-            'text_field'  : text_field
+            'image': self.image_and_audio,
+            'hidden_field': hidden_field,
+            'text_field': text_field
         }
 
     def render(self, name, value, attrs=None):
@@ -99,7 +100,7 @@ class CaptchaField(MultiValueField):
         if 'error_messages' not in kwargs or 'invalid' not in kwargs.get('error_messages'):
             if 'error_messages' not in kwargs:
                 kwargs['error_messages'] = {}
-            kwargs['error_messages'].update({'invalid' : _('Invalid CAPTCHA')})
+            kwargs['error_messages'].update({'invalid': _('Invalid CAPTCHA')})
 
         kwargs['widget'] = kwargs.pop('widget', CaptchaTextInput(output_format=kwargs.pop('output_format', None)))
 

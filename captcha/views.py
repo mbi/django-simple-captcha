@@ -113,9 +113,9 @@ def captcha_refresh(request):
     if not request.is_ajax():
         raise Http404
 
-    new_key  = CaptchaStore.generate_key()
+    new_key = CaptchaStore.generate_key()
     to_json_response = {
-        'key' : new_key,
-        'image_url' : captcha_image_url(new_key),
+        'key': new_key,
+        'image_url': captcha_image_url(new_key),
     }
     return HttpResponse(json.dumps(to_json_response), content_type='application/json')

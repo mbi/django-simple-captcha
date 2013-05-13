@@ -6,28 +6,37 @@ from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy
 import datetime
 import json
 import re
 import six
+import os
 
 
 class CaptchaCase(TestCase):
     urls = 'captcha.tests.urls'
 
     def setUp(self):
-        self.default_challenge = settings.get_challenge()()
-        self.math_challenge = settings._callable_from_string('captcha.helpers.math_challenge')()
-        self.chars_challenge = settings._callable_from_string('captcha.helpers.random_char_challenge')()
-        self.unicode_challenge = settings._callable_from_string('captcha.helpers.unicode_challenge')()
-        self.default_store, created = CaptchaStore.objects.get_or_create(challenge=self.default_challenge[0], response=self.default_challenge[1])
-        self.math_store, created = CaptchaStore.objects.get_or_create(challenge=self.math_challenge[0], response=self.math_challenge[1])
-        self.chars_store, created = CaptchaStore.objects.get_or_create(challenge=self.chars_challenge[0], response=self.chars_challenge[1])
-        self.unicode_store, created = CaptchaStore.objects.get_or_create(challenge=self.unicode_challenge[0], response=self.unicode_challenge[1])
+
+        self.stores = {}
+
+        tested_helpers = ['captcha.helpers.math_challenge', 'captcha.helpers.random_char_challenge', 'captcha.helpers.unicode_challenge']
+        if os.path.exists('/usr/share/dict/words'):
+            settings.CAPTCHA_WORDS_DICTIONARY = '/usr/share/dict/words'
+            settings.CAPTCHA_PUNCTUATION = ';-,.'
+            tested_helpers.append('captcha.helpers.word_challenge')
+            tested_helpers.append('captcha.helpers.huge_words_and_punctuation_challenge')
+        for helper in tested_helpers:
+            challenge, response = settings._callable_from_string(helper)()
+            print challenge, response
+            self.stores[helper.rsplit('.', 1)[-1].replace('_challenge', '_store')], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
+        challenge, response = settings.get_challenge()()
+        self.stores['default_store'], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
+        self.default_store = self.stores['default_store']
 
     def testImages(self):
-        for key in (self.math_store.hashkey, self.chars_store.hashkey, self.default_store.hashkey, self.unicode_store.hashkey):
+        for key in [store.hashkey for store in self.stores.itervalues()]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header('content-type'))
@@ -36,7 +45,7 @@ class CaptchaCase(TestCase):
     def testAudio(self):
         if not settings.CAPTCHA_FLITE_PATH:
             return
-        for key in (self.math_store.hashkey, self.chars_store.hashkey, self.default_store.hashkey):
+        for key in (self.stores.get('math_store').hashkey, self.stores.get('math_store').hashkey, self.default_store.hashkey):
             response = self.client.get(reverse('captcha-audio', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(len(response.content) > 1024)
@@ -67,7 +76,7 @@ class CaptchaCase(TestCase):
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
-        self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
+        self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
     def testDeleteExpired(self):
         self.default_store.expiration = get_safe_now() - datetime.timedelta(minutes=5)
@@ -93,7 +102,7 @@ class CaptchaCase(TestCase):
         self.assertFormError(r, 'form', 'captcha', 'TEST CUSTOM ERROR MESSAGE')
         # empty answer
         r = self.client.post(reverse('captcha-test-custom-error-message'), dict(captcha_0='abc', captcha_1=''))
-        self.assertFormError(r, 'form', 'captcha', _('This field is required.'))
+        self.assertFormError(r, 'form', 'captcha', ugettext_lazy('This field is required.'))
 
     def testRepeatedChallenge(self):
         CaptchaStore.objects.create(challenge='xxx', response='xxx')
@@ -149,7 +158,7 @@ class CaptchaCase(TestCase):
 
     def testInvalidOutputFormat(self):
         # we turn on DEBUG because CAPTCHA_OUTPUT_FORMAT is only checked debug
-        old_debug= django_settings.DEBUG
+        old_debug = django_settings.DEBUG
         django_settings.DEBUG = True
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s'
         try:
@@ -180,7 +189,7 @@ class CaptchaCase(TestCase):
             self.fail()
 
     def testContentLength(self):
-        for key in (self.math_store.hashkey, self.chars_store.hashkey, self.default_store.hashkey, self.unicode_store.hashkey):
+        for key in [store.hashkey for store in self.stores.itervalues()]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertTrue(response.has_header('content-length'))
             self.assertTrue(response['content-length'].isdigit())
@@ -200,20 +209,24 @@ class CaptchaCase(TestCase):
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
-        self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
+        self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
         settings.CATPCHA_TEST_MODE = True
         # Test mode, only 'PASSED' is accepted
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
-        self.assertFormError(r, 'form', 'captcha', _('Invalid CAPTCHA'))
+        self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='passed', subject='xxx', sender='asasd@asdasd.com'))
         self.assertTrue(str(r.content).find('Form validated') > 0)
         settings.CATPCHA_TEST_MODE = False
+
+    def test_get_version(self):
+        import captcha
+        captcha.get_version(True)
 
 
 def trivial_challenge():
