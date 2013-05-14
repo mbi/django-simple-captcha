@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse,  NoReverseMatch
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext, ugettext_lazy
 
 
 class BaseCaptchaTextInput(MultiWidget):
@@ -86,7 +86,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
 
         self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % self.image_url()
         if settings.CAPTCHA_FLITE_PATH:
-            self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (self.audio_url(), str(_('Play CAPTCHA as audio file')), self.image_and_audio)
+            self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (self.audio_url(), ugettext('Play CAPTCHA as audio file'), self.image_and_audio)
 
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
@@ -100,7 +100,7 @@ class CaptchaField(MultiValueField):
         if 'error_messages' not in kwargs or 'invalid' not in kwargs.get('error_messages'):
             if 'error_messages' not in kwargs:
                 kwargs['error_messages'] = {}
-            kwargs['error_messages'].update({'invalid': _('Invalid CAPTCHA')})
+            kwargs['error_messages'].update({'invalid': ugettext_lazy('Invalid CAPTCHA')})
 
         kwargs['widget'] = kwargs.pop('widget', CaptchaTextInput(output_format=kwargs.pop('output_format', None)))
 
@@ -127,5 +127,5 @@ class CaptchaField(MultiValueField):
             try:
                 CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()
             except CaptchaStore.DoesNotExist:
-                raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', _('Invalid CAPTCHA')))
+                raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', ugettext_lazy('Invalid CAPTCHA')))
         return value
