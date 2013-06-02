@@ -49,6 +49,7 @@ ROOT_URLCONF = 'testproject.urls'
 
 DEBUG = True
 TEMPLATE_DEBUG = True
+TEMPLATE_DIRS = ('templates',)
 
 # Django 1.4 TZ support
 USE_TZ = True
