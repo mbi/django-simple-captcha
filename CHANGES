@@ -1,3 +1,7 @@
+Version 0.3.9
+-------------
+* Run most tests both with a regular Form and a ModelForm, to avoid regressions such as Issue #40
+
 Version 0.3.8
 -------------
 * Fixed a critical bug (Issue #40) that would generate two captcha objects, and the test would always fail. Thanks @pengqi for the heads-up.

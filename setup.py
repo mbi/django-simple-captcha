@@ -1,7 +1,9 @@
 from setuptools import setup, find_packages
+import captcha
+
 setup(
     name='django-simple-captcha',
-    version='0.3.8',
+    version=captcha.get_version(),
     description='A very simple, yet powerful, Django captcha application',
     author='Marco Bonetti',
     author_email='mbonetti@gmail.com',

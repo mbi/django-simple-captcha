@@ -2,6 +2,7 @@ from django import forms
 from captcha.fields import CaptchaField
 from django.template import RequestContext, loader
 from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 
 TEST_TEMPLATE = r'''
@@ -40,6 +41,28 @@ def test(request):
             passed = True
     else:
         form = CaptchaTestForm()
+
+    t = loader.get_template_from_string(TEST_TEMPLATE)
+    return HttpResponse(t.render(RequestContext(request, dict(passed=passed, form=form))))
+
+
+def test_model_form(request):
+    class CaptchaTestModelForm(forms.ModelForm):
+        subject = forms.CharField(max_length=100)
+        sender = forms.EmailField()
+        captcha = CaptchaField(help_text='asdasd')
+
+        class Meta:
+            model = User
+            fields = ('subject', 'sender', 'captcha', )
+
+    passed = False
+    if request.POST:
+        form = CaptchaTestModelForm(request.POST)
+        if form.is_valid():
+            passed = True
+    else:
+        form = CaptchaTestModelForm()
 
     t = loader.get_template_from_string(TEST_TEMPLATE)
     return HttpResponse(t.render(RequestContext(request, dict(passed=passed, form=form))))
