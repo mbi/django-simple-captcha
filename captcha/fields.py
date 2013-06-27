@@ -112,7 +112,7 @@ class CaptchaField(MultiValueField):
 
     def clean(self, value):
         super(CaptchaField, self).clean(value)
-        response, value[1] = value[1].strip().lower(), ''
+        response, value[1] = (value[1] or '').strip().lower(), ''
         CaptchaStore.remove_expired()
         if settings.CATPCHA_TEST_MODE and response.lower() == 'passed':
             # automatically pass the test

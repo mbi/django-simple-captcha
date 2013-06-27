@@ -26,24 +26,26 @@ TEST_TEMPLATE = r'''
 </html>
 '''
 
+def _test(request, form_class):
+    passed = False
+    if request.POST:
+        form = form_class(request.POST)
+        if form.is_valid():
+            passed = True
+    else:
+        form = form_class()
+
+    t = loader.get_template_from_string(TEST_TEMPLATE)
+    return HttpResponse(
+        t.render(RequestContext(request, dict(passed=passed, form=form))))
+
 
 def test(request):
-
     class CaptchaTestForm(forms.Form):
         subject = forms.CharField(max_length=100)
         sender = forms.EmailField()
         captcha = CaptchaField(help_text='asdasd')
-
-    passed = False
-    if request.POST:
-        form = CaptchaTestForm(request.POST)
-        if form.is_valid():
-            passed = True
-    else:
-        form = CaptchaTestForm()
-
-    t = loader.get_template_from_string(TEST_TEMPLATE)
-    return HttpResponse(t.render(RequestContext(request, dict(passed=passed, form=form))))
+    return _test(request, CaptchaTestForm)
 
 
 def test_model_form(request):
@@ -56,47 +58,32 @@ def test_model_form(request):
             model = User
             fields = ('subject', 'sender', 'captcha', )
 
-    passed = False
-    if request.POST:
-        form = CaptchaTestModelForm(request.POST)
-        if form.is_valid():
-            passed = True
-    else:
-        form = CaptchaTestModelForm()
-
-    t = loader.get_template_from_string(TEST_TEMPLATE)
-    return HttpResponse(t.render(RequestContext(request, dict(passed=passed, form=form))))
+    return _test(request, CaptchaTestModelForm)
 
 
 def test_custom_error_message(request):
-
-    class CaptchaTestForm(forms.Form):
-        captcha = CaptchaField(help_text='asdasd', error_messages=dict(invalid='TEST CUSTOM ERROR MESSAGE'))
-
-    passed = False
-    if request.POST:
-        form = CaptchaTestForm(request.POST)
-        if form.is_valid():
-            passed = True
-    else:
-        form = CaptchaTestForm()
-
-    t = loader.get_template_from_string(TEST_TEMPLATE)
-    return HttpResponse(t.render(RequestContext(request, dict(passed=passed, form=form))))
+    class CaptchaTestErrorMessageForm(forms.Form):
+        captcha = CaptchaField(
+            help_text='asdasd',
+            error_messages=dict(invalid='TEST CUSTOM ERROR MESSAGE')
+        )
+    return _test(request, CaptchaTestErrorMessageForm)
 
 
 def test_per_form_format(request):
+    class CaptchaTestFormatForm(forms.Form):
+        captcha = CaptchaField(
+            help_text='asdasd',
+            error_messages=dict(invalid='TEST CUSTOM ERROR MESSAGE'),
+            output_format=(
+                u'%(image)s testPerFieldCustomFormatString '
+                u'%(hidden_field)s %(text_field)s'
+            )
+        )
+    return _test(request, CaptchaTestFormatForm)
 
+
+def test_non_required(request):
     class CaptchaTestForm(forms.Form):
-        captcha = CaptchaField(help_text='asdasd', error_messages=dict(invalid='TEST CUSTOM ERROR MESSAGE'),
-                               output_format=u'%(image)s testPerFieldCustomFormatString %(hidden_field)s %(text_field)s')
-    passed = False
-    if request.POST:
-        form = CaptchaTestForm(request.POST)
-        if form.is_valid():
-            passed = True
-    else:
-        form = CaptchaTestForm()
-
-    t = loader.get_template_from_string(TEST_TEMPLATE)
-    return HttpResponse(t.render(RequestContext(request, dict(passed=passed, form=form))))
+        captcha = CaptchaField(help_text='asdasd', required=False)
+    return _test(request, CaptchaTestForm)
