@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore, get_safe_now
@@ -250,6 +250,10 @@ class CaptchaCase(TestCase):
     def test_get_version(self):
         import captcha
         captcha.get_version(True)
+
+    def test_missing_value(self):
+        r = self.client.post(
+            reverse('captcha-test-non-required'), dict(captcha_0='abc'))
 
 
 def trivial_challenge():

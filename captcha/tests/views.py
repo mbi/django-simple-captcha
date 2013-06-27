@@ -81,3 +81,9 @@ def test_per_form_format(request):
             )
         )
     return _test(request, CaptchaTestFormatForm)
+
+
+def test_non_required(request):
+    class CaptchaTestForm(forms.Form):
+        captcha = CaptchaField(help_text='asdasd', required=False)
+    return _test(request, CaptchaTestForm)
