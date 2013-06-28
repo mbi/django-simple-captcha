@@ -122,6 +122,8 @@ class CaptchaField(MultiValueField):
             except CaptchaStore.DoesNotExist:
                 # ignore errors
                 pass
+        elif not self.required and not response:
+            pass
         else:
             try:
                 CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()

@@ -18,6 +18,10 @@ TEST_TEMPLATE = r'''
         {% if passed %}
         <p style="color:green">Form validated</p>
         {% endif %}
+        {% if form.errors %}
+        {{form.errors}}
+        {% endif %}
+
         <form action="{% url 'captcha-test' %}" method="post">
             {{form.as_p}}
             <p><input type="submit" value="Continue &rarr;"></p>
@@ -85,5 +89,7 @@ def test_per_form_format(request):
 
 def test_non_required(request):
     class CaptchaTestForm(forms.Form):
+        sender = forms.EmailField()
+        subject = forms.CharField(max_length=100)
         captcha = CaptchaField(help_text='asdasd', required=False)
     return _test(request, CaptchaTestForm)

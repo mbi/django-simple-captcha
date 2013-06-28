@@ -34,6 +34,12 @@ class CaptchaCase(TestCase):
         self.stores['default_store'], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
         self.default_store = self.stores['default_store']
 
+    def __extract_hash_and_response(self, r):
+        hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
+        response = CaptchaStore.objects.get(hashkey=hash_).response
+        return hash_, response
+
+
     def testImages(self):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
@@ -54,14 +60,7 @@ class CaptchaCase(TestCase):
     def testFormSubmit(self):
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
-        if re.findall(r'value="([0-9a-f]+)"', str(r.content)):
-            hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
-            try:
-                response = CaptchaStore.objects.get(hashkey=hash_).response
-            except:
-                self.fail()
-        else:
-            self.fail()
+        hash_, response = self.__extract_hash_and_response(r)
 
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
         self.assertEqual(r.status_code, 200)
@@ -74,14 +73,7 @@ class CaptchaCase(TestCase):
     def testFormModelForm(self):
         r = self.client.get(reverse('captcha-test-model-form'))
         self.assertEqual(r.status_code, 200)
-        if re.findall(r'value="([0-9a-f]+)"', str(r.content)):
-            hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
-            try:
-                response = CaptchaStore.objects.get(hashkey=hash_).response
-            except:
-                self.fail()
-        else:
-            self.fail()
+        hash_, response = self.__extract_hash_and_response(r)
 
         r = self.client.post(reverse('captcha-test-model-form'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
         self.assertEqual(r.status_code, 200)
@@ -252,8 +244,24 @@ class CaptchaCase(TestCase):
         captcha.get_version(True)
 
     def test_missing_value(self):
-        r = self.client.post(
-            reverse('captcha-test-non-required'), dict(captcha_0='abc'))
+        r = self.client.get(reverse('captcha-test-non-required'))
+        self.assertEqual(r.status_code, 200)
+        hash_, response = self.__extract_hash_and_response(r)
+
+        # Empty response is okay when required is False
+        r = self.client.post(reverse('captcha-test-non-required'), dict(subject='xxx', sender='asasd@asdasd.com'))
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(str(r.content).find('Form validated') > 0)
+
+        # But a valid response is okay, too
+        r = self.client.get(reverse('captcha-test-non-required'))
+        self.assertEqual(r.status_code, 200)
+        hash_, response = self.__extract_hash_and_response(r)
+
+
+        r = self.client.post(reverse('captcha-test-non-required'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(str(r.content).find('Form validated') > 0)
 
 
 def trivial_challenge():
