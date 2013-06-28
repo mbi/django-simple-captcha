@@ -220,13 +220,13 @@ class CaptchaCase(TestCase):
         CaptchaField(widget=widget)
 
     def testTestMode_Issue15(self):
-        settings.CATPCHA_TEST_MODE = False
+        settings.CAPTCHA_TEST_MODE = False
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
         self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
-        settings.CATPCHA_TEST_MODE = True
+        settings.CAPTCHA_TEST_MODE = True
         # Test mode, only 'PASSED' is accepted
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
@@ -237,7 +237,7 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='passed', subject='xxx', sender='asasd@asdasd.com'))
         self.assertTrue(str(r.content).find('Form validated') > 0)
-        settings.CATPCHA_TEST_MODE = False
+        settings.CAPTCHA_TEST_MODE = False
 
     def test_get_version(self):
         import captcha

@@ -114,7 +114,7 @@ class CaptchaField(MultiValueField):
         super(CaptchaField, self).clean(value)
         response, value[1] = (value[1] or '').strip().lower(), ''
         CaptchaStore.remove_expired()
-        if settings.CATPCHA_TEST_MODE and response.lower() == 'passed':
+        if settings.CAPTCHA_TEST_MODE and response.lower() == 'passed':
             # automatically pass the test
             try:
                 # try to delete the captcha based on its hash
