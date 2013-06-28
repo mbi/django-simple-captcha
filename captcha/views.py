@@ -28,9 +28,11 @@ NON_DIGITS_RX = re.compile('[^\d]')
 def captcha_image(request, key):
     store = get_object_or_404(CaptchaStore, hashkey=key)
     text = store.challenge
+    scale = 2 if 'retina' in request.GET else 1
 
     if settings.CAPTCHA_FONT_PATH.lower().strip().endswith('ttf'):
-        font = ImageFont.truetype(settings.CAPTCHA_FONT_PATH, settings.CAPTCHA_FONT_SIZE)
+        font = ImageFont.truetype(settings.CAPTCHA_FONT_PATH,
+                                  settings.CAPTCHA_FONT_SIZE * scale)
     else:
         font = ImageFont.load(settings.CAPTCHA_FONT_PATH)
 
