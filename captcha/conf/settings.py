@@ -23,11 +23,7 @@ if CAPTCHA_IMAGE_BEFORE_FIELD:
 else:
     CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', u'%(hidden_field)s %(text_field)s %(image)s')
 
-CAPTCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', False)
-
-# alerting old users of renamed settings
-if hasattr(settings, 'CATPCHA_TEST_MODE'):
-    raise ImproperlyConfigured('Rename your CATPCHA_TEST_MODE settings to CAPTCHA_TEST_MODE')
+CAPTCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', getattr(settings, 'CATPCHA_TEST_MODE', False))
 
 # Failsafe
 if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:
