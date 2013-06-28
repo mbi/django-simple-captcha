@@ -2,6 +2,7 @@ Version 0.3.9
 -------------
 * Run most tests both with a regular Form and a ModelForm, to avoid regressions such as Issue #40
 * Handle the special case where CaptchaFields are instantiated with required=False (Issue #42, thanks @DrMeers)
+* Fixed a misspelled setting, we now support both spellings, but the docs suggest the correct one (Issue #36, thanks @sayadn)
 
 Version 0.3.8
 -------------

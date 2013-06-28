@@ -20,6 +20,9 @@ class CaptchaCase(TestCase):
     def setUp(self):
 
         self.stores = {}
+        self.__current_settings_output_format = settings.CAPTCHA_OUTPUT_FORMAT
+        self.__current_settings_dictionary = settings.CAPTCHA_WORDS_DICTIONARY
+        self.__current_settings_punctuation = settings.CAPTCHA_PUNCTUATION
 
         tested_helpers = ['captcha.helpers.math_challenge', 'captcha.helpers.random_char_challenge', 'captcha.helpers.unicode_challenge']
         if os.path.exists('/usr/share/dict/words'):
@@ -34,11 +37,16 @@ class CaptchaCase(TestCase):
         self.stores['default_store'], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
         self.default_store = self.stores['default_store']
 
+    def tearDown(self):
+        settings.CAPTCHA_OUTPUT_FORMAT = self.__current_settings_output_format
+        settings.CAPTCHA_WORDS_DICTIONARY = self.__current_settings_dictionary
+        settings.CAPTCHA_PUNCTUATION = self.__current_settings_punctuation
+
+
     def __extract_hash_and_response(self, r):
         hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
         response = CaptchaStore.objects.get(hashkey=hash_).response
         return hash_, response
-
 
     def testImages(self):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
@@ -124,6 +132,7 @@ class CaptchaCase(TestCase):
             self.fail()
 
     def testRepeatedChallengeFormSubmit(self):
+        __current_challange_function = settings.CAPTCHA_CHALLENGE_FUNCT
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_CHALLENGE_FUNCT = 'captcha.tests.trivial_challenge'
 
@@ -162,6 +171,7 @@ class CaptchaCase(TestCase):
             r2 = self.client.post(reverse(urlname), dict(captcha_0=hash_2, captcha_1=store_2.response, subject='xxx', sender='asasd@asdasd.com'))
             self.assertEqual(r2.status_code, 200)
             self.assertTrue(str(r2.content).find('Form validated') > 0)
+        settings.CAPTCHA_CHALLENGE_FUNCT = __current_challange_function
 
     def testOutputFormat(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
@@ -171,9 +181,10 @@ class CaptchaCase(TestCase):
             self.assertTrue('<p>Hello, captcha world</p>' in str(r.content))
 
     def testInvalidOutputFormat(self):
+        __current_settings_debug = django_settings.DEBUG
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             # we turn on DEBUG because CAPTCHA_OUTPUT_FORMAT is only checked debug
-            old_debug = django_settings.DEBUG
+
             django_settings.DEBUG = True
             settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s'
             try:
@@ -181,7 +192,7 @@ class CaptchaCase(TestCase):
                 self.fail()
             except ImproperlyConfigured as e:
                 self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(e))
-            django_settings.DEBUG = old_debug
+        django_settings.DEBUG = __current_settings_debug
 
     def testPerFormFormat(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s testCustomFormatString %(hidden_field)s %(text_field)s'
@@ -220,6 +231,7 @@ class CaptchaCase(TestCase):
         CaptchaField(widget=widget)
 
     def testTestMode_Issue15(self):
+        __current_test_mode_setting  = settings.CAPTCHA_TEST_MODE
         settings.CAPTCHA_TEST_MODE = False
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
@@ -237,7 +249,7 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         r = self.client.post(reverse('captcha-test'), dict(captcha_0='abc', captcha_1='passed', subject='xxx', sender='asasd@asdasd.com'))
         self.assertTrue(str(r.content).find('Form validated') > 0)
-        settings.CAPTCHA_TEST_MODE = False
+        settings.CAPTCHA_TEST_MODE = __current_test_mode_setting
 
     def test_get_version(self):
         import captcha
