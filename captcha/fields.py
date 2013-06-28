@@ -47,7 +47,9 @@ class BaseCaptchaTextInput(MultiWidget):
         return super(BaseCaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
     def id_for_label(self, id_):
-        return id_ + '_1'
+        if id_:
+            return id_ + '_1'
+        return id_
 
     def image_url(self):
         return reverse('captcha-image', kwargs={'key': self._key})
@@ -86,6 +88,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % self.image_url()
         if settings.CAPTCHA_FLITE_PATH:
             self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (self.audio_url(), ugettext('Play CAPTCHA as audio file'), self.image_and_audio)
+
 
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
