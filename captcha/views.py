@@ -3,7 +3,6 @@ from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
-from django.utils import simplejson as json
 import random
 import re
 import tempfile
@@ -21,6 +20,11 @@ except ImportError:
     import Image
     import ImageDraw
     import ImageFont
+
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 
 NON_DIGITS_RX = re.compile('[^\d]')
 

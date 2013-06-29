@@ -34,8 +34,22 @@ then
     pip install Django==1.5 Pillow==2.0.0 coverage six
     deactivate
 fi
-
-
+if [ ! -d venv_16 ]
+then
+    virtualenv --no-site-packages --distribute --python=python2 venv_16
+    . venv_16/bin/activate
+    pip install https://github.com/django/django/archive/1.6b1.zip
+    pip install Pillow==2.0.0 coverage six
+    deactivate
+fi
+if [ ! -d venv_16_p3 ]
+then
+    virtualenv --no-site-packages --distribute --python=python3 venv_16_p3
+    . venv_16_p3/bin/activate
+    pip install https://github.com/django/django/archive/1.6b1.zip
+    pip install Pillow==2.0.0 coverage six
+    deactivate
+fi
 
 
 . venv_13/bin/activate
@@ -64,6 +78,22 @@ deactivate
 
 
 . venv_15_p3/bin/activate
+cd testproject
+echo 'Django' `python manage.py --version`
+python --version
+python manage.py test captcha
+cd ..
+deactivate
+
+. venv_16/bin/activate
+cd testproject
+echo 'Django' `python manage.py --version`
+python --version
+python manage.py test captcha
+cd ..
+deactivate
+
+. venv_16_p3/bin/activate
 cd testproject
 echo 'Django' `python manage.py --version`
 python --version
