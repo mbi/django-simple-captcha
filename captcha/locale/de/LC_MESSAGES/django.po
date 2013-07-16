@@ -1,0 +1,31 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-simple-captcha\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-16 12:06+0200\n"
+"PO-Revision-Date: 2013-07-16 12:10+0100\n"
+"Last-Translator: Patrick Lauber <patrick.lauber@divio.ch>\n"
+"Language-Team: DE <digi@treepy.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: fields.py:90
+msgid "Play CAPTCHA as audio file"
+msgstr "Spiel das CAPTCHA als Audiodatei ab."
+
+#: fields.py:105 fields.py:134 tests/tests.py:99 tests/tests.py:239
+#: tests/tests.py:246
+msgid "Invalid CAPTCHA"
+msgstr "Üngültiges CAPTCHA"
+
+#: tests/tests.py:125
+msgid "This field is required."
+msgstr "Dieses Feld ist benötigt."
