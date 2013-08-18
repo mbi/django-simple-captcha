@@ -6,6 +6,7 @@ Version 0.3.9
 * Added Django 1.6b to testrunner and adapted the test cases to support Django 1.6's new test discovery
 * Added German translations. (Thanks @digi604)
 * Frozen the version of Pillow to 2.0.0, as 2.1.0 seems to be truncating the output image -- Issue #44, Thanks @andruby
+* Added Polish translations. (Thanks @stilzdev)
 
 Version 0.3.8
 -------------
