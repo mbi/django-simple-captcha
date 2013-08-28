@@ -1,9 +1,18 @@
 from setuptools import setup, find_packages
-import captcha
+from captcha import pillow_required, get_version as get_captcha_version
+
+install_requires = [
+    'setuptools',
+    'six >=1.2.0',
+    'Django >= 1.3'
+]
+
+if pillow_required():
+    install_requires.append('Pillow >=2.0.0,<2.1.0')
 
 setup(
     name='django-simple-captcha',
-    version=captcha.get_version(),
+    version=get_captcha_version(),
     description='A very simple, yet powerful, Django captcha application',
     author='Marco Bonetti',
     author_email='mbonetti@gmail.com',
@@ -26,10 +35,5 @@ setup(
     ],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'setuptools',
-        'six >=1.2.0',
-        'Django >= 1.3',
-        'Pillow >=2.0.0,<2.1.0'
-    ]
+    install_requires=install_requires
 )

@@ -2,7 +2,7 @@ dist
 *.pyc
 *.egg-info
 docs/_build/
-venv*
+.venv*
 testproject/django-simple-captcha.db
 testproject/.coverage
 testproject/coverage.xml
