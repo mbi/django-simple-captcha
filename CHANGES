@@ -1,6 +1,7 @@
 Version 0.4.0
 -------------
 * Perfom some tests at package installation, to check whether PIL or Pillow are already installed. (Issue #46)
+* Added Slovak translations. (Thanks @ciklysta)
 
 Version 0.3.9
 -------------
