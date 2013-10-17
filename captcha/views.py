@@ -1,4 +1,4 @@
-﻿from captcha.conf import settings
+from captcha.conf import settings
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
@@ -27,11 +27,13 @@ except ImportError:
     from django.utils import simplejson as json
 
 NON_DIGITS_RX = re.compile('[^\d]')
+# Distance of the drawn text from the top of the captcha image
+from_top = 4
 
 
 def getsize(font, text):
     if hasattr(font, 'getoffset'):
-        return [x + y + z for x, y, z in zip(font.getsize(text), font.getoffset(text), (1, 1))]
+        return [x + y + z for x, y, z in zip(font.getsize(text), font.getoffset(text), (0, from_top))]
     else:
         return font.getsize(text)
 
@@ -46,7 +48,7 @@ def captcha_image(request, key, scale=1):
         font = ImageFont.load(settings.CAPTCHA_FONT_PATH)
 
     size = getsize(font, text)
-    size = (size[0] * 2, int(size[1] * 1.2))
+    size = (size[0] * 2, int(size[1] * 1.4))
     image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
 
     try:
@@ -74,7 +76,7 @@ def captcha_image(request, key, scale=1):
         charimage = charimage.crop(charimage.getbbox())
         maskimage = Image.new('L', size)
 
-        maskimage.paste(charimage, (xpos, 4, xpos + charimage.size[0], 4 + charimage.size[1]))
+        maskimage.paste(charimage, (xpos, from_top, xpos + charimage.size[0], from_top + charimage.size[1]))
         size = maskimage.size
         image = Image.composite(fgimage, image, maskimage)
         xpos = xpos + 2 + charimage.size[0]
