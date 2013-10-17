@@ -31,7 +31,7 @@ NON_DIGITS_RX = re.compile('[^\d]')
 
 def getsize(font, text):
     if hasattr(font, 'getoffset'):
-        return [x + y for x, y in zip(font.getsize(text), font.getoffset(text))]
+        return [x + y + z for x, y, z in zip(font.getsize(text), font.getoffset(text), (1, 1))]
     else:
         return font.getsize(text)
 
