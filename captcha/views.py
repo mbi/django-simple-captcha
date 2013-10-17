@@ -29,6 +29,13 @@ except ImportError:
 NON_DIGITS_RX = re.compile('[^\d]')
 
 
+def getsize(font, text):
+    if hasattr(font, 'getoffset'):
+        return [x + y for x, y in zip(font.getsize(text), font.getoffset(text))]
+    else:
+        return font.getsize(text)
+
+
 def captcha_image(request, key, scale=1):
     store = get_object_or_404(CaptchaStore, hashkey=key)
     text = store.challenge
@@ -38,7 +45,7 @@ def captcha_image(request, key, scale=1):
     else:
         font = ImageFont.load(settings.CAPTCHA_FONT_PATH)
 
-    size = font.getsize(text)
+    size = getsize(font, text)
     size = (size[0] * 2, int(size[1] * 1.2))
     image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
 
@@ -56,7 +63,7 @@ def captcha_image(request, key, scale=1):
             charlist.append(char)
     for char in charlist:
         fgimage = Image.new('RGB', size, settings.CAPTCHA_FOREGROUND_COLOR)
-        charimage = Image.new('L', font.getsize(' %s ' % char), '#000000')
+        charimage = Image.new('L', getsize(font, ' %s ' % char), '#000000')
         chardraw = ImageDraw.Draw(charimage)
         chardraw.text((0, 0), ' %s ' % char, font=font, fill='#ffffff')
         if settings.CAPTCHA_LETTER_ROTATION:
