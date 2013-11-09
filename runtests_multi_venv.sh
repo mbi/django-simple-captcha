@@ -38,7 +38,7 @@ if [ ! -d .venv_16 ]
 then
     virtualenv --no-site-packages --distribute --python=python2 .venv_16
     source .venv_16/bin/activate
-    pip install https://github.com/django/django/archive/1.6b1.zip
+    pip install Django==1.6.0
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
@@ -46,7 +46,7 @@ if [ ! -d .venv_16_p3 ]
 then
     virtualenv --no-site-packages --distribute --python=python3 .venv_16_p3
     source .venv_16_p3/bin/activate
-    pip install https://github.com/django/django/archive/1.6b1.zip
+    pip install Django==1.6.0
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
