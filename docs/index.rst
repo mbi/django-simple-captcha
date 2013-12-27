@@ -21,7 +21,7 @@ Requirements
 ++++++++++++
 
 * Django 1.4+
-* A recent version of the Python Imaging Library (PIL 1.1.7 or Pillow 2.0+) compiled with FreeType support
+* A recent version of the Python Imaging Library (PIL 1.1.7 or Pillow 2.2+) compiled with FreeType support
 * Flite is required for text-to-speech (audio) output, but not mandatory
 
 Python 3 compatibility
