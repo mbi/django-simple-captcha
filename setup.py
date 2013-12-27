@@ -4,11 +4,11 @@ from captcha import pillow_required, get_version as get_captcha_version
 install_requires = [
     'setuptools',
     'six >=1.2.0',
-    'Django >= 1.3'
+    'Django >= 1.4'
 ]
 
 if pillow_required():
-    install_requires.append('Pillow >=2.0.0,<2.1.0')
+    install_requires.append('Pillow >=2.2.2')
 
 setup(
     name='django-simple-captcha',
