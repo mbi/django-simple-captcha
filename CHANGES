@@ -1,3 +1,7 @@
+Version 0.4.2
+-------------
+* Added autocomplete="off" to the input (Issue #57, thanks @Vincent-Vega)
+
 Version 0.4.1
 -------------
 * Dropped support for Django 1.3
