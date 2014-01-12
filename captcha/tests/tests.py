@@ -270,10 +270,13 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         hash_, response = self.__extract_hash_and_response(r)
 
-
         r = self.client.post(reverse('captcha-test-non-required'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
         self.assertEqual(r.status_code, 200)
         self.assertTrue(str(r.content).find('Form validated') > 0)
+
+    def test_autocomplete_off(self):
+        r = self.client.get(reverse('captcha-test'))
+        self.assertTrue('autocomplete="off"' in six.text_type(r.content))
 
 
 def trivial_challenge():

@@ -44,6 +44,7 @@ class BaseCaptchaTextInput(MultiWidget):
 
     def render(self, name, value, attrs=None):
         #self.fetch_captcha_store(name, value, attrs)
+        attrs.update(dict(autocomplete='off'))
         return super(BaseCaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
     def id_for_label(self, id_):
