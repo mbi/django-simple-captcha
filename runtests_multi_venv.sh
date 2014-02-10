@@ -85,3 +85,6 @@ python --version
 python manage.py test captcha
 cd ..
 deactivate
+
+# Make sure the PO files are well formatted
+for d in `find captcha -name LC_MESSAGES -type d`; do msgfmt -c -o $d/django.mo $d/django.po; done

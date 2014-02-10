@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the django-simple-captcha package.
 # Venelin Stoykov <vkstoykov@gmail.com>, 2014.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: django-simple-captcha 0.4.1\n"
