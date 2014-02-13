@@ -3,6 +3,7 @@ Version 0.4.2
 * Added autocomplete="off" to the input (Issue #57, thanks @Vincent-Vega)
 * Fixed the format (msgfmt -c) of most PO and MO files distributed with the project
 * Added Bulgarian translations. (Thanks @vstoykov)
+* Added Japanese translations. (Thanks, Keisuke URAGO)
 
 Version 0.4.1
 -------------

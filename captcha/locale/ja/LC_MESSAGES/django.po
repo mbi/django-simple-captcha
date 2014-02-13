@@ -1,0 +1,31 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Keisuke URAGO <bravo@resourcez.org>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: django-simple-captcha\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-13 07:11+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Keisuke URAGO <bravo@resourcez.org>\n"
+"Language-Team: Keisuke URAGO <bravo@resourcez.org>\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: fields.py:90
+msgid "Play CAPTCHA as audio file"
+msgstr "CAPTCHAをオーディオで読み上げる"
+
+#: fields.py:105 fields.py:134 tests/tests.py:99 tests/tests.py:239
+#: tests/tests.py:246
+msgid "Invalid CAPTCHA"
+msgstr "CAPTCHAの値が違っています"
+
+#: tests/tests.py:125
+msgid "This field is required."
+msgstr "この項目は必須です"
