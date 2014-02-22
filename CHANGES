@@ -4,6 +4,7 @@ Version 0.4.2
 * Fixed the format (msgfmt -c) of most PO and MO files distributed with the project
 * Added Bulgarian translations. (Thanks @vstoykov)
 * Added Japanese translations. (Thanks, Keisuke URAGO)
+* Added Ukrainian translations. (Thanks, @FuriousCoder)
 
 Version 0.4.1
 -------------
