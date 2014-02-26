@@ -11,15 +11,15 @@ class Command(BaseCommand):
         verbose = int(options.get('verbosity'))
         expired_keys = CaptchaStore.objects.filter(expiration__lte=get_safe_now()).count()
         if verbose >= 1:
-            print "Currently %d expired hashkeys" % expired_keys
+            print("Currently %d expired hashkeys" % expired_keys)
         try:
             CaptchaStore.remove_expired()
         except:
             if verbose >= 1:
-                print "Unable to delete expired hashkeys."
+                print("Unable to delete expired hashkeys.")
             sys.exit(1)
         if verbose >= 1:
             if expired_keys > 0:
-                print "%d expired hashkeys removed." % expired_keys
+                print("%d expired hashkeys removed." % expired_keys)
             else:
-                print "No keys to remove."
+                print("No keys to remove.")
