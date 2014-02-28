@@ -7,7 +7,7 @@ from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
 from django.utils.translation import ugettext, ugettext_lazy
-
+from six import u
 
 class BaseCaptchaTextInput(MultiWidget):
     """
@@ -38,7 +38,7 @@ class BaseCaptchaTextInput(MultiWidget):
         key = CaptchaStore.generate_key()
 
         # these can be used by format_output and render
-        self._value = [key, u'']
+        self._value = [key, u('')]
         self._key = key
         self.id_ = self.build_attrs(attrs).get('id', None)
 

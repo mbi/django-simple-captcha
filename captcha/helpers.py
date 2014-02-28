@@ -2,7 +2,7 @@
 import random
 from captcha.conf import settings
 from django.core.urlresolvers import reverse
-
+from six import u
 
 def math_challenge():
     operators = ('+', '*', '-',)
@@ -15,14 +15,14 @@ def math_challenge():
 
 
 def random_char_challenge():
-    chars, ret = u'abcdefghijklmnopqrstuvwxyz', u''
+    chars, ret = u('abcdefghijklmnopqrstuvwxyz'), u('')
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
     return ret.upper(), ret
 
 
 def unicode_challenge():
-    chars, ret = u'äàáëéèïíîöóòüúù', u''
+    chars, ret = u('äàáëéèïíîöóòüúù'), u('')
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
     return ret.upper(), ret

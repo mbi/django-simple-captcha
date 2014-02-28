@@ -2,6 +2,7 @@
 import django
 import os
 import sys
+from six import u
 
 SITE_ID = 1
 
@@ -36,7 +37,7 @@ LANGUAGE_CODE = "en"
 
 LANGUAGES = (
     ('en', 'English'),
-    ('ja', u'日本語'),
+    ('ja', u('日本語')),
 )
 
 SOUTH_TESTS_MIGRATE = False
