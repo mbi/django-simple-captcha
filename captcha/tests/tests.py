@@ -175,7 +175,7 @@ class CaptchaCase(TestCase):
 
     def testOutputFormat(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
-            settings.CAPTCHA_OUTPUT_FORMAT = '%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s'
+            settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s'
             r = self.client.get(reverse(urlname))
             self.assertEqual(r.status_code, 200)
             self.assertTrue('<p>Hello, captcha world</p>' in str(r.content))
@@ -186,7 +186,7 @@ class CaptchaCase(TestCase):
             # we turn on DEBUG because CAPTCHA_OUTPUT_FORMAT is only checked debug
 
             django_settings.DEBUG = True
-            settings.CAPTCHA_OUTPUT_FORMAT = '%(image)s'
+            settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s'
             try:
                 self.client.get(reverse(urlname))
                 self.fail()
@@ -195,14 +195,14 @@ class CaptchaCase(TestCase):
         django_settings.DEBUG = __current_settings_debug
 
     def testPerFormFormat(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = '%(image)s testCustomFormatString %(hidden_field)s %(text_field)s'
+        settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s testCustomFormatString %(hidden_field)s %(text_field)s'
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('testCustomFormatString' in str(r.content))
         r = self.client.get(reverse('test_per_form_format'))
         self.assertTrue('testPerFieldCustomFormatString' in str(r.content))
 
     def testIssue31ProperLabel(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = '%(image)s %(hidden_field)s %(text_field)s'
+        settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('<label for="id_captcha_1"' in str(r.content))
 
@@ -226,7 +226,7 @@ class CaptchaCase(TestCase):
         This test covers a default django field and widget behavior
         It not assert anything. If something is wrong it will raise a error!
         """
-        settings.CAPTCHA_OUTPUT_FORMAT = '%(image)s %(hidden_field)s %(text_field)s'
+        settings.CAPTCHA_OUTPUT_FORMAT = u'%(image)s %(hidden_field)s %(text_field)s'
         widget = CaptchaTextInput(attrs={'class': 'required'})
         CaptchaField(widget=widget)
 

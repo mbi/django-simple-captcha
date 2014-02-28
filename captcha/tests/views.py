@@ -80,8 +80,8 @@ def test_per_form_format(request):
             help_text='asdasd',
             error_messages=dict(invalid='TEST CUSTOM ERROR MESSAGE'),
             output_format=(
-                '%(image)s testPerFieldCustomFormatString '
-                '%(hidden_field)s %(text_field)s'
+                u'%(image)s testPerFieldCustomFormatString '
+                u'%(hidden_field)s %(text_field)s'
             )
         )
     return _test(request, CaptchaTestFormatForm)

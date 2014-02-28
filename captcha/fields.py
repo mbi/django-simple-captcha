@@ -38,7 +38,7 @@ class BaseCaptchaTextInput(MultiWidget):
         key = CaptchaStore.generate_key()
 
         # these can be used by format_output and render
-        self._value = [key, '']
+        self._value = [key, u'']
         self._key = key
         self.id_ = self.build_attrs(attrs).get('id', None)
 

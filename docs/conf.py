@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Django Simple Captcha'
-copyright = '2011-2013 Marco Bonetti'
+project = u'Django Simple Captcha'
+copyright = u'2011-2013 Marco Bonetti'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -175,8 +175,8 @@ htmlhelp_basename = 'DjangoSimpleCaptchadoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'DjangoSimpleCaptcha.tex', 'Django Simple Captcha Documentation',
-   'Marco Bonetti', 'manual'),
+  ('index', 'DjangoSimpleCaptcha.tex', u'Django Simple Captcha Documentation',
+   u'Marco Bonetti', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
