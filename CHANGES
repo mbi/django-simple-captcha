@@ -5,6 +5,7 @@ Version 0.4.2
 * Added Bulgarian translations. (Thanks @vstoykov)
 * Added Japanese translations. (Thanks, Keisuke URAGO)
 * Added Ukrainian translations. (Thanks, @FuriousCoder)
+* Added support for Python 3.2. (Thanks, @amrhassan)
 
 Version 0.4.1
 -------------
