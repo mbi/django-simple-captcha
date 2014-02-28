@@ -36,7 +36,7 @@ LANGUAGE_CODE = "en"
 
 LANGUAGES = (
     ('en', 'English'),
-    ('ja', u'日本語'),
+    ('ja', '日本語'),
 )
 
 SOUTH_TESTS_MIGRATE = False
