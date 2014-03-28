@@ -43,6 +43,22 @@ then
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
+if [ ! -d .venv_17 ]
+then
+    virtualenv --no-site-packages --distribute --python=python2 .venv_17
+    source .venv_17/bin/activate
+    pip install https://github.com/django/django/archive/1.7b1.zip
+    pip install Pillow==2.0.0 coverage six
+    deactivate
+fi
+if [ ! -d .venv_17_p3 ]
+then
+    virtualenv --no-site-packages --distribute --python=python3 .venv_17_p3
+    source .venv_17_p3/bin/activate
+    pip install https://github.com/django/django/archive/1.7b1.zip
+    pip install Pillow==2.0.0 coverage six
+    deactivate
+fi
 
 
 source .venv_14/bin/activate
@@ -79,6 +95,23 @@ cd ..
 deactivate
 
 source .venv_16_p3/bin/activate
+cd testproject
+echo 'Django' `python manage.py --version`
+python --version
+python manage.py test captcha
+cd ..
+deactivate
+
+
+source .venv_17/bin/activate
+cd testproject
+echo 'Django' `python manage.py --version`
+python --version
+python manage.py test captcha
+cd ..
+deactivate
+
+source .venv_17_p3/bin/activate
 cd testproject
 echo 'Django' `python manage.py --version`
 python --version
