@@ -121,7 +121,7 @@ Example usage ajax refresh button
         $form = $(this).parents('form');
 
         $.getJSON($(this).data('url'), {}, function(json) {
-            // This your should update captcha image src and captcha hidden input
+            // This should update your captcha image src and captcha hidden input
         });
 
         return false;
