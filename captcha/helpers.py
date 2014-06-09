@@ -70,6 +70,10 @@ def noise_dots(draw, image):
     return draw
 
 
+def noise_null(draw, image):
+    return draw
+
+
 def post_smooth(image):
     try:
         import ImageFilter
