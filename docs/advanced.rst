@@ -61,6 +61,8 @@ List of strings of python callables that take a PIL ``DrawImage`` object and an 
 
 Defaults to: ``('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)``
 
+A null noise helper function useful when debugging issues is available at ``'captcha.helpers.noise_null'``.
+
 
 CAPTCHA_FILTER_FUNCTIONS
 ------------------------
