@@ -1,3 +1,9 @@
+Version 0.4.3
+-------------
+* Add null noise helper (Thanks @xrmx)
+* Test against Django 1.7b4
+
+
 Version 0.4.2
 -------------
 * Added autocomplete="off" to the input (Issue #57, thanks @Vincent-Vega)

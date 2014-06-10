@@ -8,14 +8,14 @@ export CAPTCHA_FLITE_PATH=`which flite`
 
 if [ ! -d .venv_14 ]
 then
-    virtualenv --no-site-packages --distribute --python=python2 .venv_14
+    virtualenv --no-site-packages --distribute --python=python2.7 .venv_14
     source .venv_14/bin/activate
     pip install Django==1.4 Pillow==2.0.0 coverage six
     deactivate
 fi
 if [ ! -d .venv_15 ]
 then
-    virtualenv --no-site-packages --distribute --python=python2 .venv_15
+    virtualenv --no-site-packages --distribute --python=python2.7 .venv_15
     source .venv_15/bin/activate
     pip install Django==1.5 Pillow==2.0.0 coverage six
     deactivate
@@ -29,7 +29,7 @@ then
 fi
 if [ ! -d .venv_16 ]
 then
-    virtualenv --no-site-packages --distribute --python=python2 .venv_16
+    virtualenv --no-site-packages --distribute --python=python2.7 .venv_16
     source .venv_16/bin/activate
     pip install Django\>=1.6.0
     pip install Pillow==2.0.0 coverage six
@@ -45,9 +45,9 @@ then
 fi
 if [ ! -d .venv_17 ]
 then
-    virtualenv --no-site-packages --distribute --python=python2 .venv_17
+    virtualenv --no-site-packages --distribute --python=python2.7 .venv_17
     source .venv_17/bin/activate
-    pip install https://github.com/django/django/archive/1.7b1.zip
+    pip install https://www.djangoproject.com/download/1.7.b4/tarball/
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
@@ -55,7 +55,7 @@ if [ ! -d .venv_17_p3 ]
 then
     virtualenv --no-site-packages --distribute --python=python3 .venv_17_p3
     source .venv_17_p3/bin/activate
-    pip install https://github.com/django/django/archive/1.7b1.zip
+    pip install https://www.djangoproject.com/download/1.7.b4/tarball/
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
