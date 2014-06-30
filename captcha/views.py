@@ -49,7 +49,10 @@ def captcha_image(request, key, scale=1):
 
     size = getsize(font, text)
     size = (size[0] * 2, int(size[1] * 1.4))
-    image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
+    if settings.CAPTCHA_BACKGROUND_COLOR == "transparent":
+        image = Image.new('RGBA', size)
+    else:
+        image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
 
     try:
         PIL_VERSION = int(NON_DIGITS_RX.sub('', Image.VERSION))
