@@ -14,6 +14,13 @@ Installation
         )
 
 
+Django-simple-captcha 0.4.3 and later supports both Django 1.7's new migrations and South migrations: if you are using South and Django < 1.7, you must define the following in your settings::
+
+        SOUTH_MIGRATION_MODULES = {
+            'captcha': 'captcha.south_migrations',
+        }
+
+
 .. _pip: http://pypi.python.org/pypi/pip
 
 Adding to a Form

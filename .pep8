@@ -1,4 +1,3 @@
 [flake8]
 ignore = E501
-exclude = migrations,.venv_*,docs
-
+exclude = south_migrations,migrations,.venv_*,docs

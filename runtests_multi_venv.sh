@@ -10,21 +10,21 @@ if [ ! -d .venv_14 ]
 then
     virtualenv --no-site-packages --distribute --python=python2.7 .venv_14
     source .venv_14/bin/activate
-    pip install Django==1.4 Pillow==2.0.0 coverage six
+    pip install Django==1.4 Pillow==2.0.0 coverage six south==0.8.4
     deactivate
 fi
 if [ ! -d .venv_15 ]
 then
     virtualenv --no-site-packages --distribute --python=python2.7 .venv_15
     source .venv_15/bin/activate
-    pip install Django==1.5 Pillow==2.0.0 coverage six
+    pip install Django==1.5 Pillow==2.0.0 coverage six south==0.8.4
     deactivate
 fi
 if [ ! -d .venv_15_p3 ]
 then
     virtualenv --no-site-packages --distribute --python=python3 .venv_15_p3
     source .venv_15_p3/bin/activate
-    pip install Django==1.5 Pillow==2.0.0 coverage six
+    pip install Django==1.5 Pillow==2.0.0 coverage six south==0.8.4
     deactivate
 fi
 if [ ! -d .venv_16 ]
@@ -32,7 +32,7 @@ then
     virtualenv --no-site-packages --distribute --python=python2.7 .venv_16
     source .venv_16/bin/activate
     pip install Django\>=1.6.0
-    pip install Pillow==2.0.0 coverage six flake8
+    pip install Pillow==2.0.0 coverage six south==0.8.4 flake8
     deactivate
 fi
 if [ ! -d .venv_16_p3 ]
@@ -40,7 +40,7 @@ then
     virtualenv --no-site-packages --distribute --python=python3 .venv_16_p3
     source .venv_16_p3/bin/activate
     pip install Django\>=1.6.0
-    pip install Pillow==2.0.0 coverage six
+    pip install Pillow==2.0.0 coverage six south==0.8.4
     deactivate
 fi
 if [ ! -d .venv_17 ]
@@ -106,17 +106,23 @@ deactivate
 
 source .venv_17/bin/activate
 cd testproject
+cp settings.py settings_16.py
+cp settings_17.py settings.py
 echo 'Django' `python manage.py --version`
 python --version
 python manage.py test captcha
+mv settings_16.py settings.py
 cd ..
 deactivate
 
 source .venv_17_p3/bin/activate
 cd testproject
+cp settings.py settings_16.py
+cp settings_17.py settings.py
 echo 'Django' `python manage.py --version`
 python --version
 python manage.py test captcha
+mv settings_16.py settings.py
 cd ..
 deactivate
 

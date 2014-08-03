@@ -6,5 +6,5 @@ install:
   - sudo apt-get install libfreetype6 libfreetype6-dev zlib1g-dev
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/
   - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so ~/virtualenv/python2.7/lib/
-  - pip install Django==1.6 Pillow==2.2.2 six  --use-mirrors
+  - pip install Django==1.6 Pillow==2.2.2 six south==0.8.4 --use-mirrors
 script: cd testproject && python manage.py test captcha

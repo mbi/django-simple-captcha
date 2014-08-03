@@ -5,6 +5,9 @@ Version 0.4.3
 * Added Spanish translations (Thanks @dragosdobrota)
 * Massive cleanup (pep8, translations)
 * Support for transparent background color. (Thanks @curaloucura)
+* Support both Django 1.7 migrations and South migrations.
+  Please note, you *must* add the following to your settings, if you are
+  using South migrations and Django 1.6 or lower.
 
 
 Version 0.4.2

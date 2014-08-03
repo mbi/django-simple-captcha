@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
 
-    'south',
     'captcha',
 ]
 
@@ -40,8 +39,6 @@ LANGUAGES = (
     ('en', 'English'),
     ('ja', u('日本語')),
 )
-
-SOUTH_TESTS_MIGRATE = True
 
 FIXTURE_DIRS = (
     os.path.join(PROJECT_PATH, 'fixtures'),
@@ -62,7 +59,3 @@ MIDDLEWARE_CLASSES = ()
 CAPTCHA_FLITE_PATH = os.environ.get('CAPTCHA_FLITE_PATH', None)
 CAPTCHA_BACKGROUND_COLOR = 'transparent'
 # CAPTCHA_BACKGROUND_COLOR = '#ffffffff'
-
-SOUTH_MIGRATION_MODULES = {
-    'captcha': 'captcha.south_migrations',
-}
