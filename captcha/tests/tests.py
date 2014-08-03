@@ -278,6 +278,17 @@ class CaptchaCase(TestCase):
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('autocomplete="off"' in six.text_type(r.content))
 
+    def test_transparent_background(self):
+        __current_test_mode_setting = settings.CAPTCHA_BACKGROUND_COLOR
+        settings.CAPTCHA_BACKGROUND_COLOR = "transparent"
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.has_header('content-type'))
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+
+        settings.CAPTCHA_BACKGROUND_COLOR = __current_test_mode_setting
+
 
 def trivial_challenge():
     return 'trivial', 'trivial'

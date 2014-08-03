@@ -4,6 +4,7 @@ Version 0.4.3
 * Test against Django 1.7b4
 * Added Spanish translations (Thanks @dragosdobrota)
 * Massive cleanup (pep8, translations)
+* Support for transparent background color. (Thanks @curaloucura)
 
 
 Version 0.4.2
