@@ -30,6 +30,7 @@ TEST_TEMPLATE = r'''
 </html>
 '''
 
+
 def _test(request, form_class):
     passed = False
     if request.POST:
@@ -80,8 +81,10 @@ def test_per_form_format(request):
             help_text='asdasd',
             error_messages=dict(invalid='TEST CUSTOM ERROR MESSAGE'),
             output_format=(
-                u('%(image)s testPerFieldCustomFormatString '
-                '%(hidden_field)s %(text_field)s')
+                u(
+                    '%(image)s testPerFieldCustomFormatString '
+                    '%(hidden_field)s %(text_field)s'
+                )
             )
         )
     return _test(request, CaptchaTestFormatForm)

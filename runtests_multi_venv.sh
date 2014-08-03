@@ -32,7 +32,7 @@ then
     virtualenv --no-site-packages --distribute --python=python2.7 .venv_16
     source .venv_16/bin/activate
     pip install Django\>=1.6.0
-    pip install Pillow==2.0.0 coverage six
+    pip install Pillow==2.0.0 coverage six flake8
     deactivate
 fi
 if [ ! -d .venv_16_p3 ]
@@ -47,7 +47,7 @@ if [ ! -d .venv_17 ]
 then
     virtualenv --no-site-packages --distribute --python=python2.7 .venv_17
     source .venv_17/bin/activate
-    pip install https://www.djangoproject.com/download/1.7.b4/tarball/
+    pip install https://www.djangoproject.com/download/1.7c2/tarball/
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
@@ -55,7 +55,7 @@ if [ ! -d .venv_17_p3 ]
 then
     virtualenv --no-site-packages --distribute --python=python3 .venv_17_p3
     source .venv_17_p3/bin/activate
-    pip install https://www.djangoproject.com/download/1.7.b4/tarball/
+    pip install https://www.djangoproject.com/download/1.7c2/tarball/
     pip install Pillow==2.0.0 coverage six
     deactivate
 fi
@@ -92,6 +92,7 @@ echo 'Django' `python manage.py --version`
 python --version
 python manage.py test captcha
 cd ..
+flake8
 deactivate
 
 source .venv_16_p3/bin/activate

@@ -1,5 +1,3 @@
-from django import forms
-from captcha.fields import CaptchaField
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from forms import CaptchaForm
@@ -16,4 +14,4 @@ def home(request):
 
     return render_to_response('home.html', dict(
         form=form
-    ) , context_instance=RequestContext(request))
+    ), context_instance=RequestContext(request))

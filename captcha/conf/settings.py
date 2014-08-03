@@ -1,6 +1,5 @@
 ﻿import os
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 
 CAPTCHA_FONT_PATH = getattr(settings, 'CAPTCHA_FONT_PATH', os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'fonts/Vera.ttf')))
 CAPTCHA_FONT_SIZE = getattr(settings, 'CAPTCHA_FONT_SIZE', 22)

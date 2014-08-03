@@ -2,6 +2,8 @@ Version 0.4.3
 -------------
 * Add null noise helper (Thanks @xrmx)
 * Test against Django 1.7b4
+* Added Spanish translations (Thanks @dragosdobrota)
+* Massive cleanup (pep8, translations)
 
 
 Version 0.4.2

@@ -14,6 +14,7 @@ import six
 import os
 from six import u
 
+
 class CaptchaCase(TestCase):
     urls = 'captcha.tests.urls'
 
@@ -41,7 +42,6 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_OUTPUT_FORMAT = self.__current_settings_output_format
         settings.CAPTCHA_WORDS_DICTIONARY = self.__current_settings_dictionary
         settings.CAPTCHA_PUNCTUATION = self.__current_settings_punctuation
-
 
     def __extract_hash_and_response(self, r):
         hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
@@ -231,7 +231,7 @@ class CaptchaCase(TestCase):
         CaptchaField(widget=widget)
 
     def testTestMode_Issue15(self):
-        __current_test_mode_setting  = settings.CAPTCHA_TEST_MODE
+        __current_test_mode_setting = settings.CAPTCHA_TEST_MODE
         settings.CAPTCHA_TEST_MODE = False
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)

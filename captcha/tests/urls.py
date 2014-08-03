@@ -3,7 +3,8 @@ try:
 except ImportError:
     from django.conf.urls.defaults import url, patterns, include
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'test/$', 'captcha.tests.views.test', name='captcha-test'),
     url(r'test-modelform/$', 'captcha.tests.views.test_model_form', name='captcha-test-model-form'),
     url(r'test2/$', 'captcha.tests.views.test_custom_error_message', name='captcha-test-custom-error-message'),

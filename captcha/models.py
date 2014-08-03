@@ -40,10 +40,8 @@ class CaptchaStore(models.Model):
     expiration = models.DateTimeField(blank=False)
 
     def save(self, *args, **kwargs):
-        #import ipdb; ipdb.set_trace()
         self.response = six.text_type(self.response).lower()
         if not self.expiration:
-            #self.expiration = datetime.datetime.now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
             self.expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
         if not self.hashkey:
             key_ = unicodedata.normalize('NFKD', str(randrange(0, MAX_RANDOM_KEY)) + str(time.time()) + six.text_type(self.challenge)).encode('ascii', 'ignore') + unicodedata.normalize('NFKD', six.text_type(self.response)).encode('ascii', 'ignore')

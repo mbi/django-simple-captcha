@@ -56,5 +56,6 @@ TEMPLATE_DIRS = ('templates',)
 USE_TZ = True
 SECRET_KEY = 'empty'
 
+MIDDLEWARE_CLASSES = ()
 
 CAPTCHA_FLITE_PATH = os.environ.get('CAPTCHA_FLITE_PATH', None)

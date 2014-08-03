@@ -1,1 +1,1 @@
-from .tests import CaptchaCase, trivial_challenge
+from .tests import CaptchaCase, trivial_challenge  # NOQA

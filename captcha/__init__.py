@@ -20,8 +20,8 @@ def pillow_required():
     except ImportError:
         try:
             import Image
-            import ImageDraw
-            import ImageFont
+            import ImageDraw  # NOQA
+            import ImageFont  # NOQA
         except ImportError:
             return True
 

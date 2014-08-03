@@ -4,6 +4,7 @@ from captcha.conf import settings
 from django.core.urlresolvers import reverse
 from six import u
 
+
 def math_challenge():
     operators = ('+', '*', '-',)
     operands = (random.randint(1, 10), random.randint(1, 10))
