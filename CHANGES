@@ -9,7 +9,7 @@ Version 0.4.3
   Please note, you *must* add the following to your settings, if you are
   using South migrations and Django 1.6 or lower.
 * Make sure autocomplete="off" is only applied to the text input, not the hidden input (Issue #68, thanks @narrowfail)
-
+* Fixed some grammar in the documentation. (Thanks @rikrian)
 
 Version 0.4.2
 -------------
