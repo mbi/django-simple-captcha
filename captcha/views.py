@@ -39,7 +39,13 @@ def getsize(font, text):
 
 
 def captcha_image(request, key, scale=1):
-    store = get_object_or_404(CaptchaStore, hashkey=key)
+    try:
+        store = CaptchaStore.objects.get(hashkey=key)
+    except CaptchaStore.DoesNotExist:
+        # HTTP 410 Gone status so that crawlers don't index these expired urls.
+        return HttpResponse(status=410)
+
+
     text = store.challenge
 
     if settings.CAPTCHA_FONT_PATH.lower().strip().endswith('ttf'):
@@ -105,7 +111,12 @@ def captcha_image(request, key, scale=1):
 
 def captcha_audio(request, key):
     if settings.CAPTCHA_FLITE_PATH:
-        store = get_object_or_404(CaptchaStore, hashkey=key)
+        try:
+            store = CaptchaStore.objects.get(hashkey=key)
+        except CaptchaStore.DoesNotExist:
+            # HTTP 410 Gone status so that crawlers don't index these expired urls.
+            return HttpResponse(status=410)
+
         text = store.challenge
         if 'captcha.helpers.math_challenge' == settings.CAPTCHA_CHALLENGE_FUNCT:
             text = text.replace('*', 'times').replace('-', 'minus')
