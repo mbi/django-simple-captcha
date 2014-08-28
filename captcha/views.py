@@ -2,7 +2,6 @@ from captcha.conf import settings
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404
 import random
 import re
 import tempfile
@@ -44,7 +43,6 @@ def captcha_image(request, key, scale=1):
     except CaptchaStore.DoesNotExist:
         # HTTP 410 Gone status so that crawlers don't index these expired urls.
         return HttpResponse(status=410)
-
 
     text = store.challenge
 

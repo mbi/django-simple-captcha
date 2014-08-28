@@ -294,6 +294,14 @@ class CaptchaCase(TestCase):
 
         settings.CAPTCHA_BACKGROUND_COLOR = __current_test_mode_setting
 
+    def test_expired_captcha_returns_410(self):
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            CaptchaStore.objects.filter(hashkey=key).delete()
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 410)
+
 
 def trivial_challenge():
     return 'trivial', 'trivial'
