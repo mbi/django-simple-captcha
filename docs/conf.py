@@ -177,7 +177,7 @@ htmlhelp_basename = 'DjangoSimpleCaptchadoc'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'DjangoSimpleCaptcha.tex', u('Django Simple Captcha Documentation'),
-   u('Marco Bonetti', 'manual')),
+   u('Marco Bonetti'), 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
