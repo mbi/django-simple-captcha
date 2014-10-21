@@ -102,6 +102,7 @@ class CaptchaField(MultiValueField):
         kwargs['widget'] = kwargs.pop('widget', CaptchaTextInput(output_format=kwargs.pop('output_format', None)))
 
         super(CaptchaField, self).__init__(fields, *args, **kwargs)
+        self.store = None
 
     def compress(self, data_list):
         if data_list:
@@ -124,7 +125,11 @@ class CaptchaField(MultiValueField):
             pass
         else:
             try:
-                CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()
+                self.store = CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now())
             except CaptchaStore.DoesNotExist:
                 raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', ugettext_lazy('Invalid CAPTCHA')))
         return value
+
+    def __del__(self):
+        if self.store:
+            self.store.delete()
