@@ -89,6 +89,8 @@ Full path to the ``flite`` executable. When defined, will automatically add audi
 Defaults to: ``None`` (no audio output)
 
 CAPTCHA_TIMEOUT
+---------------
+
 Integer. Lifespan, in minutes, of the generated captcha.
 
 Defaults to: 5
