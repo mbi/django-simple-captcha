@@ -47,16 +47,14 @@ if [ ! -d .venv_17 ]
 then
     virtualenv --no-site-packages --distribute --python=python2.7 .venv_17
     source .venv_17/bin/activate
-    pip install https://www.djangoproject.com/download/1.7c2/tarball/
-    pip install Pillow==2.0.0 coverage six flake8
+    pip install Django==1.7.1 Pillow==2.0.0 coverage six flake8
     deactivate
 fi
 if [ ! -d .venv_17_p3 ]
 then
     virtualenv --no-site-packages --distribute --python=python3 .venv_17_p3
     source .venv_17_p3/bin/activate
-    pip install https://www.djangoproject.com/download/1.7c2/tarball/
-    pip install Pillow==2.0.0 coverage six flake8
+    pip install Django==1.7.1 Pillow==2.0.0 coverage six flake8
     deactivate
 fi
 
