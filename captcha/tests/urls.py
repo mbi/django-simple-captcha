@@ -10,5 +10,6 @@ urlpatterns = patterns(
     url(r'test2/$', 'captcha.tests.views.test_custom_error_message', name='captcha-test-custom-error-message'),
     url(r'test3/$', 'captcha.tests.views.test_per_form_format', name='test_per_form_format'),
     url(r'test-non-required/$', 'captcha.tests.views.test_non_required', name='captcha-test-non-required'),
+    url(r'test-id-prefix/$', 'captcha.tests.views.test_id_prefix', name='captcha-test-id-prefix'),
     url(r'', include('captcha.urls')),
 )

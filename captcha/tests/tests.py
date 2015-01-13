@@ -302,6 +302,13 @@ class CaptchaCase(TestCase):
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 410)
 
+    def test_id_prefix(self):
+        r = self.client.get(reverse('captcha-test-id-prefix'))
+        self.assertTrue('<label for="form1_id_captcha1_1">Captcha1:</label>' in six.text_type(r.content))
+        self.assertTrue('id="form1_id_captcha1_1"' in six.text_type(r.content))
+        self.assertTrue('<label for="form2_id_captcha2_1">Captcha2:</label>' in six.text_type(r.content))
+        self.assertTrue('id="form2_id_captcha2_1"' in six.text_type(r.content))
+
 
 def trivial_challenge():
     return 'trivial', 'trivial'

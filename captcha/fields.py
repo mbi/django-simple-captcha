@@ -61,6 +61,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
     def __init__(self, attrs=None, **kwargs):
         self._args = kwargs
         self._args['output_format'] = self._args.get('output_format') or settings.CAPTCHA_OUTPUT_FORMAT
+        self._args['id_prefix'] = self._args.get('id_prefix')
 
         for key in ('image', 'hidden_field', 'text_field'):
             if '%%(%s)s' % key not in self._args['output_format']:
@@ -69,6 +70,18 @@ class CaptchaTextInput(BaseCaptchaTextInput):
                     '%%(%s)s' % key
                 ))
         super(CaptchaTextInput, self).__init__(attrs)
+
+    def build_attrs(self, extra_attrs=None, **kwargs):
+        ret = super(CaptchaTextInput, self).build_attrs(extra_attrs, **kwargs)
+        if self._args.get('id_prefix') and 'id' in ret:
+            ret['id'] = '%s_%s' % (self._args.get('id_prefix'), ret['id'])
+        return ret
+
+    def id_for_label(self, id_):
+        ret = super(CaptchaTextInput, self).id_for_label(id_)
+        if self._args.get('id_prefix') and 'id' in ret:
+            ret = '%s_%s' % (self._args.get('id_prefix'), ret)
+        return ret
 
     def format_output(self, rendered_widgets):
         hidden_field, text_field = rendered_widgets
@@ -99,7 +112,10 @@ class CaptchaField(MultiValueField):
                 kwargs['error_messages'] = {}
             kwargs['error_messages'].update({'invalid': ugettext_lazy('Invalid CAPTCHA')})
 
-        kwargs['widget'] = kwargs.pop('widget', CaptchaTextInput(output_format=kwargs.pop('output_format', None)))
+        kwargs['widget'] = kwargs.pop('widget', CaptchaTextInput(
+            output_format=kwargs.pop('output_format', None),
+            id_prefix=kwargs.pop('id_prefix', None)
+        ))
 
         super(CaptchaField, self).__init__(fields, *args, **kwargs)
 

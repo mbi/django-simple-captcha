@@ -118,6 +118,8 @@ Defaults to: 99
 
 Note: it's perfectly safe to specify e.g. ``CAPTCHA_DICTIONARY_MIN_LENGTH = CAPTCHA_DICTIONARY_MAX_LENGTH = 6`` but it's considered an error to define ``CAPTCHA_DICTIONARY_MAX_LENGTH`` to be smaller than ``CAPTCHA_DICTIONARY_MIN_LENGTH``.
 
+.. _output_format_ref:
+
 CAPTCHA_OUTPUT_FORMAT
 ------------------------
 

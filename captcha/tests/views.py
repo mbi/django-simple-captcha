@@ -96,3 +96,12 @@ def test_non_required(request):
         subject = forms.CharField(max_length=100)
         captcha = CaptchaField(help_text='asdasd', required=False)
     return _test(request, CaptchaTestForm)
+
+
+def test_id_prefix(request):
+    class CaptchaTestForm(forms.Form):
+        sender = forms.EmailField()
+        subject = forms.CharField(max_length=100)
+        captcha1 = CaptchaField(id_prefix="form1")
+        captcha2 = CaptchaField(id_prefix="form2")
+    return _test(request, CaptchaTestForm)

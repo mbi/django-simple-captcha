@@ -1,3 +1,7 @@
+Version 0.4.4
+-------------
+* Added id_prefix argument (fixes issue #37)
+
 Version 0.4.3
 -------------
 * Add null noise helper (Thanks @xrmx)
