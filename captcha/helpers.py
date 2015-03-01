@@ -2,7 +2,7 @@
 import random
 from captcha.conf import settings
 from django.core.urlresolvers import reverse
-from six import u
+from six import u, text_type
 
 
 def math_challenge():
@@ -12,7 +12,7 @@ def math_challenge():
     if operands[0] < operands[1] and '-' == operator:
         operands = (operands[1], operands[0])
     challenge = '%d%s%d' % (operands[0], operator, operands[1])
-    return '%s=' % (challenge), eval(challenge)
+    return '%s=' % (challenge), text_type(eval(challenge))
 
 
 def random_char_challenge():
