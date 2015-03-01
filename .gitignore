@@ -7,3 +7,4 @@ testproject/django-simple-captcha.db
 testproject/.coverage
 testproject/coverage.xml
 testproject/htmlcov/
+.tox

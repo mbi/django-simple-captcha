@@ -1,9 +1,16 @@
 from django import forms
 from captcha.fields import CaptchaField
-from django.template import RequestContext, loader
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from six import u
+
+try:
+    from django.template import engines, RequestContext
+    __is_18 = True
+except ImportError:
+    from django.template import RequestContext, loader
+    __is_18 = False
+
 
 TEST_TEMPLATE = r'''
 {% load url from future %}
@@ -31,6 +38,13 @@ TEST_TEMPLATE = r'''
 '''
 
 
+def _get_template(template_string):
+    if __is_18:
+        return engines['django'].from_string(template_string)
+    else:
+        return loader.get_template_from_string(template_string)
+
+
 def _test(request, form_class):
     passed = False
     if request.POST:
@@ -40,7 +54,7 @@ def _test(request, form_class):
     else:
         form = form_class()
 
-    t = loader.get_template_from_string(TEST_TEMPLATE)
+    t = _get_template(TEST_TEMPLATE)
     return HttpResponse(
         t.render(RequestContext(request, dict(passed=passed, form=form))))
 

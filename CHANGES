@@ -1,3 +1,8 @@
+Version 0.4.5 (unreleased)
+--------------------------
+* Test with tox
+* Test against Django 1.8 beta 1
+
 Version 0.4.4
 -------------
 * Added id_prefix argument (fixes issue #37)

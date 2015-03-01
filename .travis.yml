@@ -1,10 +1,22 @@
 language: python
-python:
-  - "2.7"
-  - "3.3"
+services: memcached
+python: 2.7
+env:
+  - TOX_ENV=py26-django14
+  - TOX_ENV=py27-django14
+  - TOX_ENV=py26-django15
+  - TOX_ENV=py27-django15
+  - TOX_ENV=py34-django15
+  - TOX_ENV=py26-django16
+  - TOX_ENV=py27-django16
+  - TOX_ENV=py34-django16
+  - TOX_ENV=py27-django17
+  - TOX_ENV=py34-django17
+  - TOX_ENV=py27-django18alpha
+  - TOX_ENV=py34-django18alpha
+  - TOX_ENV=flake8
+  - TOX_ENV=gettext
 install:
-  - sudo apt-get install libfreetype6 libfreetype6-dev zlib1g-dev
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libz.so ~/virtualenv/python2.7/lib/
-  - sudo ln -s /usr/lib/`uname -i`-linux-gnu/libfreetype.so ~/virtualenv/python2.7/lib/
-  - pip install Django==1.6 Pillow==2.2.2 six south==0.8.4 flake8 --use-mirrors
-script: flake8 && cd testproject && python manage.py test captcha
+  - pip install tox
+script:
+  - tox -e $TOX_ENV
