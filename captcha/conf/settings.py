@@ -17,6 +17,8 @@ CAPTCHA_LENGTH = int(getattr(settings, 'CAPTCHA_LENGTH', 4))  # Chars
 CAPTCHA_IMAGE_BEFORE_FIELD = getattr(settings, 'CAPTCHA_IMAGE_BEFORE_FIELD', True)
 CAPTCHA_DICTIONARY_MIN_LENGTH = getattr(settings, 'CAPTCHA_DICTIONARY_MIN_LENGTH', 0)
 CAPTCHA_DICTIONARY_MAX_LENGTH = getattr(settings, 'CAPTCHA_DICTIONARY_MAX_LENGTH', 99)
+CAPTCHA_IMAGE_SIZE = getattr(settings, 'CAPTCHA_IMAGE_SIZE', None)
+
 if CAPTCHA_IMAGE_BEFORE_FIELD:
     CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', '%(image)s %(hidden_field)s %(text_field)s')
 else:

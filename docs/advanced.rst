@@ -22,6 +22,13 @@ Font-size in pixels of the rendered text.
 
 Defaults to '22'.
 
+CAPTCHA_IMAGE_SIZE
+-----------------
+
+Image size in pixels of generated captcha, specified by 2-tuple (width, height)
+
+Defaults to `None` (automatically calculated)
+
 CAPTCHA_LETTER_ROTATION
 -----------------------
 

@@ -36,6 +36,14 @@ def getsize(font, text):
     else:
         return font.getsize(text)
 
+def makeimg(size):
+    if settings.CAPTCHA_BACKGROUND_COLOR == "transparent":
+        image = Image.new('RGBA', size)
+    else:
+        image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
+    return image
+    
+
 
 def captcha_image(request, key, scale=1):
     try:
@@ -51,12 +59,13 @@ def captcha_image(request, key, scale=1):
     else:
         font = ImageFont.load(settings.CAPTCHA_FONT_PATH)
 
-    size = getsize(font, text)
-    size = (size[0] * 2, int(size[1] * 1.4))
-    if settings.CAPTCHA_BACKGROUND_COLOR == "transparent":
-        image = Image.new('RGBA', size)
+    if settings.CAPTCHA_IMAGE_SIZE:
+        size = settings.CAPTCHA_IMAGE_SIZE
     else:
-        image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
+        size = getsize(font, text)
+        size = (size[0] * 2, int(size[1] * 1.4))
+
+    image = makeimg(size)
 
     try:
         PIL_VERSION = int(NON_DIGITS_RX.sub('', Image.VERSION))
@@ -88,7 +97,13 @@ def captcha_image(request, key, scale=1):
         image = Image.composite(fgimage, image, maskimage)
         xpos = xpos + 2 + charimage.size[0]
 
-    image = image.crop((0, 0, xpos + 1, size[1]))
+    if settings.CAPTCHA_IMAGE_SIZE:
+        # centering captcha on the image
+        tmpimg = makeimg(size)
+        tmpimg.paste(image, ((size[0] - xpos) / 2, (size[1] - charimage.size[1]) / 2 - from_top))
+        image = tmpimg.crop((0, 0, size[0], size[1]))
+    else:
+        image = image.crop((0, 0, xpos + 1, size[1]))
     draw = ImageDraw.Draw(image)
 
     for f in settings.noise_functions():
