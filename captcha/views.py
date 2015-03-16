@@ -36,13 +36,13 @@ def getsize(font, text):
     else:
         return font.getsize(text)
 
+
 def makeimg(size):
     if settings.CAPTCHA_BACKGROUND_COLOR == "transparent":
         image = Image.new('RGBA', size)
     else:
         image = Image.new('RGB', size, settings.CAPTCHA_BACKGROUND_COLOR)
     return image
-    
 
 
 def captcha_image(request, key, scale=1):
@@ -100,7 +100,7 @@ def captcha_image(request, key, scale=1):
     if settings.CAPTCHA_IMAGE_SIZE:
         # centering captcha on the image
         tmpimg = makeimg(size)
-        tmpimg.paste(image, ((size[0] - xpos) / 2, (size[1] - charimage.size[1]) / 2 - from_top))
+        tmpimg.paste(image, (int((size[0] - xpos) / 2), int((size[1] - charimage.size[1]) / 2 - from_top)))
         image = tmpimg.crop((0, 0, size[0], size[1]))
     else:
         image = image.crop((0, 0, xpos + 1, size[1]))

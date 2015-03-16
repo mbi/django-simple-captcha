@@ -12,7 +12,17 @@ import json
 import re
 import six
 import os
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import BytesIO as StringIO
+
 from six import u
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image  # NOQA
 
 
 class CaptchaCase(TestCase):
@@ -308,6 +318,18 @@ class CaptchaCase(TestCase):
         self.assertTrue('id="form1_id_captcha1_1"' in six.text_type(r.content))
         self.assertTrue('<label for="form2_id_captcha2_1">Captcha2:</label>' in six.text_type(r.content))
         self.assertTrue('id="form2_id_captcha2_1"' in six.text_type(r.content))
+
+    def test_image_size(self):
+        __current_test_mode_setting = settings.CAPTCHA_IMAGE_SIZE
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            settings.CAPTCHA_IMAGE_SIZE = (201, 97)
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.has_header('content-type'))
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+            self.assertEqual(Image.open(StringIO(response.content)).size, (201, 97))
+
+        settings.CAPTCHA_IMAGE_SIZE = __current_test_mode_setting
 
 
 def trivial_challenge():

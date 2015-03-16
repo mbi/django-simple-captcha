@@ -2,6 +2,7 @@ Version 0.4.5 (unreleased)
 --------------------------
 * Test with tox
 * Test against Django 1.8 beta 1
+* Added ability to force a fixed image size (PR #76, Thanks @superqwer)
 
 Version 0.4.4
 -------------
