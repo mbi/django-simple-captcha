@@ -6,7 +6,7 @@ Django Simple Captcha
 
 Django Simple Captcha is an extremely simple, yet highly customizable Django application to add captcha images to any Django form.
 
-.. image:: http://django-simple-captcha.googlecode.com/files/Captcha3.png
+.. image:: _static/captcha3.png
 
 Features
 ++++++++

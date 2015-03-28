@@ -23,7 +23,7 @@ Font-size in pixels of the rendered text.
 Defaults to '22'.
 
 CAPTCHA_IMAGE_SIZE
------------------
+------------------
 
 Image size in pixels of generated captcha, specified by 2-tuple (width, height)
 
@@ -155,7 +155,7 @@ Generators and modifiers
 Random chars
 ------------
 
-.. image:: http://django-simple-captcha.googlecode.com/files/Random%20chars.png
+.. image:: _static/random_chars.png
 
 Classic captcha that picks four random chars. This is case insensitive. ::
 
@@ -165,7 +165,7 @@ Classic captcha that picks four random chars. This is case insensitive. ::
 Simple Math
 ------------
 
-.. image:: http://django-simple-captcha.googlecode.com/files/Math.png
+.. image:: _static/math.png
 
 Another classic, that challenges the user to resolve a simple math challenge by randomly picking two numbers between one and nine, and a random operator among plus, minus, times. ::
 
@@ -175,7 +175,7 @@ Another classic, that challenges the user to resolve a simple math challenge by 
 Dictionary Word
 ----------------
 
-.. image:: http://django-simple-captcha.googlecode.com/files/Dictionary.png
+.. image:: _static/dict.png
 
 Picks a random word from a dictionary file. Note, you must define ``CAPTCHA_WORDS_DICTIONARY`` in your cofiguration to use this generator. ::
 
