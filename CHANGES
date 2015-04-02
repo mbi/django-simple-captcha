@@ -1,3 +1,7 @@
+Version 0.4.6 (unreleased)
+--------------------------
+* Fixes an UnicodeDecodeError which was apparently only triggered during testing on TravisCI (I hope)
+
 Version 0.4.5
 -------------
 * Test with tox
