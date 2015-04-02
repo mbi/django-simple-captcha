@@ -5,6 +5,7 @@ import datetime
 import random
 import time
 import six
+import hashlib
 
 # Heavily based on session key generation in Django
 # Use the system (hardware-based) random number generator if it exists.
@@ -13,13 +14,6 @@ if hasattr(random, 'SystemRandom'):
 else:
     randrange = random.randrange
 MAX_RANDOM_KEY = 18446744073709551616     # 2 << 63
-
-
-try:
-    import hashlib  # sha for Python 2.5+
-except ImportError:
-    import sha  # sha for Python 2.4 (deprecated in Python 2.6)
-    hashlib = False
 
 
 def get_safe_now():
@@ -43,15 +37,14 @@ class CaptchaStore(models.Model):
         if not self.expiration:
             self.expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
         if not self.hashkey:
+            print(self.challenge)
+            print(self.response)
             key_ = (six.text_type(randrange(0, MAX_RANDOM_KEY)) +
                     six.text_type(time.time()) +
                     six.text_type(self.challenge) +
                     six.text_type(self.response)
                     ).encode('utf8')
-            if hashlib:
-                self.hashkey = hashlib.sha1(key_).hexdigest()
-            else:
-                self.hashkey = sha.new(key_).hexdigest()
+            self.hashkey = hashlib.sha1(key_).hexdigest()
             del(key_)
         super(CaptchaStore, self).save(*args, **kwargs)
 
