@@ -1,11 +1,12 @@
 from captcha.conf import settings as captcha_settings
 from django.db import models
 from django.conf import settings
+from django.utils.encoding import smart_text
 import datetime
 import random
 import time
-import six
 import hashlib
+
 
 # Heavily based on session key generation in Django
 # Use the system (hardware-based) random number generator if it exists.
@@ -37,13 +38,12 @@ class CaptchaStore(models.Model):
         if not self.expiration:
             self.expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
         if not self.hashkey:
-            print(self.challenge)
-            print(self.response)
-            key_ = (six.text_type(randrange(0, MAX_RANDOM_KEY)) +
-                    six.text_type(time.time()) +
-                    six.text_type(self.challenge) +
-                    six.text_type(self.response)
-                    ).encode('utf8')
+            key_ = (
+                smart_text(randrange(0, MAX_RANDOM_KEY)) +
+                smart_text(time.time()) +
+                smart_text(self.challenge, errors='ignore') +
+                smart_text(self.response, errors='ignore')
+            ).encode('utf8')
             self.hashkey = hashlib.sha1(key_).hexdigest()
             del(key_)
         super(CaptchaStore, self).save(*args, **kwargs)
