@@ -12,8 +12,8 @@ env:
   - TOX_ENV=py34-django16
   - TOX_ENV=py27-django17
   - TOX_ENV=py34-django17
-  - TOX_ENV=py27-django18c1
-  - TOX_ENV=py34-django18c1
+  - TOX_ENV=py27-django18
+  - TOX_ENV=py34-django18
   - TOX_ENV=flake8
   - TOX_ENV=gettext
 install:
