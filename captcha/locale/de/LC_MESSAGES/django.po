@@ -20,13 +20,13 @@ msgstr ""
 
 #: fields.py:90
 msgid "Play CAPTCHA as audio file"
-msgstr "Spiel das CAPTCHA als Audiodatei ab."
+msgstr "CAPTCHA als Audiodatei abspielen."
 
 #: fields.py:105 fields.py:134 tests/tests.py:99 tests/tests.py:239
 #: tests/tests.py:246
 msgid "Invalid CAPTCHA"
-msgstr "Üngültiges CAPTCHA"
+msgstr "Ungültiges CAPTCHA"
 
 #: tests/tests.py:125
 msgid "This field is required."
-msgstr "Dieses Feld ist benötigt."
+msgstr "Dieses Feld wird benötigt."
