@@ -1,6 +1,7 @@
 Version 0.4.6 (unreleased)
 --------------------------
 * Fixes an UnicodeDecodeError which was apparently only triggered during testing on TravisCI (I hope)
+* Support for Django 2.0 urlpatterns syntax (PR #82, Thanks @R3v1L)
 
 Version 0.4.5
 -------------
