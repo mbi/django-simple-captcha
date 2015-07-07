@@ -3,6 +3,7 @@ from captcha.conf import settings as captcha_settings
 from django.conf import settings
 from importlib import import_module
 Store = import_module(settings.SESSION_ENGINE).SessionStore
+import django
     
 class SessionStore(BaseStore):
 
@@ -16,7 +17,8 @@ class SessionStore(BaseStore):
         return store.session_key
         
     def remove_expired(self):
-        Store.clear_expired()
+        if not django.get_version() < '1.5':
+            Store.clear_expired()
 
     def get(self, response=None, hashkey=None, allow_expired = True):
         s = Store(session_key=hashkey)
