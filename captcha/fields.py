@@ -1,5 +1,4 @@
-﻿from captcha.conf import settings
-from captcha.models import CaptchaStore, get_safe_now
+from captcha.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.forms import ValidationError
@@ -7,6 +6,17 @@ from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
 from django.utils.translation import ugettext, ugettext_lazy
 from six import u
+from .backends.base import BaseStore
+
+CaptchaStore = None
+if settings.CAPTCHA_STORE == 'SESSION':
+    from .backends.session import SessionStore
+    CaptchaStore = SessionStore()
+elif settings.CAPTCHA_STORE == 'DB':
+    from .backends.db import DBStore
+    CaptchaStore = DBStore()
+else:
+    raise ImproperlyConfigured
 
 
 class BaseCaptchaTextInput(MultiWidget):
@@ -132,15 +142,15 @@ class CaptchaField(MultiValueField):
             # automatically pass the test
             try:
                 # try to delete the captcha based on its hash
-                CaptchaStore.objects.get(hashkey=value[0]).delete()
-            except CaptchaStore.DoesNotExist:
+                CaptchaStore.get(hashkey=value[0]).delete()
+            except BaseStore.DoesNotExist:
                 # ignore errors
                 pass
         elif not self.required and not response:
             pass
         else:
             try:
-                CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()
-            except CaptchaStore.DoesNotExist:
+                CaptchaStore.get(response=response, hashkey=value[0], allow_expired = False).delete()
+            except BaseStore.DoesNotExist:
                 raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', ugettext_lazy('Invalid CAPTCHA')))
         return value
