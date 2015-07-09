@@ -2,11 +2,14 @@
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore, get_safe_now
+from captcha.backends.db import DBStore
+from captcha.backends.session import SessionStore
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy
+import django
 import datetime
 import json
 import re
@@ -29,7 +32,6 @@ class CaptchaCase(TestCase):
     urls = 'captcha.tests.urls'
 
     def setUp(self):
-
         self.stores = {}
         self.__current_settings_output_format = settings.CAPTCHA_OUTPUT_FORMAT
         self.__current_settings_dictionary = settings.CAPTCHA_WORDS_DICTIONARY
@@ -330,6 +332,101 @@ class CaptchaCase(TestCase):
             self.assertEqual(Image.open(StringIO(response.content)).size, (201, 97))
 
         settings.CAPTCHA_IMAGE_SIZE = __current_test_mode_setting
+
+
+class StoresCase(TestCase):
+    urls = 'captcha.tests.urls'
+
+    # store tests
+    def test_db_store(self):
+        store = DBStore()
+        key = store.generate_key()
+        record = store.get(hashkey=key)
+        self.assertEqual(record['hashkey'], key)
+        self.assertNotEqual(record._captcha.get('challenge'), None)
+        self.assertNotEqual(record._captcha.get('response'), None)
+        record.delete()
+        try:
+            store.get(hashkey=key)
+            self.fail('Record deletion error')
+        except:
+            pass
+
+        key = store.generate_key()
+        cap = CaptchaStore.objects.get(hashkey=key)
+        cap.expiration = get_safe_now() - datetime.timedelta(minutes=1)
+        cap.save()
+        try:
+            store.get(hashkey=key, allow_expired=False)
+            self.fail()
+        except:
+            pass
+
+        store.remove_expired()
+        try:
+            store.get(hashkey=key)
+            self.fail('remove_expired failed')
+        except:
+            pass
+
+    def test_session_store(self):
+        store = SessionStore()
+        key = store.generate_key()
+        record = store.get(hashkey=key)
+        self.assertEqual(record.session_key, key)
+        self.assertNotEqual(record.get('challenge'), None)
+        self.assertNotEqual(record.get('response'), None)
+        record.delete()
+        try:
+            store.get(hashkey=key)
+            self.fail('Record deletion error')
+        except:
+            pass
+
+        key = store.generate_key()
+        cap = store.get(hashkey=key)
+        cap.set_expiry(-1 * 60)
+        cap.save()
+        try:
+            store.get(hashkey=key, allow_expired=False)
+            self.fail()
+        except:
+            pass
+
+        if not django.get_version() < '1.5':
+            # django lower than 1.5 can't remove expired sessions
+            store.remove_expired()
+            try:
+                store.get(hashkey=key)
+                self.fail('remove_expired failed')
+            except:
+                pass
+
+    # view tests
+    def testFormSubmit(self):
+        settings.CAPTCHA_STORE = 'SESSION'
+        r = self.client.get(reverse('captcha-test'))
+        self.assertEqual(r.status_code, 200)
+
+        store = SessionStore()
+        hash_ = re.findall(r'value="([0-9a-z]+)"', str(r.content))[0]
+        response = store.get(hashkey=hash_)['response']
+
+        r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(str(r.content).find('Form validated') > 0)
+
+        r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=response, subject='xxx', sender='asasd@asdasd.com'))
+        self.assertEqual(r.status_code, 200)
+        self.assertFalse(str(r.content).find('Form validated') > 0)
+
+    def testWrongSubmit(self):
+        settings.CAPTCHA_STORE = 'SESSION'
+        for urlname in ('captcha-test', 'captcha-test-model-form'):
+            r = self.client.get(reverse(urlname))
+            self.assertEqual(r.status_code, 200)
+            r = self.client.post(reverse(urlname), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
+            self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
 
 def trivial_challenge():

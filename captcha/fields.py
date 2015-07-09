@@ -8,16 +8,6 @@ from django.utils.translation import ugettext, ugettext_lazy
 from six import u
 from .backends.base import BaseStore
 
-CaptchaStore = None
-if settings.CAPTCHA_STORE == 'SESSION':
-    from .backends.session import SessionStore
-    CaptchaStore = SessionStore()
-elif settings.CAPTCHA_STORE == 'DB':
-    from .backends.db import DBStore
-    CaptchaStore = DBStore()
-else:
-    raise ImproperlyConfigured
-
 
 class BaseCaptchaTextInput(MultiWidget):
     """
@@ -40,6 +30,17 @@ class BaseCaptchaTextInput(MultiWidget):
         Fetches a new CaptchaStore
         This has to be called inside render
         """
+
+        CaptchaStore = None
+        if settings.CAPTCHA_STORE == 'SESSION':
+            from .backends.session import SessionStore
+            CaptchaStore = SessionStore()
+        elif settings.CAPTCHA_STORE == 'DB':
+            from .backends.db import DBStore
+            CaptchaStore = DBStore()
+        else:
+            raise ImproperlyConfigured
+
         try:
             reverse('captcha-image', args=('dummy',))
         except NoReverseMatch:
@@ -135,6 +136,16 @@ class CaptchaField(MultiValueField):
         return None
 
     def clean(self, value):
+        CaptchaStore = None
+        if settings.CAPTCHA_STORE == 'SESSION':
+            from .backends.session import SessionStore
+            CaptchaStore = SessionStore()
+        elif settings.CAPTCHA_STORE == 'DB':
+            from .backends.db import DBStore
+            CaptchaStore = DBStore()
+        else:
+            raise ImproperlyConfigured
+
         super(CaptchaField, self).clean(value)
         response, value[1] = (value[1] or '').strip().lower(), ''
         CaptchaStore.remove_expired()
@@ -150,7 +161,7 @@ class CaptchaField(MultiValueField):
             pass
         else:
             try:
-                CaptchaStore.get(response=response, hashkey=value[0], allow_expired = False).delete()
+                CaptchaStore.get(response=response, hashkey=value[0], allow_expired=False).delete()
             except BaseStore.DoesNotExist:
                 raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', ugettext_lazy('Invalid CAPTCHA')))
         return value

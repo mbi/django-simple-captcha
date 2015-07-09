@@ -1,6 +1,7 @@
 from captcha.conf import settings
 from captcha.helpers import captcha_image_url
 from django.http import HttpResponse, Http404
+from django.core.exceptions import ImproperlyConfigured
 import random
 import re
 import tempfile
@@ -39,6 +40,7 @@ elif settings.CAPTCHA_STORE == 'DB':
     CaptchaStore = DBStore()
 else:
     raise ImproperlyConfigured
+
 
 def getsize(font, text):
     if hasattr(font, 'getoffset'):
