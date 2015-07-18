@@ -54,10 +54,15 @@ def captcha_image(request, key, scale=1):
 
     text = store.challenge
 
-    if settings.CAPTCHA_FONT_PATH.lower().strip().endswith('ttf'):
-        font = ImageFont.truetype(settings.CAPTCHA_FONT_PATH, settings.CAPTCHA_FONT_SIZE * scale)
+    if isinstance(settings.CAPTCHA_FONT_PATH, str):
+        fontpath = settings.CAPTCHA_FONT_PATH
     else:
-        font = ImageFont.load(settings.CAPTCHA_FONT_PATH)
+        fontpath = settings.CAPTCHA_FONT_PATH[random.randrange(0, len(settings.CAPTCHA_FONT_PATH))]
+
+    if fontpath.lower().strip().endswith('ttf'):
+        font = ImageFont.truetype(fontpath, settings.CAPTCHA_FONT_SIZE * scale)
+    else:
+        font = ImageFont.load(fontpath)
 
     if settings.CAPTCHA_IMAGE_SIZE:
         size = settings.CAPTCHA_IMAGE_SIZE
