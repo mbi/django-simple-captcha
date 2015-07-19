@@ -2,6 +2,7 @@ Version 0.4.6 (unreleased)
 --------------------------
 * Fixes an UnicodeDecodeError which was apparently only triggered during testing on TravisCI (I hope)
 * Support for Django 2.0 urlpatterns syntax (PR #82, Thanks @R3v1L)
+* settings.CAPTCHA_FONT_PATH may be a list, in which case a font is picked randomly (Issue #51 fixed in PR #88, Thanks @inflrscns)
 
 Version 0.4.5
 -------------

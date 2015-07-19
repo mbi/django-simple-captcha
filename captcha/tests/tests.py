@@ -331,6 +331,32 @@ class CaptchaCase(TestCase):
 
         settings.CAPTCHA_IMAGE_SIZE = __current_test_mode_setting
 
+    def test_multiple_fonts(self):
+        vera = os.path.join(os.path.dirname(__file__), '..', 'fonts', 'Vera.ttf')
+        __current_test_mode_setting = settings.CAPTCHA_FONT_PATH
+        settings.CAPTCHA_FONT_PATH = vera
+
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+
+        settings.CAPTCHA_FONT_PATH = [vera, vera, vera]
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
+
+        settings.CAPTCHA_FONT_PATH = False
+        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+            try:
+                response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
+                self.fail()
+            except ImproperlyConfigured:
+                pass
+
+        settings.CAPTCHA_FONT_PATH = __current_test_mode_setting
+
 
 def trivial_challenge():
     return 'trivial', 'trivial'

@@ -15,6 +15,8 @@ Defaults to: ``fonts/Vera.ttf`` (included in the application, GPL font).
 
 Note that your PIL installation must support TTF and/or OpenFont if you want to use these kind of glyphs (most modern distributions of PIL do.)
 
+Note: as of version 0.4.6, ``CAPTCHA_FONT_PATH`` may be an iterable of font paths, in which case a font will be picked randomly from the list for each CAPTCHA.
+
 CAPTCHA_FONT_SIZE
 -----------------
 

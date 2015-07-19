@@ -2,11 +2,13 @@ from captcha.conf import settings
 from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
+from django.core.exceptions import ImproperlyConfigured
 import random
 import re
 import tempfile
 import os
 import subprocess
+import six
 
 try:
     from cStringIO import StringIO
@@ -54,10 +56,12 @@ def captcha_image(request, key, scale=1):
 
     text = store.challenge
 
-    if isinstance(settings.CAPTCHA_FONT_PATH, str):
+    if isinstance(settings.CAPTCHA_FONT_PATH, six.string_types):
         fontpath = settings.CAPTCHA_FONT_PATH
+    elif isinstance(settings.CAPTCHA_FONT_PATH, (list, tuple)):
+        fontpath = random.choice(settings.CAPTCHA_FONT_PATH)
     else:
-        fontpath = settings.CAPTCHA_FONT_PATH[random.randrange(0, len(settings.CAPTCHA_FONT_PATH))]
+        raise ImproperlyConfigured('settings.CAPTCHA_FONT_PATH needs to be a path to a font or list of paths to fonts')
 
     if fontpath.lower().strip().endswith('ttf'):
         font = ImageFont.truetype(fontpath, settings.CAPTCHA_FONT_SIZE * scale)
