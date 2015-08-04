@@ -2,8 +2,8 @@ language: python
 services: memcached
 python: 2.7
 env:
-  - TOX_ENV=py26-django14
-  - TOX_ENV=py27-django14
+  - TOX_ENV=py26-django14 LANG="en_US.UTF-8"
+  - TOX_ENV=py27-django14 LANG="en_US.UTF-8"
   - TOX_ENV=py26-django15
   - TOX_ENV=py27-django15
   - TOX_ENV=py34-django15
