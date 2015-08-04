@@ -18,8 +18,8 @@ DATABASES = {
     }
 }
 
-TEST_DATABASE_CHARSET = "utf8"
-TEST_DATABASE_COLLATION = "utf8_general_ci"
+# TEST_DATABASE_CHARSET = "utf8"
+# TEST_DATABASE_COLLATION = "utf8_general_ci"
 
 DATABASE_SUPPORTS_TRANSACTIONS = True
 
@@ -37,7 +37,7 @@ LANGUAGE_CODE = "en"
 
 LANGUAGES = (
     ('en', 'English'),
-    ('ja', u('日本語')),
+    # ('ja', u('日本語')),
 )
 
 FIXTURE_DIRS = (
