@@ -37,11 +37,3 @@ Documentation
 +++++++++++++
 
 Read the `documentation online <http://readthedocs.org/docs/django-simple-captcha>`_.
-
-Support
-+++++++
-
-.. image:: https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png
-   :alt: Support via Gittip
-   :target: https://www.gittip.com/mbi/
-   :align: right
