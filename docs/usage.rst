@@ -23,6 +23,11 @@ Django-simple-captcha 0.4.3 and later supports both Django 1.7's new migrations 
 
 .. _pip: http://pypi.python.org/pypi/pip
 
+
+Note: PIL and Pillow require that image libraries are installed on your system. On e.g. Debian or Ubuntu, you'd need these packages to compile and install Pillow::
+
+       apt-get -y install libz-dev libjpeg-dev libfreetype6-dev python-dev
+
 Adding to a Form
 +++++++++++++++++
 
