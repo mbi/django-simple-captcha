@@ -3,6 +3,7 @@ from captcha.fields import CaptchaField
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from six import u
+import django
 
 try:
     from django.template import engines, RequestContext
@@ -13,7 +14,6 @@ except ImportError:
 
 
 TEST_TEMPLATE = r'''
-{% load url from future %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
@@ -55,8 +55,13 @@ def _test(request, form_class):
         form = form_class()
 
     t = _get_template(TEST_TEMPLATE)
-    return HttpResponse(
-        t.render(RequestContext(request, dict(passed=passed, form=form))))
+
+    if django.VERSION >= (1, 9):
+        return HttpResponse(
+            t.render(context=dict(passed=passed, form=form), request=request))
+    else:
+        return HttpResponse(
+            t.render(RequestContext(request, dict(passed=passed, form=form))))
 
 
 def test(request):

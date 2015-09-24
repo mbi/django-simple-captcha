@@ -1,21 +1,26 @@
 language: python
 services: memcached
 sudo: false
-python: 2.7
-env:
-  - TOX_ENV=py26-django15
-  - TOX_ENV=py27-django15
-  - TOX_ENV=py34-django15
-  - TOX_ENV=py26-django16
-  - TOX_ENV=py27-django16
-  - TOX_ENV=py34-django16
-  - TOX_ENV=py27-django17
-  - TOX_ENV=py34-django17
-  - TOX_ENV=py27-django18
-  - TOX_ENV=py34-django18
-  - TOX_ENV=flake8
-  - TOX_ENV=gettext
+
+matrix:
+  include:
+  - python: "3.5"
+    env: TOX_ENV=py35-django18
+  - python: "3.5"
+    env: TOX_ENV=py35-django19
+  - python: "2.7"
+    env: TOX_ENV=py27-django17
+  - python: "2.7"
+    env: TOX_ENV=py27-django18
+  - python: "2.7"
+    env: TOX_ENV=py27-django19
+  - python: "2.7"
+    env: TOX_ENV=flake8
+  - python: "2.7"
+    env: TOX_ENV=gettext
+
 install:
   - pip install tox
+
 script:
   - tox -e $TOX_ENV

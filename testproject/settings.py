@@ -2,7 +2,6 @@
 import django
 import os
 import sys
-from six import u
 
 SITE_ID = 1
 
@@ -47,7 +46,26 @@ FIXTURE_DIRS = (
 ROOT_URLCONF = 'testproject.urls'
 
 DEBUG = True
-TEMPLATE_DEBUG = True
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'debug': False,
+            'context_processors': (
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
+                "django.contrib.messages.context_processors.messages"
+            )
+        }
+    },
+]
+
 TEMPLATE_DIRS = ('templates',)
 
 # Django 1.4 TZ support

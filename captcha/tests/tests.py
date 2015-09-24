@@ -2,10 +2,9 @@
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore, get_safe_now
-from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils.translation import ugettext_lazy
 import datetime
 import json
@@ -25,8 +24,8 @@ except ImportError:
     import Image  # NOQA
 
 
+@override_settings(ROOT_URLCONF='captcha.tests.urls')
 class CaptchaCase(TestCase):
-    urls = 'captcha.tests.urls'
 
     def setUp(self):
 
@@ -58,14 +57,14 @@ class CaptchaCase(TestCase):
         response = CaptchaStore.objects.get(hashkey=hash_).response
         return hash_, response
 
-    def testImages(self):
+    def test_image(self):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header('content-type'))
             self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'image/png'))
 
-    def testAudio(self):
+    def test_audio(self):
         if not settings.CAPTCHA_FLITE_PATH:
             return
         for key in (self.stores.get('math_store').hashkey, self.stores.get('math_store').hashkey, self.default_store.hashkey):
@@ -75,7 +74,7 @@ class CaptchaCase(TestCase):
             self.assertTrue(response.has_header('content-type'))
             self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'audio/x-wav'))
 
-    def testFormSubmit(self):
+    def test_form_submit(self):
         r = self.client.get(reverse('captcha-test'))
         self.assertEqual(r.status_code, 200)
         hash_, response = self.__extract_hash_and_response(r)
@@ -88,7 +87,7 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertFalse(str(r.content).find('Form validated') > 0)
 
-    def testFormModelForm(self):
+    def test_modelform(self):
         r = self.client.get(reverse('captcha-test-model-form'))
         self.assertEqual(r.status_code, 200)
         hash_, response = self.__extract_hash_and_response(r)
@@ -101,14 +100,14 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertFalse(str(r.content).find('Form validated') > 0)
 
-    def testWrongSubmit(self):
+    def test_wrong_submit(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             r = self.client.get(reverse(urlname))
             self.assertEqual(r.status_code, 200)
             r = self.client.post(reverse(urlname), dict(captcha_0='abc', captcha_1='wrong response', subject='xxx', sender='asasd@asdasd.com'))
             self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
-    def testDeleteExpired(self):
+    def test_deleted_expired(self):
         self.default_store.expiration = get_safe_now() - datetime.timedelta(minutes=5)
         self.default_store.save()
         hash_ = self.default_store.hashkey
@@ -124,7 +123,7 @@ class CaptchaCase(TestCase):
         except:
             pass
 
-    def testCustomErrorMessage(self):
+    def test_custom_error_message(self):
         r = self.client.get(reverse('captcha-test-custom-error-message'))
         self.assertEqual(r.status_code, 200)
         # Wrong answer
@@ -134,14 +133,14 @@ class CaptchaCase(TestCase):
         r = self.client.post(reverse('captcha-test-custom-error-message'), dict(captcha_0='abc', captcha_1=''))
         self.assertFormError(r, 'form', 'captcha', ugettext_lazy('This field is required.'))
 
-    def testRepeatedChallenge(self):
+    def test_repeated_challenge(self):
         CaptchaStore.objects.create(challenge='xxx', response='xxx')
         try:
             CaptchaStore.objects.create(challenge='xxx', response='xxx')
         except Exception:
             self.fail()
 
-    def testRepeatedChallengeFormSubmit(self):
+    def test_repeated_challenge_form_submit(self):
         __current_challange_function = settings.CAPTCHA_CHALLENGE_FUNCT
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_CHALLENGE_FUNCT = 'captcha.tests.trivial_challenge'
@@ -183,40 +182,35 @@ class CaptchaCase(TestCase):
             self.assertTrue(str(r2.content).find('Form validated') > 0)
         settings.CAPTCHA_CHALLENGE_FUNCT = __current_challange_function
 
-    def testOutputFormat(self):
+    def test_output_format(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s')
             r = self.client.get(reverse(urlname))
             self.assertEqual(r.status_code, 200)
             self.assertTrue('<p>Hello, captcha world</p>' in str(r.content))
 
-    def testInvalidOutputFormat(self):
-        __current_settings_debug = django_settings.DEBUG
+    def test_invalid_output_format(self):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
-            # we turn on DEBUG because CAPTCHA_OUTPUT_FORMAT is only checked debug
-
-            django_settings.DEBUG = True
             settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s')
             try:
                 self.client.get(reverse(urlname))
                 self.fail()
             except ImproperlyConfigured as e:
                 self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(e))
-        django_settings.DEBUG = __current_settings_debug
 
-    def testPerFormFormat(self):
+    def test_per_form_format(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s testCustomFormatString %(hidden_field)s %(text_field)s')
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('testCustomFormatString' in str(r.content))
         r = self.client.get(reverse('test_per_form_format'))
         self.assertTrue('testPerFieldCustomFormatString' in str(r.content))
 
-    def testIssue31ProperLabel(self):
+    def test_issue31_proper_abel(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s %(hidden_field)s %(text_field)s')
         r = self.client.get(reverse('captcha-test'))
         self.assertTrue('<label for="id_captcha_1"' in str(r.content))
 
-    def testRefreshView(self):
+    def test_refresh_view(self):
         r = self.client.get(reverse('captcha-refresh'), HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         try:
             new_data = json.loads(six.text_type(r.content, encoding='ascii'))
@@ -224,14 +218,14 @@ class CaptchaCase(TestCase):
         except:
             self.fail()
 
-    def testContentLength(self):
+    def test_content_length(self):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertTrue(response.has_header('content-length'))
             self.assertTrue(response['content-length'].isdigit())
             self.assertTrue(int(response['content-length']))
 
-    def testIssue12ProperInstantiation(self):
+    def test_issue12_proper_instantiation(self):
         """
         This test covers a default django field and widget behavior
         It not assert anything. If something is wrong it will raise a error!
@@ -240,7 +234,7 @@ class CaptchaCase(TestCase):
         widget = CaptchaTextInput(attrs={'class': 'required'})
         CaptchaField(widget=widget)
 
-    def testTestMode_Issue15(self):
+    def test_test_mode_issue15(self):
         __current_test_mode_setting = settings.CAPTCHA_TEST_MODE
         settings.CAPTCHA_TEST_MODE = False
         r = self.client.get(reverse('captcha-test'))
