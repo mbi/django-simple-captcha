@@ -357,6 +357,16 @@ class CaptchaCase(TestCase):
 
         settings.CAPTCHA_FONT_PATH = __current_test_mode_setting
 
+    def test_template_overrides(self):
+        __current_test_mode_setting = settings.CAPTCHA_IMAGE_TEMPLATE
+        settings.CAPTCHA_IMAGE_TEMPLATE = 'captcha_test/image.html'
+
+        for urlname in ('captcha-test', 'captcha-test-model-form'):
+            settings.CAPTCHA_CHALLENGE_FUNCT = 'captcha.tests.trivial_challenge'
+            r = self.client.get(reverse(urlname))
+            self.assertTrue('captcha-template-test' in six.text_type(r.content))
+        settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
+
 
 def trivial_challenge():
     return 'trivial', 'trivial'

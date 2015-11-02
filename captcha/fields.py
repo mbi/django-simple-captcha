@@ -102,7 +102,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         if settings.CAPTCHA_FLITE_PATH:
             context.update({'audio': self.audio_url()})
 
-        self.image_and_audio = render_to_string('captcha/image.html', context)
+        self.image_and_audio = render_to_string(settings.CAPTCHA_IMAGE_TEMPLATE, context)
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
 
