@@ -5,7 +5,8 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
-from django.utils.translation import ugettext, ugettext_lazy
+from django.utils.translation import ugettext_lazy
+from django.template.loader import render_to_string
 from six import u
 
 
@@ -95,9 +96,13 @@ class CaptchaTextInput(BaseCaptchaTextInput):
     def render(self, name, value, attrs=None):
         self.fetch_captcha_store(name, value, attrs)
 
-        self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % self.image_url()
+        context = {
+            'image': self.image_url()
+        }
         if settings.CAPTCHA_FLITE_PATH:
-            self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (self.audio_url(), ugettext('Play CAPTCHA as audio file'), self.image_and_audio)
+            context.update({'audio': self.audio_url()})
+
+        self.image_and_audio = render_to_string('captcha/image.html', context)
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
 
