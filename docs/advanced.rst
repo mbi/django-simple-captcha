@@ -136,9 +136,12 @@ New in version 0.1.6
 
 Specify your own output format for the generated markup, when e.g. you want to position the captcha image relative to the text field in your form.
 
-Defaults to: ``u'%(image)s %(hidden_field)s %(text_field)s'``
+Defaults to: ``None``
 
-Note: the three keys have to be present in the format string or an error will be thrown at runtime.
+(Used to default to: ``u'%(image)s %(hidden_field)s %(text_field)s'``)
+
+Note: this settings is deprecated in favor of template-based field rendering, use ``CAPTCHA_FIELD_TEMPLATE`` instead (see the Rendering section below).
+
 
 CAPTCHA_TEST_MODE
 ------------------------
@@ -149,6 +152,45 @@ When set to True, the string "PASSED" (any case) will be accepted as a valid res
 Use this for testing purposes. Warning: do NOT set this to True in production.
 
 Defaults to: False
+
+
+Rendering
++++++++++
+
+A CAPTCHA field is made up of three components:
+
+* The actual image that the end user has to copy from
+* A text field, that the user has to fill with the content of the image
+* A hidden field, containing the database reference of the CAPTCHA (for verification).
+
+These three elements are rendered individually, then assembled into a single bit of HTML.
+
+As of version 0.4.7 you can control how the individual components are rendered, as well as how all components are assembled, by overriding four templates:
+
+* ``captcha/image.html`` controls the rendering of the image (and optionnally audio) element
+* ``captcha/text_field.html`` controls the rendering of the text field
+* ``captcha/hidden_field.html`` controls the rendering of the hidden input
+* ``captcha/field.html`` controls the assembling of the previous three elements
+
+These templates can be overriden in your own ``templates`` folder, or you can change the actual template names by settings ``CAPTCHA_IMAGE_TEMPLATE``, ``CAPTCHA_TEXT_FIELD_TEMPLATE``, ``CAPTCHA_HIDDEN_FIELD_TEMPLATE`` and ``CAPTCHA_FIELD_TEMPLATE``, respectively.
+
+Context
+-------
+
+The following context variables are passed to the three "individual" templates:
+
+* ``image``: The URL of the rendered CAPTCHA image
+* ``name``: name of the field (i.e. the name of your form field)
+* ``key``: the hashed value (identifier) of this CAPTCHA: this is stored and passed in the hidden input
+* ``id``: the HTML ``id`` attribute to be used
+
+The ``captcha/field.html`` template receives the following context:
+
+* ``image``: the rendered (HTML) image and optionnaly audio elements
+* ``hidden_field``: the rendered hidden input
+* ``text_field``: the rendered text input
+
+Note: these elements have been marked as safe, you can render them straight into your template.
 
 
 Generators and modifiers
