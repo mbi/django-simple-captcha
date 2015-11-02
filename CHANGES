@@ -1,6 +1,7 @@
 Version 0.4.7 (unreleased)
 --------------------------
 * Trying to fix the TravisCI build errors
+* Use Django templates to render the individual fields, as well as the assembled Captcha Field (Issue #31)
 
 Version 0.4.6
 -------------

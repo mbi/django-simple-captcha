@@ -5,7 +5,9 @@ from django.core.urlresolvers import reverse, NoReverseMatch
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput
-from django.utils.translation import ugettext, ugettext_lazy
+from django.utils.translation import ugettext_lazy
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 from six import u
 
 
@@ -61,14 +63,20 @@ class CaptchaTextInput(BaseCaptchaTextInput):
     def __init__(self, attrs=None, **kwargs):
         self._args = kwargs
         self._args['output_format'] = self._args.get('output_format') or settings.CAPTCHA_OUTPUT_FORMAT
+        self._args['field_template'] = self._args.get('field_template') or settings.CAPTCHA_FIELD_TEMPLATE
         self._args['id_prefix'] = self._args.get('id_prefix')
 
-        for key in ('image', 'hidden_field', 'text_field'):
-            if '%%(%s)s' % key not in self._args['output_format']:
-                raise ImproperlyConfigured('All of %s must be present in your CAPTCHA_OUTPUT_FORMAT setting. Could not find %s' % (
-                    ', '.join(['%%(%s)s' % k for k in ('image', 'hidden_field', 'text_field')]),
-                    '%%(%s)s' % key
-                ))
+        if self._args['output_format'] is None and self._args['field_template'] is None:
+            raise ImproperlyConfigured('You MUST define either CAPTCHA_FIELD_TEMPLATE or CAPTCHA_OUTPUT_FORMAT setting. Please refer to http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
+
+        if self._args['output_format']:
+            for key in ('image', 'hidden_field', 'text_field'):
+                if '%%(%s)s' % key not in self._args['output_format']:
+                    raise ImproperlyConfigured('All of %s must be present in your CAPTCHA_OUTPUT_FORMAT setting. Could not find %s' % (
+                        ', '.join(['%%(%s)s' % k for k in ('image', 'hidden_field', 'text_field')]),
+                        '%%(%s)s' % key
+                    ))
+
         super(CaptchaTextInput, self).__init__(attrs)
 
     def build_attrs(self, extra_attrs=None, **kwargs):
@@ -85,19 +93,38 @@ class CaptchaTextInput(BaseCaptchaTextInput):
 
     def format_output(self, rendered_widgets):
         hidden_field, text_field = rendered_widgets
-        text_field = text_field.replace('<input', '<input autocomplete="off"')
-        return self._args['output_format'] % {
-            'image': self.image_and_audio,
-            'hidden_field': hidden_field,
-            'text_field': text_field
-        }
+
+        if self._args['output_format']:
+            return self._args['output_format'] % {
+                'image': self.image_and_audio,
+                'hidden_field': self.hidden_field,
+                'text_field': self.text_field
+            }
+
+        elif self._args['field_template']:
+            context = {
+                'image': mark_safe(self.image_and_audio),
+                'hidden_field': mark_safe(self.hidden_field),
+                'text_field': mark_safe(self.text_field)
+            }
+            return render_to_string(settings.CAPTCHA_FIELD_TEMPLATE, context)
 
     def render(self, name, value, attrs=None):
         self.fetch_captcha_store(name, value, attrs)
 
-        self.image_and_audio = '<img src="%s" alt="captcha" class="captcha" />' % self.image_url()
+        context = {
+            'image': self.image_url(),
+            'name': name,
+            'key': self._key,
+            'id': u'%s_%s' % (self._args.get('id_prefix'), attrs.get('id')) if self._args.get('id_prefix') else attrs.get('id')
+        }
         if settings.CAPTCHA_FLITE_PATH:
-            self.image_and_audio = '<a href="%s" title="%s">%s</a>' % (self.audio_url(), ugettext('Play CAPTCHA as audio file'), self.image_and_audio)
+            context.update({'audio': self.audio_url()})
+
+        self.image_and_audio = render_to_string(settings.CAPTCHA_IMAGE_TEMPLATE, context)
+        self.hidden_field = render_to_string(settings.CAPTCHA_HIDDEN_FIELD_TEMPLATE, context)
+        self.text_field = render_to_string(settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context)
+
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
 
 
