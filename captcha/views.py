@@ -1,6 +1,5 @@
 from captcha.conf import settings
 from captcha.helpers import captcha_image_url
-from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.core.exceptions import ImproperlyConfigured
 import random
@@ -31,6 +30,18 @@ NON_DIGITS_RX = re.compile('[^\d]')
 # Distance of the drawn text from the top of the captcha image
 from_top = 4
 
+from .backends.base import BaseStore
+
+CaptchaStore = None
+if settings.CAPTCHA_STORE == 'SESSION':
+    from .backends.session import SessionStore
+    CaptchaStore = SessionStore()
+elif settings.CAPTCHA_STORE == 'DB':
+    from .backends.db import DBStore
+    CaptchaStore = DBStore()
+else:
+    raise ImproperlyConfigured
+
 
 def getsize(font, text):
     if hasattr(font, 'getoffset'):
@@ -49,12 +60,12 @@ def makeimg(size):
 
 def captcha_image(request, key, scale=1):
     try:
-        store = CaptchaStore.objects.get(hashkey=key)
-    except CaptchaStore.DoesNotExist:
+        store = CaptchaStore.get(hashkey=key)
+    except BaseStore.DoesNotExist:
         # HTTP 410 Gone status so that crawlers don't index these expired urls.
         return HttpResponse(status=410)
 
-    text = store.challenge
+    text = store['challenge']
 
     if isinstance(settings.CAPTCHA_FONT_PATH, six.string_types):
         fontpath = settings.CAPTCHA_FONT_PATH
@@ -134,12 +145,12 @@ def captcha_image(request, key, scale=1):
 def captcha_audio(request, key):
     if settings.CAPTCHA_FLITE_PATH:
         try:
-            store = CaptchaStore.objects.get(hashkey=key)
-        except CaptchaStore.DoesNotExist:
+            store = CaptchaStore.get(hashkey=key)
+        except BaseStore.DoesNotExist:
             # HTTP 410 Gone status so that crawlers don't index these expired urls.
             return HttpResponse(status=410)
 
-        text = store.challenge
+        text = store['challenge']
         if 'captcha.helpers.math_challenge' == settings.CAPTCHA_CHALLENGE_FUNCT:
             text = text.replace('*', 'times').replace('-', 'minus')
         else:

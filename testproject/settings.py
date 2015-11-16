@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'captcha',
 ]
 
-LANGUAGE_CODE = "en"
+LANGUAGE_CODE = "en-us"
 
 LANGUAGES = (
     ('en', 'English'),
