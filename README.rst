@@ -36,4 +36,4 @@ You will need to install `Pillow <https://github.com/python-imaging/Pillow>`_ be
 Documentation
 +++++++++++++
 
-Read the `documentation online <http://readthedocs.org/docs/django-simple-captcha>`_.
+Read the `documentation online <http://django-simple-captcha.readthedocs.org/en/latest/>`_.
