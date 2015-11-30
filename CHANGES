@@ -1,7 +1,9 @@
-Version 0.4.7 (unreleased)
---------------------------
+Version 0.4.7
+-------------
+* Supported Django versions are now 1.7, 1.8 and 1.9
 * Trying to fix the TravisCI build errors
 * Use Django templates to render the individual fields, as well as the assembled Captcha Field (Issue #31)
+
 
 Version 0.4.6
 -------------
