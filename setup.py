@@ -4,7 +4,7 @@ from captcha import pillow_required, get_version as get_captcha_version
 install_requires = [
     'setuptools',
     'six >=1.2.0',
-    'Django >= 1.4'
+    'Django >= 1.7'
 ]
 
 if pillow_required():

@@ -4,4 +4,4 @@ include README.rst
 include CHANGES
 recursive-include captcha/fonts *
 recursive-include captcha/locale *
-prune testproject
+recursive-include captcha/templates *
