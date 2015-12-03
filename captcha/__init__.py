@@ -1,6 +1,6 @@
 import re
 
-VERSION = (0, 4, 8)
+VERSION = (0, 4, 9)
 
 
 def get_version(svn=False):

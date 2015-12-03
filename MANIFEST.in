@@ -2,6 +2,8 @@ include MANIFEST.in
 include LICENSE
 include README.rst
 include CHANGES
+include tox.ini
 recursive-include captcha/fonts *
 recursive-include captcha/locale *
 recursive-include captcha/templates *
+recursive-include testproject *
