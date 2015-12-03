@@ -3,7 +3,10 @@ include LICENSE
 include README.rst
 include CHANGES
 include tox.ini
+include .pep8
 recursive-include captcha/fonts *
 recursive-include captcha/locale *
 recursive-include captcha/templates *
 recursive-include testproject *
+recursive-include docs *
+
