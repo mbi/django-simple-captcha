@@ -9,4 +9,11 @@ recursive-include captcha/locale *
 recursive-include captcha/templates *
 recursive-include testproject *
 recursive-include docs *
-
+exclude testproject/django-simple-captcha.db
+prune .tox
+prune docs/_build
+prune htmlcov
+global-exclude *pyc
+global-exclude coverage.xml
+global-exclude .DS_Store
+global-exclude .coverage
