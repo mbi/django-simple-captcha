@@ -1,5 +1,5 @@
-Version 0.5.1 (unreleased)
---------------------------
+Version 0.5.1
+-------------
 * Fine tuning MANIFEST.in
 * Prevent testproject from installing into site-packages
 
