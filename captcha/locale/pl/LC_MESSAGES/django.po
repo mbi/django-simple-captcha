@@ -29,4 +29,4 @@ msgstr "Niepoprawnie wpisana CAPTCHA"
 
 #: tests/tests.py:125
 msgid "This field is required."
-msgstr "To pole jest wymagane"
+msgstr "To pole jest wymagane."
