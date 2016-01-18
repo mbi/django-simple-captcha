@@ -25,6 +25,9 @@ CAPTCHA_FIELD_TEMPLATE = getattr(settings, 'CAPTCHA_FIELD_TEMPLATE', 'captcha/fi
 CAPTCHA_OUTPUT_FORMAT = getattr(settings, 'CAPTCHA_OUTPUT_FORMAT', None)
 
 CAPTCHA_TEST_MODE = getattr(settings, 'CAPTCHA_TEST_MODE', getattr(settings, 'CATPCHA_TEST_MODE', False))
+CAPTCHA_STORAGE = getattr(settings, 'CAPTCHA_STORAGE', {
+    'BACKEND': 'captcha.storages.db.DBStorage',
+})
 
 # Failsafe
 if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:
