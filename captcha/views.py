@@ -1,14 +1,16 @@
+import re
+import os
+import six
+import random
+import tempfile
+import subprocess
+
+from django.http import HttpResponse, Http404
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
+
 from captcha.conf import settings
 from captcha.helpers import captcha_image_url
-from captcha.models import CaptchaStore
-from django.http import HttpResponse, Http404
-from django.core.exceptions import ImproperlyConfigured
-import random
-import re
-import tempfile
-import os
-import subprocess
-import six
+from captcha.storages import storage
 
 try:
     from cStringIO import StringIO
@@ -49,8 +51,8 @@ def makeimg(size):
 
 def captcha_image(request, key, scale=1):
     try:
-        store = CaptchaStore.objects.get(hashkey=key)
-    except CaptchaStore.DoesNotExist:
+        store = storage.get(hashkey=key)
+    except ObjectDoesNotExist:
         # HTTP 410 Gone status so that crawlers don't index these expired urls.
         return HttpResponse(status=410)
 
@@ -134,8 +136,8 @@ def captcha_image(request, key, scale=1):
 def captcha_audio(request, key):
     if settings.CAPTCHA_FLITE_PATH:
         try:
-            store = CaptchaStore.objects.get(hashkey=key)
-        except CaptchaStore.DoesNotExist:
+            store = storage.get(hashkey=key)
+        except ObjectDoesNotExist:
             # HTTP 410 Gone status so that crawlers don't index these expired urls.
             return HttpResponse(status=410)
 
@@ -162,7 +164,7 @@ def captcha_refresh(request):
     if not request.is_ajax():
         raise Http404
 
-    new_key = CaptchaStore.generate_key()
+    new_key = storage.generate_key()
     to_json_response = {
         'key': new_key,
         'image_url': captcha_image_url(new_key),
