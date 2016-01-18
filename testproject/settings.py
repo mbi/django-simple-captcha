@@ -17,6 +17,14 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'captcha_test_cache_st',
+    }
+}
+
+
 # TEST_DATABASE_CHARSET = "utf8"
 # TEST_DATABASE_COLLATION = "utf8_general_ci"
 
