@@ -1,4 +1,5 @@
 from django.core.cache import caches
+from django.utils.encoding import force_text
 
 from ..helpers import get_safe_now
 from .base import BaseStorage
@@ -18,9 +19,9 @@ class CacheStorage(BaseStorage):
     def create_obj(self, challenge, response, hashkey, expiration):
         key = self.get_key(hashkey)
         data = dict(
-            challenge=challenge,
-            response=response,
-            hashkey=hashkey,
+            challenge=force_text(challenge),
+            response=force_text(response),
+            hashkey=force_text(hashkey),
             expiration=expiration
         )
         self.cache.set(key, data, timeout=self.get_timeout())
