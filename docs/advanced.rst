@@ -6,6 +6,21 @@ Configuration toggles
 
 The following configuration elements can be defined (in your ``settings.py``)
 
+CAPTCHA_STORAGE
+----------------
+
+Set storage backend for captcha records. Note, you must define ``CAPTCHA_STORAGE`` in your project settings. ::
+
+    CAPTCHA_STORAGE = {
+        'BACKEND': 'captcha.storages.cache.CacheStorage',
+    }
+
+Default backend is: ::
+
+    CAPTCHA_STORAGE = {
+        'BACKEND': 'captcha.storages.db.DBStorage',
+    }
+
 CAPTCHA_FONT_PATH
 -----------------
 
