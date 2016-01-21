@@ -8,8 +8,8 @@ class InvalidStorageBackendError(ImproperlyConfigured):
     pass
 
 
-def get_storage():
-    conf = captcha_settings.CAPTCHA_STORAGE
+def get_storage(storage_conf=None):
+    conf = storage_conf or captcha_settings.CAPTCHA_STORAGE
     try:
         backend = conf['BACKEND']
         # Trying to import the given backend, in case it's a dotted path
