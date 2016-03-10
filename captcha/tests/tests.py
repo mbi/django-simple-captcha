@@ -16,7 +16,7 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
-from six import u
+from six import u, text_type
 
 try:
     from PIL import Image
@@ -360,6 +360,14 @@ class CaptchaCase(TestCase):
             r = self.client.get(reverse(urlname))
             self.assertTrue('captcha-template-test' in six.text_type(r.content))
         settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
+
+    def test_math_challenge(self):
+        helper = 'captcha.helpers.math_challenge'
+        challenge, response = settings._callable_from_string(helper)()
+
+        while '×' not in challenge:
+            challenge, response = settings._callable_from_string(helper)()
+        self.assertEqual(response, text_type(eval(challenge.replace('×', '*')[:-1])))
 
 
 def trivial_challenge():
