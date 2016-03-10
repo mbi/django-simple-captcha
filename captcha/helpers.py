@@ -12,6 +12,8 @@ def math_challenge():
     if operands[0] < operands[1] and '-' == operator:
         operands = (operands[1], operands[0])
     challenge = '%d%s%d' % (operands[0], operator, operands[1])
+    if '*' == operator:
+        return '%s=' % (challenge.replace('*', '×')), text_type(eval(challenge))
     return '%s=' % (challenge), text_type(eval(challenge))
 
 
