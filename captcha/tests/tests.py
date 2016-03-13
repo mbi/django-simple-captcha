@@ -362,12 +362,16 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
 
     def test_math_challenge(self):
+        __current_test_mode_setting = settings.CAPTCHA_MATH_CHALLENGE_OPERATOR
+        settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = '~'
         helper = 'captcha.helpers.math_challenge'
         challenge, response = settings._callable_from_string(helper)()
 
-        while '×' not in challenge:
+        while settings.CAPTCHA_MATH_CHALLENGE_OPERATOR not in challenge:
             challenge, response = settings._callable_from_string(helper)()
-        self.assertEqual(response, text_type(eval(challenge.replace('×', '*')[:-1])))
+
+        self.assertEqual(response, text_type(eval(challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, '*')[:-1])))
+        settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = __current_test_mode_setting
 
 
 def trivial_challenge():

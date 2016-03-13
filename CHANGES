@@ -1,3 +1,8 @@
+Version 0.5.2 (unreleased)
+--------------------------
+* Use any mutliplication uperator instead of "*". (Fixes #77 via PR #104, thanks @honsdomi and @isergey)
+
+
 Version 0.5.1
 -------------
 * Fine tuning MANIFEST.in

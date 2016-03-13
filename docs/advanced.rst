@@ -63,10 +63,10 @@ See Generators below for a list of available generators and a guide on how to wr
 
 Defaults to: ``'captcha.helpers.random_char_challenge'``
 
-CAPTCHA_MATH_CHALLENGE_FORMAT
------------------------------
+CAPTCHA_MATH_CHALLENGE_OPERATOR
+-------------------------------
 
-When using the ``math_challenge``, lets you choose multiplication sign. Use lowercase ``'x'`` for cross sign.
+When using the ``math_challenge``, lets you choose the multiplication operator. Use lowercase ``'x'`` for cross sign.
 
 Defaults to: ``'*'`` (asterisk sign)
 
