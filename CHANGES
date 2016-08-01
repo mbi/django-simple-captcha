@@ -1,7 +1,7 @@
-Version 0.5.2 (unreleased)
---------------------------
+Version 0.5.2
+-------------
 * Use any mutliplication uperator instead of "*". (Fixes #77 via PR #104, thanks @honsdomi and @isergey)
-* Test against Django 1.10b1
+* Test against Django 1.10
 
 
 Version 0.5.1
