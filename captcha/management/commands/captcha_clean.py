@@ -1,19 +1,20 @@
-from django.core.management.base import BaseCommand
-from captcha.models import get_safe_now
 import sys
+
+from django.core.management.base import BaseCommand
+
+from captcha.storages import storage
 
 
 class Command(BaseCommand):
     help = "Clean up expired captcha hashkeys."
 
     def handle(self, **options):
-        from captcha.models import CaptchaStore
         verbose = int(options.get('verbosity'))
-        expired_keys = CaptchaStore.objects.filter(expiration__lte=get_safe_now()).count()
+        expired_keys = storage.get_count_of_expired()
         if verbose >= 1:
             print("Currently %d expired hashkeys" % expired_keys)
         try:
-            CaptchaStore.remove_expired()
+            storage.remove_expired()
         except:
             if verbose >= 1:
                 print("Unable to delete expired hashkeys.")

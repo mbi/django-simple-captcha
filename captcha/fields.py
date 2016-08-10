@@ -1,6 +1,6 @@
 ﻿from captcha.conf import settings
-from captcha.models import CaptchaStore, get_safe_now
-from django.core.exceptions import ImproperlyConfigured
+from captcha.storages import storage
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
@@ -29,7 +29,7 @@ class BaseCaptchaTextInput(MultiWidget):
 
     def fetch_captcha_store(self, name, value, attrs=None):
         """
-        Fetches a new CaptchaStore
+        Fetches a new captcha record
         This has to be called inside render
         """
         try:
@@ -37,7 +37,7 @@ class BaseCaptchaTextInput(MultiWidget):
         except NoReverseMatch:
             raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
 
-        key = CaptchaStore.generate_key()
+        key = storage.generate_key()
 
         # these can be used by format_output and render
         self._value = [key, u('')]
@@ -154,20 +154,20 @@ class CaptchaField(MultiValueField):
     def clean(self, value):
         super(CaptchaField, self).clean(value)
         response, value[1] = (value[1] or '').strip().lower(), ''
-        CaptchaStore.remove_expired()
+        storage.remove_expired()
         if settings.CAPTCHA_TEST_MODE and response.lower() == 'passed':
             # automatically pass the test
             try:
                 # try to delete the captcha based on its hash
-                CaptchaStore.objects.get(hashkey=value[0]).delete()
-            except CaptchaStore.DoesNotExist:
+                storage.delete(hashkey=value[0])
+            except ObjectDoesNotExist:
                 # ignore errors
                 pass
         elif not self.required and not response:
             pass
         else:
             try:
-                CaptchaStore.objects.get(response=response, hashkey=value[0], expiration__gt=get_safe_now()).delete()
-            except CaptchaStore.DoesNotExist:
+                storage.delete_wanted(hashkey=value[0], response=response)
+            except ObjectDoesNotExist:
                 raise ValidationError(getattr(self, 'error_messages', {}).get('invalid', ugettext_lazy('Invalid CAPTCHA')))
         return value

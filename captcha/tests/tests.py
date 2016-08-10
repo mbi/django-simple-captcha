@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 from captcha.conf import settings
+from captcha import storages
+from captcha import views
+from captcha import fields
+from captcha.management.commands import captcha_clean
 from captcha.fields import CaptchaField, CaptchaTextInput
-from captcha.models import CaptchaStore, get_safe_now
+from captcha.helpers import get_safe_now
+from captcha.storages import get_storage
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase, override_settings
@@ -23,6 +28,37 @@ try:
 except ImportError:
     import Image  # NOQA
 
+# store original storage setting
+orig_storage = storages.storage
+
+
+class OverrideStorageMixin(object):
+    """
+    Use for test cases with different storage setting
+    """
+
+    new_storage = get_storage({
+        'BACKEND': 'captcha.storages.cache.CacheStorage',
+    })
+
+    def setUp(self):
+
+        storages.storage = self.new_storage
+        views.storage = storages.storage
+        fields.storage = storages.storage
+        captcha_clean.storage = storages.storage
+
+        super(OverrideStorageMixin, self).setUp()
+
+    def tearDown(self):
+
+        super(OverrideStorageMixin, self).tearDown()
+
+        storages.storage = orig_storage
+        views.storage = orig_storage
+        fields.storage = orig_storage
+        captcha_clean.storage = orig_storage
+
 
 @override_settings(ROOT_URLCONF='captcha.tests.urls')
 class CaptchaCase(TestCase):
@@ -42,9 +78,9 @@ class CaptchaCase(TestCase):
             tested_helpers.append('captcha.helpers.huge_words_and_punctuation_challenge')
         for helper in tested_helpers:
             challenge, response = settings._callable_from_string(helper)()
-            self.stores[helper.rsplit('.', 1)[-1].replace('_challenge', '_store')], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
+            self.stores[helper.rsplit('.', 1)[-1].replace('_challenge', '_store')] = storages.storage.create(challenge=challenge, response=response)
         challenge, response = settings.get_challenge()()
-        self.stores['default_store'], _ = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
+        self.stores['default_store'] = storages.storage.create(challenge=challenge, response=response)
         self.default_store = self.stores['default_store']
 
     def tearDown(self):
@@ -54,7 +90,7 @@ class CaptchaCase(TestCase):
 
     def __extract_hash_and_response(self, r):
         hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
-        response = CaptchaStore.objects.get(hashkey=hash_).response
+        response = storages.storage.get(hashkey=hash_).response
         return hash_, response
 
     def test_image(self):
@@ -108,9 +144,10 @@ class CaptchaCase(TestCase):
             self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
     def test_deleted_expired(self):
-        self.default_store.expiration = get_safe_now() - datetime.timedelta(minutes=5)
-        self.default_store.save()
-        hash_ = self.default_store.hashkey
+        challenge, response = settings.get_challenge()()
+        expiration = get_safe_now() - datetime.timedelta(minutes=5)
+        expired_store = storages.storage.create(challenge=challenge, response=response, expiration=expiration)
+        hash_ = expired_store.hashkey
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=self.default_store.response, subject='xxx', sender='asasd@asdasd.com'))
 
         self.assertEqual(r.status_code, 200)
@@ -118,7 +155,7 @@ class CaptchaCase(TestCase):
 
         # expired -> deleted
         try:
-            CaptchaStore.objects.get(hashkey=hash_)
+            storages.storage.get(hashkey=hash_)
             self.fail()
         except:
             pass
@@ -134,9 +171,9 @@ class CaptchaCase(TestCase):
         self.assertFormError(r, 'form', 'captcha', ugettext_lazy('This field is required.'))
 
     def test_repeated_challenge(self):
-        CaptchaStore.objects.create(challenge='xxx', response='xxx')
+        storages.storage.create(challenge='xxx', response='xxx')
         try:
-            CaptchaStore.objects.create(challenge='xxx', response='xxx')
+            storages.storage.create(challenge='xxx', response='xxx')
         except Exception:
             self.fail()
 
@@ -159,12 +196,12 @@ class CaptchaCase(TestCase):
             else:
                 self.fail()
             try:
-                store_1 = CaptchaStore.objects.get(hashkey=hash_1)
-                store_2 = CaptchaStore.objects.get(hashkey=hash_2)
+                store_1 = storages.storage.get(hashkey=hash_1)
+                store_2 = storages.storage.get(hashkey=hash_2)
             except:
                 self.fail()
 
-            self.assertTrue(store_1.pk != store_2.pk)
+            self.assertTrue(store_1.hashkey != store_2.hashkey)
             self.assertTrue(store_1.response == store_2.response)
             self.assertTrue(hash_1 != hash_2)
 
@@ -173,7 +210,7 @@ class CaptchaCase(TestCase):
             self.assertTrue(str(r1.content).find('Form validated') > 0)
 
             try:
-                store_2 = CaptchaStore.objects.get(hashkey=hash_2)
+                store_2 = storages.storage.get(hashkey=hash_2)
             except:
                 self.fail()
 
@@ -302,7 +339,7 @@ class CaptchaCase(TestCase):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
-            CaptchaStore.objects.filter(hashkey=key).delete()
+            storages.storage.delete(hashkey=key)
             response = self.client.get(reverse('captcha-image', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 410)
 
@@ -372,6 +409,12 @@ class CaptchaCase(TestCase):
 
         self.assertEqual(response, text_type(eval(challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, '*')[:-1])))
         settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = __current_test_mode_setting
+
+
+class CaptchaCaseCacheStorage(OverrideStorageMixin, CaptchaCase):
+
+    def test_default_store_from_cache(self):
+        self.assertEqual(self.default_store.pk, None)
 
 
 def trivial_challenge():

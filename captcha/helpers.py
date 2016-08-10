@@ -1,8 +1,22 @@
 # -*- coding: utf-8 -*-
 import random
-from captcha.conf import settings
-from django.core.urlresolvers import reverse
+import datetime
 from six import u, text_type
+
+from django.core.urlresolvers import reverse
+from django.conf import settings as dj_settings
+
+from captcha.conf import settings
+
+
+def get_safe_now():
+    try:
+        from django.utils.timezone import utc
+        if dj_settings.USE_TZ:
+            return datetime.datetime.utcnow().replace(tzinfo=utc)
+    except:
+        pass
+    return datetime.datetime.now()
 
 
 def math_challenge():
