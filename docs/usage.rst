@@ -82,6 +82,7 @@ Passing arguments to the field
 
 * ``output_format`` will let you format the layout of the rendered field. Defaults to the value defined in : :ref:`output_format_ref`.
 * ``id_prefix`` Optional prefix that will be added to the ID attribute in the generated fields and labels, to be used when e.g. several Captcha fields are being displayed on a same page. (added in version 0.4.4)
+* ``generator`` Optional callable or module path to callable that will be used to generate the challenge and the response, e.g. ``generator='path.to.generator_function'`` or ``generator=lambda: ('LOL', 'LOL')``, see also :ref:`generators_ref`. Defaults to whatever is defined in ``settings.CAPTCHA_CHALLENGE_FUNCT``.
 
 Example usage for ajax form
 ---------------------------

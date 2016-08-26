@@ -85,6 +85,19 @@ def test_model_form(request):
     return _test(request, CaptchaTestModelForm)
 
 
+def test_custom_generator(request):
+    class CaptchaTestModelForm(forms.ModelForm):
+        subject = forms.CharField(max_length=100)
+        sender = forms.EmailField()
+        captcha = CaptchaField(generator=lambda: ('111111', '111111'))
+
+        class Meta:
+            model = User
+            fields = ('subject', 'sender', 'captcha', )
+
+    return _test(request, CaptchaTestModelForm)
+
+
 def test_custom_error_message(request):
     class CaptchaTestErrorMessageForm(forms.Form):
         captcha = CaptchaField(

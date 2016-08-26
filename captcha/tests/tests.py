@@ -205,6 +205,11 @@ class CaptchaCase(TestCase):
         r = self.client.get(reverse('test_per_form_format'))
         self.assertTrue('testPerFieldCustomFormatString' in str(r.content))
 
+    def test_custom_generator(self):
+        r = self.client.get(reverse('test_custom_generator'))
+        hash_, response = self.__extract_hash_and_response(r)
+        self.assertEqual(response, u'111111')
+
     def test_issue31_proper_abel(self):
         settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s %(hidden_field)s %(text_field)s')
         r = self.client.get(reverse('captcha-test'))

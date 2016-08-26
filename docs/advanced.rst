@@ -199,6 +199,7 @@ The ``captcha/field.html`` template receives the following context:
 
 Note: these elements have been marked as safe, you can render them straight into your template.
 
+.. _generators_ref:
 
 Generators and modifiers
 ++++++++++++++++++++++++

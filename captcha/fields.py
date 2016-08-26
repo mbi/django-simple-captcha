@@ -27,7 +27,7 @@ class BaseCaptchaTextInput(MultiWidget):
             return value.split(',')
         return [None, None]
 
-    def fetch_captcha_store(self, name, value, attrs=None):
+    def fetch_captcha_store(self, name, value, attrs=None, generator=None):
         """
         Fetches a new CaptchaStore
         This has to be called inside render
@@ -37,7 +37,7 @@ class BaseCaptchaTextInput(MultiWidget):
         except NoReverseMatch:
             raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
 
-        key = CaptchaStore.generate_key()
+        key = CaptchaStore.generate_key(generator)
 
         # these can be used by format_output and render
         self._value = [key, u('')]
@@ -64,7 +64,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         self._args = kwargs
         self._args['output_format'] = self._args.get('output_format') or settings.CAPTCHA_OUTPUT_FORMAT
         self._args['field_template'] = self._args.get('field_template') or settings.CAPTCHA_FIELD_TEMPLATE
-        self._args['id_prefix'] = self._args.get('id_prefix')
+        # self._args['id_prefix'] = self._args.get('id_prefix')
 
         if self._args['output_format'] is None and self._args['field_template'] is None:
             raise ImproperlyConfigured('You MUST define either CAPTCHA_FIELD_TEMPLATE or CAPTCHA_OUTPUT_FORMAT setting. Please refer to http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
@@ -110,7 +110,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             return render_to_string(settings.CAPTCHA_FIELD_TEMPLATE, context)
 
     def render(self, name, value, attrs=None):
-        self.fetch_captcha_store(name, value, attrs)
+        self.fetch_captcha_store(name, value, attrs, self._args.get('generator'))
 
         context = {
             'image': self.image_url(),
@@ -141,7 +141,8 @@ class CaptchaField(MultiValueField):
 
         kwargs['widget'] = kwargs.pop('widget', CaptchaTextInput(
             output_format=kwargs.pop('output_format', None),
-            id_prefix=kwargs.pop('id_prefix', None)
+            id_prefix=kwargs.pop('id_prefix', None),
+            generator=kwargs.pop('generator', None)
         ))
 
         super(CaptchaField, self).__init__(fields, *args, **kwargs)
