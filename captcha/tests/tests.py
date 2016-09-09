@@ -2,6 +2,7 @@
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore, get_safe_now
+from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase, override_settings
@@ -372,6 +373,28 @@ class CaptchaCase(TestCase):
 
         self.assertEqual(response, text_type(eval(challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, '*')[:-1])))
         settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = __current_test_mode_setting
+
+    def test_no_db_write(self):
+        __current_test_mod_setting = settings.CAPTCHA_NO_DB_WRITE
+        __current_test_mod_timeout_setting = settings.CAPTCHA_TIMEOUT
+        settings.CAPTCHA_NO_DB_WRITE = True
+        settings.CAPTCHA_TIMEOUT = 90
+        CaptchaStore.objects.all().delete() # Delete objects created during SetUp
+        CaptchaStore.create_pool(count=10)
+        self.assertEqual(CaptchaStore.objects.count(), 10)
+        pool_set = CaptchaStore.objects.values_list('hashkey', flat=True)
+        random_pick = CaptchaStore.pick()
+        self.assertIn(random_pick, pool_set)
+        # pick() should not create any extra captcha
+        self.assertEqual(CaptchaStore.objects.count(), 10)
+        settings.CAPTCHA_NO_DB_WRITE = __current_test_mod_setting
+        settings.CAPTCHA_TIMEOUT = __current_test_mod_timeout_setting
+
+    def test_captcha_create_pool(self):
+        CaptchaStore.objects.all().delete() # Delete objects created during SetUp
+        management.call_command('captcha_create_pool', pool_size=10,
+                verbosity=0)
+        self.assertEqual(CaptchaStore.objects.count(), 10)
 
 
 def trivial_challenge():

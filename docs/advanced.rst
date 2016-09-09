@@ -161,6 +161,39 @@ Use this for testing purposes. Warning: do NOT set this to True in production.
 Defaults to: False
 
 
+CAPTCHA_NO_DB_WRITE
+-------------------
+
+`django-simple-captcha` will write to database when a new captcha is
+needed from a `GET` request. For most use cases this is not a problem.
+However in some setups where database writes in `GET` requests should
+be avoided, this feature may put some limitations. Set this setting to
+``True`` in order not to create new captchas on requests but to pick
+randomly from a data pool. In order to create a such pool use the
+custom management command `captcha_create_pool` and dispatch it using
+e.g. some cronjob. Use this option in conjunction with a
+`CAPTCHA_TIMEOUT` setting slightly larger than the cronjob time
+interval.  Example values: Run `python manage.py captcha_create_pool
+--pool-size 1000` every one hour. Set `CAPTCHA_TIMEOUT` to a value of
+`90` (minutes), so there is a coverage of expiring captchas created by
+consecutive command calls.
+
+Defaults to: False
+
+
+CAPTCHA_NO_DB_WRITE_RANDOM_PICK_TIMEOUT
+---------------------------------------
+
+This is a timeout value in minutes and it is used in conjunction with
+`CAPTCHA_NO_DB_WRITE` setting. When picking randomly from the pool,
+this setting will prevent to pick a captcha that expires sooner than
+this timeout setting. In such uses, where a pool of random captchas is
+created, main `CAPTCHA_TIMEOUT` setting has large values, see also
+`CAPTCHA_NO_DB_WRITE`.
+
+Defaults to: 5
+
+
 Rendering
 +++++++++
 

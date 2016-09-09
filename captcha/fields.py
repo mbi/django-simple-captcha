@@ -37,7 +37,7 @@ class BaseCaptchaTextInput(MultiWidget):
         except NoReverseMatch:
             raise ImproperlyConfigured('Make sure you\'ve included captcha.urls as explained in the INSTALLATION section on http://readthedocs.org/docs/django-simple-captcha/en/latest/usage.html#installation')
 
-        key = CaptchaStore.generate_key()
+        key = CaptchaStore.pick()
 
         # these can be used by format_output and render
         self._value = [key, u('')]
@@ -154,7 +154,7 @@ class CaptchaField(MultiValueField):
     def clean(self, value):
         super(CaptchaField, self).clean(value)
         response, value[1] = (value[1] or '').strip().lower(), ''
-        CaptchaStore.remove_expired()
+        (not settings.CAPTCHA_NO_DB_WRITE) and CaptchaStore.remove_expired()
         if settings.CAPTCHA_TEST_MODE and response.lower() == 'passed':
             # automatically pass the test
             try:
