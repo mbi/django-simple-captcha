@@ -64,18 +64,18 @@ class CaptchaStore(models.Model):
 
     @classmethod
     def pick(cls):
-        if not captcha_settings.CAPTCHA_NO_DB_WRITE:
+        if not captcha_settings.CAPTCHA_GET_FROM_POOL:
             return cls.generate_key()
 
-        # Pick a random item from pool
-        time_limit = get_safe_now() + datetime.timedelta(minutes=int(
-            captcha_settings.CAPTCHA_NO_DB_WRITE_RANDOM_PICK_TIMEOUT))
-        store = cls.objects.filter(expiration__gt=time_limit). \
-                order_by('?').first()
+        # Pick up a random item from pool
+        minimum_expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_GET_FROM_POOL_TIMEOUT))
+        store = cls.objects.filter(expiration__gt=minimum_expiration).order_by('?').first()
+
         return (store and store.hashkey) or cls.generate_key()
 
     @classmethod
     def create_pool(cls, count=1000):
-        while count:
+        assert count > 0
+        while count > 0:
             cls.generate_key()
             count -= 1

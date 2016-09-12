@@ -374,27 +374,31 @@ class CaptchaCase(TestCase):
         self.assertEqual(response, text_type(eval(challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, '*')[:-1])))
         settings.CAPTCHA_MATH_CHALLENGE_OPERATOR = __current_test_mode_setting
 
-    def test_no_db_write(self):
-        __current_test_mod_setting = settings.CAPTCHA_NO_DB_WRITE
-        __current_test_mod_timeout_setting = settings.CAPTCHA_TIMEOUT
-        settings.CAPTCHA_NO_DB_WRITE = True
+    def test_get_from_pool(self):
+        __current_test_get_from_pool_setting = settings.CAPTCHA_GET_FROM_POOL
+        __current_test_get_from_pool_timeout_setting = settings.CAPTCHA_GET_FROM_POOL_TIMEOUT
+        __current_test_timeout_setting = settings.CAPTCHA_TIMEOUT
+        settings.CAPTCHA_GET_FROM_POOL = True
+        settings.CAPTCHA_GET_FROM_POOL_TIMEOUT = 5
         settings.CAPTCHA_TIMEOUT = 90
-        CaptchaStore.objects.all().delete() # Delete objects created during SetUp
-        CaptchaStore.create_pool(count=10)
-        self.assertEqual(CaptchaStore.objects.count(), 10)
-        pool_set = CaptchaStore.objects.values_list('hashkey', flat=True)
+        CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
+        POOL_SIZE = 10
+        CaptchaStore.create_pool(count=POOL_SIZE)
+        self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
+        pool = CaptchaStore.objects.values_list('hashkey', flat=True)
         random_pick = CaptchaStore.pick()
-        self.assertIn(random_pick, pool_set)
+        self.assertIn(random_pick, pool)
         # pick() should not create any extra captcha
-        self.assertEqual(CaptchaStore.objects.count(), 10)
-        settings.CAPTCHA_NO_DB_WRITE = __current_test_mod_setting
-        settings.CAPTCHA_TIMEOUT = __current_test_mod_timeout_setting
+        self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
+        settings.CAPTCHA_GET_FROM_POOL = __current_test_get_from_pool_setting
+        settings.CAPTCHA_GET_FROM_POOL_TIMEOUT = __current_test_get_from_pool_timeout_setting
+        settings.CAPTCHA_TIMEOUT = __current_test_timeout_setting
 
     def test_captcha_create_pool(self):
-        CaptchaStore.objects.all().delete() # Delete objects created during SetUp
-        management.call_command('captcha_create_pool', pool_size=10,
-                verbosity=0)
-        self.assertEqual(CaptchaStore.objects.count(), 10)
+        CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
+        POOL_SIZE = 10
+        management.call_command('captcha_create_pool', pool_size=POOL_SIZE, verbosity=0)
+        self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
 
 
 def trivial_challenge():

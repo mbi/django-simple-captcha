@@ -154,7 +154,8 @@ class CaptchaField(MultiValueField):
     def clean(self, value):
         super(CaptchaField, self).clean(value)
         response, value[1] = (value[1] or '').strip().lower(), ''
-        (not settings.CAPTCHA_NO_DB_WRITE) and CaptchaStore.remove_expired()
+        if not settings.CAPTCHA_GET_FROM_POOL:
+            CaptchaStore.remove_expired()
         if settings.CAPTCHA_TEST_MODE and response.lower() == 'passed':
             # automatically pass the test
             try:

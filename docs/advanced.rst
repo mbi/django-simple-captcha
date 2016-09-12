@@ -161,35 +161,18 @@ Use this for testing purposes. Warning: do NOT set this to True in production.
 Defaults to: False
 
 
-CAPTCHA_NO_DB_WRITE
--------------------
+CAPTCHA_GET_FROM_POOL
+---------------------
 
-`django-simple-captcha` will write to database when a new captcha is
-needed from a `GET` request. For most use cases this is not a problem.
-However in some setups where database writes in `GET` requests should
-be avoided, this feature may put some limitations. Set this setting to
-``True`` in order not to create new captchas on requests but to pick
-randomly from a data pool. In order to create a such pool use the
-custom management command `captcha_create_pool` and dispatch it using
-e.g. some cronjob. Use this option in conjunction with a
-`CAPTCHA_TIMEOUT` setting slightly larger than the cronjob time
-interval.  Example values: Run `python manage.py captcha_create_pool
---pool-size 1000` every one hour. Set `CAPTCHA_TIMEOUT` to a value of
-`90` (minutes), so there is a coverage of expiring captchas created by
-consecutive command calls.
+By default, `django-simple-captcha` generates a new captcha when needed and stores it in the database. This occurs in a `HTTP GET request`, which may not be wished. This default behavior may also conflict with a load balanced infrastructure, where there is more than one database to read data from. If this setting is `True`, when a new captcha is needed, a random one will be just read from a pool of captchas saved previously in the database. In this case, the custom management command `captcha_create_pool` must be run regularly in intervals slightly shorter than `CAPTCHA_TIMEOUT`. A good value for `CAPTCHA_TIMEOUT` could be 1446 (24 hours and 6 minutes) when adding captchas to the pool every 24 hours, and setting `CAPTCHA_GET_FROM_POOL_TIMEOUT` (see below) to 5 minutes. This means that 6 minutes before the last captchas expires, new captchas will be created, and no captcha will be used whose expiration is less than 5 minutes. In this case, use a cronjob or similar to run `python manage.py captcha_create_pool` every 24 hours.
 
 Defaults to: False
 
 
-CAPTCHA_NO_DB_WRITE_RANDOM_PICK_TIMEOUT
----------------------------------------
+CAPTCHA_GET_FROM_POOL_TIMEOUT
+-----------------------------
 
-This is a timeout value in minutes and it is used in conjunction with
-`CAPTCHA_NO_DB_WRITE` setting. When picking randomly from the pool,
-this setting will prevent to pick a captcha that expires sooner than
-this timeout setting. In such uses, where a pool of random captchas is
-created, main `CAPTCHA_TIMEOUT` setting has large values, see also
-`CAPTCHA_NO_DB_WRITE`.
+This is a timeout value in minutes used only if `CAPTCHA_GET_FROM_POOL` (see above) is `True`. When picking up randomly from the pool, this setting will prevent to pick up a captcha that expires sooner than `CAPTCHA_GET_FROM_POOL_TIMEOUT`.
 
 Defaults to: 5
 
