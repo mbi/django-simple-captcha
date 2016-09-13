@@ -6,6 +6,7 @@ import datetime
 import random
 import time
 import hashlib
+import logging
 
 
 # Heavily based on session key generation in Django
@@ -15,6 +16,8 @@ if hasattr(random, 'SystemRandom'):
 else:
     randrange = random.randrange
 MAX_RANDOM_KEY = 18446744073709551616     # 2 << 63
+
+logger = logging.getLogger(__name__)
 
 
 def get_safe_now():
@@ -67,11 +70,15 @@ class CaptchaStore(models.Model):
         if not captcha_settings.CAPTCHA_GET_FROM_POOL:
             return cls.generate_key()
 
+        def fallback():
+            logger.error("Couldn't get a captcha from pool, generating")
+            return cls.generate_key()
+
         # Pick up a random item from pool
         minimum_expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_GET_FROM_POOL_TIMEOUT))
         store = cls.objects.filter(expiration__gt=minimum_expiration).order_by('?').first()
 
-        return (store and store.hashkey) or cls.generate_key()
+        return (store and store.hashkey) or fallback()
 
     @classmethod
     def create_pool(cls, count=1000):

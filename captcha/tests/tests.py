@@ -11,6 +11,7 @@ import datetime
 import json
 import re
 import six
+from testfixtures import LogCapture
 import os
 try:
     from cStringIO import StringIO
@@ -399,6 +400,16 @@ class CaptchaCase(TestCase):
         POOL_SIZE = 10
         management.call_command('captcha_create_pool', pool_size=POOL_SIZE, verbosity=0)
         self.assertEqual(CaptchaStore.objects.count(), POOL_SIZE)
+
+    def test_empty_pool_fallback(self):
+        __current_test_get_from_pool_setting = settings.CAPTCHA_GET_FROM_POOL
+        settings.CAPTCHA_GET_FROM_POOL = True
+        CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
+        with LogCapture() as l:
+            CaptchaStore.pick()
+        l.check(('captcha.models', 'ERROR', "Couldn't get a captcha from pool, generating"),)
+        self.assertEqual(CaptchaStore.objects.count(), 1)
+        settings.CAPTCHA_GET_FROM_POOL = __current_test_get_from_pool_setting
 
 
 def trivial_challenge():
