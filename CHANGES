@@ -2,6 +2,7 @@ Version 0.5.3 (unreleased)
 --------------------------
 * Ability to pass a per-field challenge generator function (Fixes #109)
 * Added a feature to get captchas from a data pool of pre-created captchas (PR #110, thanks @skozan)
+* Cleanup to remove old code handling timezones for no longer supported Django versions
 
 Version 0.5.2
 -------------

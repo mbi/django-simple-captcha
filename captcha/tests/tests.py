@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
-from captcha.models import CaptchaStore, get_safe_now
+from captcha.models import CaptchaStore
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.test import TestCase, override_settings
 from django.utils.translation import ugettext_lazy
+from django.utils import timezone
 import datetime
 import json
 import re
@@ -110,7 +111,7 @@ class CaptchaCase(TestCase):
             self.assertFormError(r, 'form', 'captcha', ugettext_lazy('Invalid CAPTCHA'))
 
     def test_deleted_expired(self):
-        self.default_store.expiration = get_safe_now() - datetime.timedelta(minutes=5)
+        self.default_store.expiration = timezone.now() - datetime.timedelta(minutes=5)
         self.default_store.save()
         hash_ = self.default_store.hashkey
         r = self.client.post(reverse('captcha-test'), dict(captcha_0=hash_, captcha_1=self.default_store.response, subject='xxx', sender='asasd@asdasd.com'))

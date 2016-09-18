@@ -1,6 +1,6 @@
 from captcha.conf import settings as captcha_settings
 from django.db import models
-from django.conf import settings
+from django.utils import timezone
 from django.utils.encoding import smart_text
 import datetime
 import random
@@ -20,16 +20,6 @@ MAX_RANDOM_KEY = 18446744073709551616     # 2 << 63
 logger = logging.getLogger(__name__)
 
 
-def get_safe_now():
-    try:
-        from django.utils.timezone import utc
-        if settings.USE_TZ:
-            return datetime.datetime.utcnow().replace(tzinfo=utc)
-    except:
-        pass
-    return datetime.datetime.now()
-
-
 class CaptchaStore(models.Model):
     challenge = models.CharField(blank=False, max_length=32)
     response = models.CharField(blank=False, max_length=32)
@@ -39,7 +29,7 @@ class CaptchaStore(models.Model):
     def save(self, *args, **kwargs):
         self.response = self.response.lower()
         if not self.expiration:
-            self.expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
+            self.expiration = timezone.now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_TIMEOUT))
         if not self.hashkey:
             key_ = (
                 smart_text(randrange(0, MAX_RANDOM_KEY)) +
@@ -55,7 +45,7 @@ class CaptchaStore(models.Model):
         return self.challenge
 
     def remove_expired(cls):
-        cls.objects.filter(expiration__lte=get_safe_now()).delete()
+        cls.objects.filter(expiration__lte=timezone.now()).delete()
     remove_expired = classmethod(remove_expired)
 
     @classmethod
@@ -75,7 +65,7 @@ class CaptchaStore(models.Model):
             return cls.generate_key()
 
         # Pick up a random item from pool
-        minimum_expiration = get_safe_now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_GET_FROM_POOL_TIMEOUT))
+        minimum_expiration = timezone.now() + datetime.timedelta(minutes=int(captcha_settings.CAPTCHA_GET_FROM_POOL_TIMEOUT))
         store = cls.objects.filter(expiration__gt=minimum_expiration).order_by('?').first()
 
         return (store and store.hashkey) or fallback()
