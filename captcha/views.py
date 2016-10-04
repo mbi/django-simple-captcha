@@ -34,7 +34,7 @@ from_top = 4
 
 def getsize(font, text):
     if hasattr(font, 'getoffset'):
-        return [x + y for x, y in zip(font.getsize(text), font.getoffset(text))]
+        return tuple([x + y for x, y in zip(font.getsize(text), font.getoffset(text))])
     else:
         return font.getsize(text)
 
