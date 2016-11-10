@@ -1,4 +1,4 @@
-﻿from captcha.conf import settings
+from captcha.conf import settings
 from captcha.models import CaptchaStore
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, NoReverseMatch
