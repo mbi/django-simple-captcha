@@ -1,3 +1,7 @@
+Version 0.5.4 (unreleased)
+--------------------------
+* Removed a couple gremlins (PR #113, thanks @Pawamoy)
+
 Version 0.5.3
 -------------
 * Ability to pass a per-field challenge generator function (Fixes #109)
