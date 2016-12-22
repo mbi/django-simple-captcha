@@ -288,12 +288,12 @@ class CaptchaCase(TestCase):
 
     def test_autocomplete_off(self):
         r = self.client.get(reverse('captcha-test'))
-        self.assertTrue('<input autocomplete="off" ' in six.text_type(r.content))
+        self.assertTrue('<input autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" ' in six.text_type(r.content))
 
     def test_autocomplete_not_on_hidden_input(self):
         r = self.client.get(reverse('captcha-test'))
-        self.assertFalse('autocomplete="off" type="hidden" name="captcha_0"' in six.text_type(r.content))
-        self.assertFalse('autocomplete="off" id="id_captcha_0" name="captcha_0" type="hidden"' in six.text_type(r.content))
+        self.assertFalse('autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" type="hidden" name="captcha_0"' in six.text_type(r.content))
+        self.assertFalse('autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="id_captcha_0" name="captcha_0" type="hidden"' in six.text_type(r.content))
 
     def test_transparent_background(self):
         __current_test_mode_setting = settings.CAPTCHA_BACKGROUND_COLOR
