@@ -83,8 +83,8 @@ class CaptchaTextInput(BaseCaptchaTextInput):
 
         super(CaptchaTextInput, self).__init__(attrs)
 
-    def build_attrs(self, extra_attrs=None, **kwargs):
-        ret = super(CaptchaTextInput, self).build_attrs(extra_attrs, **kwargs)
+    def build_attrs(self, *args, **kwargs):
+        ret = super(CaptchaTextInput, self).build_attrs(*args, **kwargs)
         if self._args.get('id_prefix') and 'id' in ret:
             ret['id'] = '%s_%s' % (self._args.get('id_prefix'), ret['id'])
         return ret
@@ -96,14 +96,14 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         return ret
 
     def format_output(self, rendered_widgets):
-        hidden_field, text_field = rendered_widgets
-
+        # hidden_field, text_field = rendered_widgets
         if self._args['output_format']:
-            return self._args['output_format'] % {
+            ret = self._args['output_format'] % {
                 'image': self.image_and_audio,
                 'hidden_field': self.hidden_field,
                 'text_field': self.text_field
             }
+            return ret
 
         elif self._args['field_template']:
             context = {
@@ -130,6 +130,9 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         self.text_field = render_to_string(settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context)
 
         return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
+
+    def _render(self, template_name, context, renderer=None):
+        return self.format_output(None)
 
 
 class CaptchaField(MultiValueField):

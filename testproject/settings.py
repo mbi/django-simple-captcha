@@ -67,6 +67,7 @@ TEMPLATES = [
     },
 ]
 
+# for django1.7
 TEMPLATE_DIRS = ('templates',)
 
 # Django 1.4 TZ support

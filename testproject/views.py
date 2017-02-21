@@ -1,7 +1,6 @@
-from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from forms import CaptchaForm
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 
 def home(request):
@@ -12,6 +11,4 @@ def home(request):
     else:
         form = CaptchaForm()
 
-    return render_to_response('home.html', dict(
-        form=form
-    ), context_instance=RequestContext(request))
+    return render(request, 'home.html', {'form': form})
