@@ -2,7 +2,8 @@ Version 0.5.4 (unreleased)
 --------------------------
 * Removed a couple gremlins (PR #113, thanks @Pawamoy)
 * Added autocapitalize="off", autocorrect="off" and spellcheck="false" to the genreated field (PR #116, thanks @rdonnelly)
-* Test against Django 1.11b1
+* Test against Django 1.11rc1
+* Drop support of Django 1.7 ("it'll probably still work")
 
 Version 0.5.3
 -------------
