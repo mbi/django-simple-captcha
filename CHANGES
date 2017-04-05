@@ -1,3 +1,7 @@
+Version 0.5.5
+-------------
+* I messed the 0.5.4 release, re-releasing as 0.5.5
+
 Version 0.5.4
 -------------
 * Removed a couple gremlins (PR #113, thanks @Pawamoy)
