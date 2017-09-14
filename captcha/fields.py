@@ -1,5 +1,6 @@
 from captcha.conf import settings
 from captcha.models import CaptchaStore
+import django
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.forms import ValidationError
@@ -113,7 +114,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             }
             return render_to_string(settings.CAPTCHA_FIELD_TEMPLATE, context)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         self.fetch_captcha_store(name, value, attrs, self._args.get('generator'))
 
         context = {
@@ -129,7 +130,12 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         self.hidden_field = render_to_string(settings.CAPTCHA_HIDDEN_FIELD_TEMPLATE, context)
         self.text_field = render_to_string(settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context)
 
-        return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs)
+        extra_kwargs = {}
+        if django.VERSION >= (1, 11):
+            # https://docs.djangoproject.com/en/1.11/ref/forms/widgets/#django.forms.Widget.render
+            extra_kwargs['renderer'] = renderer
+
+        return super(CaptchaTextInput, self).render(name, self._value, attrs=attrs, **extra_kwargs)
 
     def _render(self, template_name, context, renderer=None):
         return self.format_output(None)
