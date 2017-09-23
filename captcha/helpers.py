@@ -2,10 +2,10 @@
 import random
 from captcha.conf import settings
 import django
-if django.VERSION < (1, 10):
-    from django.core.urlresolvers import reverse
-else:
-    from django.urls import reverse
+if django.VERSION < (1, 10):  # NOQA
+    from django.core.urlresolvers import reverse  # NOQA
+else:  # NOQA
+    from django.urls import reverse  # NOQA
 from six import u, text_type
 
 

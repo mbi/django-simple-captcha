@@ -5,10 +5,10 @@ from captcha.models import CaptchaStore
 import django
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
-if django.VERSION < (1, 10):
-    from django.core.urlresolvers import reverse
-else:
-    from django.urls import reverse
+if django.VERSION < (1, 10):  # NOQA
+    from django.core.urlresolvers import reverse  # NOQA
+else:  # NOQA
+    from django.urls import reverse  # NOQA
 from django.test import TestCase, override_settings
 from django.utils.translation import ugettext_lazy
 from django.utils import timezone
