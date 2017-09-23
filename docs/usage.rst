@@ -9,17 +9,9 @@ Installation
 3. Run ``python manage.py syncdb`` (or ``python manage.py migrate`` if you are managing database migrations via South) to create the required database tables
 4. Add an entry to your ``urls.py``::
 
-        urlpatterns += patterns('',
+        urlpatterns += [
             url(r'^captcha/', include('captcha.urls')),
-        )
-
-
-Django-simple-captcha 0.4.3 and later supports both Django 1.7's new migrations and South migrations: if you are using South and Django < 1.7, you must define the following in your settings::
-
-        SOUTH_MIGRATION_MODULES = {
-            'captcha': 'captcha.south_migrations',
-        }
-
+        ]
 
 .. _pip: http://pypi.python.org/pypi/pip
 
