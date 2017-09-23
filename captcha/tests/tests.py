@@ -24,11 +24,7 @@ except ImportError:
     from io import BytesIO as StringIO
 
 from six import u, text_type
-
-try:
-    from PIL import Image
-except ImportError:
-    import Image  # NOQA
+from PIL import Image
 
 
 @override_settings(ROOT_URLCONF='captcha.tests.urls')

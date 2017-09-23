@@ -8,7 +8,7 @@ SITE_ID = 1
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
 PYTHON_VERSION = '%s.%s' % sys.version_info[:2]
-DJANGO_VERSION = django.get_version()
+
 
 DATABASES = {
     'default': {
@@ -70,7 +70,10 @@ TEMPLATES = [
 USE_TZ = True
 SECRET_KEY = 'empty'
 
-MIDDLEWARE_CLASSES = ()
+if django.VERSION >= (1, 10):
+    MIDDLEWARE = ()
+else:
+    MIDDLEWARE_CLASSES = ()
 
 CAPTCHA_FLITE_PATH = os.environ.get('CAPTCHA_FLITE_PATH', None)
 CAPTCHA_BACKGROUND_COLOR = 'transparent'

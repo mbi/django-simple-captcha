@@ -82,13 +82,10 @@ def noise_null(draw, image):
 
 
 def post_smooth(image):
-    try:
-        import ImageFilter
-    except ImportError:
-        from PIL import ImageFilter
+    from PIL import ImageFilter
     return image.filter(ImageFilter.SMOOTH)
 
 
 def captcha_image_url(key):
-    """ Return url to image. Need for ajax refresh and, etc"""
+    """Return url to image. Need for ajax refresh and, etc"""
     return reverse('captcha-image', args=[key])

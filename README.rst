@@ -22,7 +22,7 @@ Features
 Requirements
 ++++++++++++
 
-* Django 1.7+
+* Django 1.8+
 * A recent version of the Pillow compiled with FreeType support
 * Flite is required for text-to-speech (audio) output, but not mandatory
 

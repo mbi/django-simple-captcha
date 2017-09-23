@@ -4,7 +4,6 @@ from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.core.exceptions import ImproperlyConfigured
 import random
-import re
 import tempfile
 import os
 import subprocess
@@ -15,21 +14,15 @@ try:
 except ImportError:
     from io import BytesIO as StringIO
 
-try:
-    from PIL import Image, ImageDraw, ImageFont
-except ImportError:
-    import Image
-    import ImageDraw
-    import ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 try:
     import json
 except ImportError:
     from django.utils import simplejson as json
 
-NON_DIGITS_RX = re.compile('[^\d]')
 # Distance of the drawn text from the top of the captcha image
-from_top = 4
+DISTNACE_FROM_TOP = 4
 
 
 def getsize(font, text):
@@ -75,11 +68,6 @@ def captcha_image(request, key, scale=1):
         size = (size[0] * 2, int(size[1] * 1.4))
 
     image = makeimg(size)
-
-    try:
-        PIL_VERSION = int(NON_DIGITS_RX.sub('', Image.VERSION))
-    except:
-        PIL_VERSION = 116
     xpos = 2
 
     charlist = []
@@ -94,14 +82,11 @@ def captcha_image(request, key, scale=1):
         chardraw = ImageDraw.Draw(charimage)
         chardraw.text((0, 0), ' %s ' % char, font=font, fill='#ffffff')
         if settings.CAPTCHA_LETTER_ROTATION:
-            if PIL_VERSION >= 116:
-                charimage = charimage.rotate(random.randrange(*settings.CAPTCHA_LETTER_ROTATION), expand=0, resample=Image.BICUBIC)
-            else:
-                charimage = charimage.rotate(random.randrange(*settings.CAPTCHA_LETTER_ROTATION), resample=Image.BICUBIC)
+            charimage = charimage.rotate(random.randrange(*settings.CAPTCHA_LETTER_ROTATION), expand=0, resample=Image.BICUBIC)
         charimage = charimage.crop(charimage.getbbox())
         maskimage = Image.new('L', size)
 
-        maskimage.paste(charimage, (xpos, from_top, xpos + charimage.size[0], from_top + charimage.size[1]))
+        maskimage.paste(charimage, (xpos, DISTNACE_FROM_TOP, xpos + charimage.size[0], DISTNACE_FROM_TOP + charimage.size[1]))
         size = maskimage.size
         image = Image.composite(fgimage, image, maskimage)
         xpos = xpos + 2 + charimage.size[0]
@@ -109,7 +94,7 @@ def captcha_image(request, key, scale=1):
     if settings.CAPTCHA_IMAGE_SIZE:
         # centering captcha on the image
         tmpimg = makeimg(size)
-        tmpimg.paste(image, (int((size[0] - xpos) / 2), int((size[1] - charimage.size[1]) / 2 - from_top)))
+        tmpimg.paste(image, (int((size[0] - xpos) / 2), int((size[1] - charimage.size[1]) / 2 - DISTNACE_FROM_TOP)))
         image = tmpimg.crop((0, 0, size[0], size[1]))
     else:
         image = image.crop((0, 0, xpos + 1, size[1]))
