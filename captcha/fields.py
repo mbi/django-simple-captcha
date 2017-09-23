@@ -2,7 +2,10 @@ from captcha.conf import settings
 from captcha.models import CaptchaStore
 import django
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse, NoReverseMatch
+if django.VERSION < (1, 10):
+    from django.core.urlresolvers import reverse, NoReverseMatch
+else:
+    from django.urls import reverse, NoReverseMatch
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import TextInput, MultiWidget, HiddenInput

@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 import random
 from captcha.conf import settings
-from django.core.urlresolvers import reverse
+import django
+if django.VERSION < (1, 10):
+    from django.core.urlresolvers import reverse
+else:
+    from django.urls import reverse
 from six import u, text_type
 
 

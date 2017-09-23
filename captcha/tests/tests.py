@@ -2,9 +2,13 @@
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
+import django
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
-from django.core.urlresolvers import reverse
+if django.VERSION < (1, 10):
+    from django.core.urlresolvers import reverse
+else:
+    from django.urls import reverse
 from django.test import TestCase, override_settings
 from django.utils.translation import ugettext_lazy
 from django.utils import timezone
