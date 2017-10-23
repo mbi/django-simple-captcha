@@ -4,6 +4,7 @@ Version 0.5.6 (unreleased)
 * Improved compatibility with Django 2.0, tests against Django 2.0a1 (PR #121, thanks @Kondou-ger)
 * Dropped support for PIL (use Pillow instead)
 * Updated documentation (Fixes #122, thanks @claudep)
+* Test against Django 2.0b1
 
 
 Version 0.5.5
