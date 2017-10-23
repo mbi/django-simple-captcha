@@ -6,7 +6,7 @@ Installation
 
 1. Install ``django-simple-captcha`` via pip_: ``pip install  django-simple-captcha``
 2. Add ``captcha`` to the ``INSTALLED_APPS`` in your ``settings.py``
-3. Run ``python manage.py syncdb``
+3. Run ``python manage.py migrate``
 4. Add an entry to your ``urls.py``::
 
         urlpatterns += [
