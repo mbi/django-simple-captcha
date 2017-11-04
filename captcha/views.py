@@ -3,6 +3,7 @@ from captcha.helpers import captcha_image_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.core.exceptions import ImproperlyConfigured
+from ranged_response import RangedFileResponse
 import random
 import tempfile
 import os
@@ -132,12 +133,8 @@ def captcha_audio(request, key):
         path = str(os.path.join(tempfile.gettempdir(), '%s.wav' % key))
         subprocess.call([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
         if os.path.isfile(path):
-            response = HttpResponse()
-            f = open(path, 'rb')
-            response['Content-Type'] = 'audio/x-wav'
-            response.write(f.read())
-            f.close()
-            os.unlink(path)
+            response = RangedFileResponse(request, open(path, 'rb'), content_type='audio/wav')
+            response['Content-Disposition'] = 'attachment; filename="{}.wav"'.format(key)
             return response
     raise Http404
 

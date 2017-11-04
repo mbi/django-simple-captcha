@@ -1,0 +1,21 @@
+{% load i18n %}
+
+{% spaceless %}
+    <img src="{{image}}" alt="captcha-template-test" class="captcha" />
+
+{% if audio %}
+    <a href="#" id="audio-button">play audio</a>
+    <a href="{{audio}}">open audio</a>
+
+
+<script>
+(function(window){
+    document.getElementById('audio-button').addEventListener('click', function() {
+        var a = new Audio("{{audio}}").play();
+        return false;
+    });
+})(this)
+</script>
+{% endif %}
+
+{% endspaceless %}

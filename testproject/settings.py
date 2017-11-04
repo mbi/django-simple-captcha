@@ -78,3 +78,4 @@ else:
 CAPTCHA_FLITE_PATH = os.environ.get('CAPTCHA_FLITE_PATH', None)
 CAPTCHA_BACKGROUND_COLOR = 'transparent'
 # CAPTCHA_BACKGROUND_COLOR = '#ffffffff'
+# CAPTCHA_IMAGE_TEMPLATE = 'captcha_test/image_html5_audio.html'

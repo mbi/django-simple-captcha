@@ -73,9 +73,9 @@ class CaptchaCase(TestCase):
         for key in (self.stores.get('math_store').hashkey, self.stores.get('math_store').hashkey, self.default_store.hashkey):
             response = self.client.get(reverse('captcha-audio', kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
-            self.assertTrue(len(response.content) > 1024)
+            self.assertTrue(response.ranged_file.size > 1024)
             self.assertTrue(response.has_header('content-type'))
-            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'audio/x-wav'))
+            self.assertEqual(response._headers.get('content-type'), ('Content-Type', 'audio/wav'))
 
     def test_form_submit(self):
         r = self.client.get(reverse('captcha-test'))
