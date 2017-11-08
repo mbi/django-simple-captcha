@@ -132,6 +132,16 @@ def captcha_audio(request, key):
             text = ', '.join(list(text))
         path = str(os.path.join(tempfile.gettempdir(), '%s.wav' % key))
         subprocess.call([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
+	# Add arbitrary noise if sox is installed
+	if settings.CAPTCHA_SOX_PATH:
+		arbnoisepath = str(os.path.join(tempfile.gettempdir(), '%s_arbitrary.wav') % key)
+		mergedpath = str(os.path.join(tempfile.gettempdir(), '%s_merged.wav') % key)
+		subprocess.call([settings.CAPTCHA_SOX_PATH, '-r', '8000', '-n', arbnoisepath, 'synth', '4', 'brownnoise'])
+		subprocess.call([settings.CAPTCHA_SOX_PATH, '-m', arbnoisepath, path, mergedpath])
+		os.remove(arbnoisepath)
+		os.remove(path)
+		os.rename(mergedpath, path)
+
         if os.path.isfile(path):
             response = RangedFileResponse(request, open(path, 'rb'), content_type='audio/wav')
             response['Content-Disposition'] = 'attachment; filename="{}.wav"'.format(key)
