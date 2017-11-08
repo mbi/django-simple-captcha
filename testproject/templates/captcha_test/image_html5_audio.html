@@ -11,6 +11,7 @@
 <script>
 (function(window){
     document.getElementById('audio-button').addEventListener('click', function() {
+        // console.log("{{audio}}");
         var a = new Audio("{{audio}}").play();
         return false;
     });

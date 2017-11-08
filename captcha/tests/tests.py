@@ -223,6 +223,7 @@ class CaptchaCase(TestCase):
         try:
             new_data = json.loads(six.text_type(r.content, encoding='ascii'))
             self.assertTrue('image_url' in new_data)
+            self.assertTrue('audio_url' in new_data)
         except:
             self.fail()
 

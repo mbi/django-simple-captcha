@@ -89,3 +89,8 @@ def post_smooth(image):
 def captcha_image_url(key):
     """Return url to image. Need for ajax refresh and, etc"""
     return reverse('captcha-image', args=[key])
+
+
+def captcha_audio_url(key):
+    """Return url to image. Need for ajax refresh and, etc"""
+    return reverse('captcha-audio', args=[key])

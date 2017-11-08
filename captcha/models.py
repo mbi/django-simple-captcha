@@ -1,12 +1,13 @@
 from captcha.conf import settings as captcha_settings
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.encoding import smart_text
 import datetime
-import random
-import time
 import hashlib
 import logging
+import random
+import time
 
 
 # Heavily based on session key generation in Django
@@ -20,6 +21,7 @@ MAX_RANDOM_KEY = 18446744073709551616     # 2 << 63
 logger = logging.getLogger(__name__)
 
 
+@python_2_unicode_compatible
 class CaptchaStore(models.Model):
     challenge = models.CharField(blank=False, max_length=32)
     response = models.CharField(blank=False, max_length=32)
@@ -41,7 +43,7 @@ class CaptchaStore(models.Model):
             del(key_)
         super(CaptchaStore, self).save(*args, **kwargs)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.challenge
 
     def remove_expired(cls):

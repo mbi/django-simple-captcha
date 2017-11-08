@@ -104,6 +104,20 @@ Full path to the ``flite`` executable. When defined, will automatically add audi
 
 Defaults to: ``None`` (no audio output)
 
+CAPTCHA_SOX_PATH
+------------------------
+
+Full path to the ``sox`` executable. If audio output is enabled via ``CAPTCHA_FLITE_PATH``, the generated output audio file is identical across multiple generations (unlike CAPTCHA images which get different random noise each time they are rendered). User appleorange1_ has shown_ that this could be used to pre-generate a "rainbow-table" of all possible input strings and a hash of the generated output soundfile, thus rendering an attack on audio CAPTCHAs trivial.
+
+If sox_ is installed and used via this settings, random brown noise is injected into the generated audio file, rendering attacks via a rainbow table impossible.
+
+Defaults to: ``None`` (no audio output)
+
+.. _appleorange1: https://github.com/appleorange1
+.. _shown: https://github.com/appleorange1/django-simple-captcha-cracker-poc
+.. _sox: http://sox.sourceforge.net/
+
+
 CAPTCHA_TIMEOUT
 ---------------
 

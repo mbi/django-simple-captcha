@@ -1,5 +1,5 @@
 from captcha.conf import settings
-from captcha.helpers import captcha_image_url
+from captcha.helpers import captcha_image_url, captcha_audio_url
 from captcha.models import CaptchaStore
 from django.http import HttpResponse, Http404
 from django.core.exceptions import ImproperlyConfigured
@@ -132,15 +132,16 @@ def captcha_audio(request, key):
             text = ', '.join(list(text))
         path = str(os.path.join(tempfile.gettempdir(), '%s.wav' % key))
         subprocess.call([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
-	# Add arbitrary noise if sox is installed
-	if settings.CAPTCHA_SOX_PATH:
-		arbnoisepath = str(os.path.join(tempfile.gettempdir(), '%s_arbitrary.wav') % key)
-		mergedpath = str(os.path.join(tempfile.gettempdir(), '%s_merged.wav') % key)
-		subprocess.call([settings.CAPTCHA_SOX_PATH, '-r', '8000', '-n', arbnoisepath, 'synth', '4', 'brownnoise'])
-		subprocess.call([settings.CAPTCHA_SOX_PATH, '-m', arbnoisepath, path, mergedpath])
-		os.remove(arbnoisepath)
-		os.remove(path)
-		os.rename(mergedpath, path)
+
+        # Add arbitrary noise if sox is installed
+        if settings.CAPTCHA_SOX_PATH:
+            arbnoisepath = str(os.path.join(tempfile.gettempdir(), '%s_arbitrary.wav') % key)
+            mergedpath = str(os.path.join(tempfile.gettempdir(), '%s_merged.wav') % key)
+            subprocess.call([settings.CAPTCHA_SOX_PATH, '-r', '8000', '-n', arbnoisepath, 'synth', '0.005', 'brownnoise'])
+            subprocess.call([settings.CAPTCHA_SOX_PATH, '-m', arbnoisepath, path, '-t', 'wavpcm', '-b', '16', mergedpath])
+            os.remove(arbnoisepath)
+            os.remove(path)
+            os.rename(mergedpath, path)
 
         if os.path.isfile(path):
             response = RangedFileResponse(request, open(path, 'rb'), content_type='audio/wav')
@@ -158,5 +159,6 @@ def captcha_refresh(request):
     to_json_response = {
         'key': new_key,
         'image_url': captcha_image_url(new_key),
+        'audio_url': captcha_audio_url(new_key) if settings.CAPTCHA_FLITE_PATH else None
     }
     return HttpResponse(json.dumps(to_json_response), content_type='application/json')
