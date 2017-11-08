@@ -132,7 +132,11 @@ def captcha_audio(request, key):
             text = ', '.join(list(text))
         path = str(os.path.join(tempfile.gettempdir(), '%s.wav' % key))
         subprocess.call([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
+
         if os.path.isfile(path):
+            with open(path, 'ab') as outfile:
+                outfile.write(bytearray(random.getrandbits(8) for _ in range(1, random.randint(1, 1024))))
+
             response = RangedFileResponse(request, open(path, 'rb'), content_type='audio/wav')
             response['Content-Disposition'] = 'attachment; filename="{}.wav"'.format(key)
             return response
