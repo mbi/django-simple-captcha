@@ -137,7 +137,7 @@ def captcha_audio(request, key):
         if settings.CAPTCHA_SOX_PATH:
             arbnoisepath = str(os.path.join(tempfile.gettempdir(), '%s_arbitrary.wav') % key)
             mergedpath = str(os.path.join(tempfile.gettempdir(), '%s_merged.wav') % key)
-            subprocess.call([settings.CAPTCHA_SOX_PATH, '-r', '8000', '-n', arbnoisepath, 'synth', '0.005', 'brownnoise'])
+            subprocess.call([settings.CAPTCHA_SOX_PATH, '-r', '8000', '-n', arbnoisepath, 'synth', '2', 'brownnoise', 'gain', '-15'])
             subprocess.call([settings.CAPTCHA_SOX_PATH, '-m', arbnoisepath, path, '-t', 'wavpcm', '-b', '16', mergedpath])
             os.remove(arbnoisepath)
             os.remove(path)
