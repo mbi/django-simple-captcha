@@ -1,5 +1,5 @@
-Version 0.5.6 (unreleased)
---------------------------
+Version 0.5.6
+-------------
 * Updated render method to adapt for Django 2.1 (PR #120, thanks @skozan)
 * Improved compatibility with Django 2.0, tests against Django 2.0a1 (PR #121, thanks @Kondou-ger)
 * Dropped support for PIL (use Pillow instead)
@@ -7,6 +7,7 @@ Version 0.5.6 (unreleased)
 * Test against Django 2.0b1
 * Return a Ranged Response when returning WAV audio to support Safari (Fixes #123, thanks @po5i)
 * Optionally inject brown noise into the generated WAV audio file, to avoid rainbow-table attacks (Fixes #124, thanks @appleorange1)
+* Test against Django 2.0
 
 
 Version 0.5.5
