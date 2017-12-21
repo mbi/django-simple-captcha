@@ -23,7 +23,7 @@ except ImportError:
     from django.utils import simplejson as json
 
 # Distance of the drawn text from the top of the captcha image
-DISTNACE_FROM_TOP = 4
+DISTANCE_FROM_TOP = 4
 
 
 def getsize(font, text):
@@ -87,7 +87,7 @@ def captcha_image(request, key, scale=1):
         charimage = charimage.crop(charimage.getbbox())
         maskimage = Image.new('L', size)
 
-        maskimage.paste(charimage, (xpos, DISTNACE_FROM_TOP, xpos + charimage.size[0], DISTNACE_FROM_TOP + charimage.size[1]))
+        maskimage.paste(charimage, (xpos, DISTANCE_FROM_TOP, xpos + charimage.size[0], DISTANCE_FROM_TOP + charimage.size[1]))
         size = maskimage.size
         image = Image.composite(fgimage, image, maskimage)
         xpos = xpos + 2 + charimage.size[0]
@@ -95,7 +95,7 @@ def captcha_image(request, key, scale=1):
     if settings.CAPTCHA_IMAGE_SIZE:
         # centering captcha on the image
         tmpimg = makeimg(size)
-        tmpimg.paste(image, (int((size[0] - xpos) / 2), int((size[1] - charimage.size[1]) / 2 - DISTNACE_FROM_TOP)))
+        tmpimg.paste(image, (int((size[0] - xpos) / 2), int((size[1] - charimage.size[1]) / 2 - DISTANCE_FROM_TOP)))
         image = tmpimg.crop((0, 0, size[0], size[1]))
     else:
         image = image.crop((0, 0, xpos + 1, size[1]))
