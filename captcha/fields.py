@@ -132,10 +132,9 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             'image': self.image_url(),
             'name': name,
             'key': self._key,
-            'id': u'%s_%s' % (self.id_prefix, attrs.get('id')) if self.id_prefix else attrs.get('id')
+            'id': u'%s_%s' % (self.id_prefix, attrs.get('id')) if self.id_prefix else attrs.get('id'),
+            'audio': self.audio_url(),
         }
-        if settings.CAPTCHA_FLITE_PATH:
-            context.update({'audio': self.audio_url()})
 
         self.image_and_audio = render_to_string(settings.CAPTCHA_IMAGE_TEMPLATE, context)
         self.hidden_field = render_to_string(settings.CAPTCHA_HIDDEN_FIELD_TEMPLATE, context)
