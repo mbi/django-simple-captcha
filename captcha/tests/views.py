@@ -3,13 +3,12 @@ from captcha.fields import CaptchaField
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from six import u
-import django
 
 try:
-    from django.template import engines, RequestContext
+    from django.template import engines
     __is_18 = True
 except ImportError:
-    from django.template import RequestContext, loader
+    from django.template import loader
     __is_18 = False
 
 
@@ -56,12 +55,7 @@ def _test(request, form_class):
 
     t = _get_template(TEST_TEMPLATE)
 
-    if django.VERSION >= (1, 9):
-        return HttpResponse(
-            t.render(context=dict(passed=passed, form=form), request=request))
-    else:
-        return HttpResponse(
-            t.render(RequestContext(request, dict(passed=passed, form=form))))
+    return HttpResponse(t.render(context=dict(passed=passed, form=form), request=request))
 
 
 def test(request):

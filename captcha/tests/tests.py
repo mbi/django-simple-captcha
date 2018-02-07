@@ -16,6 +16,7 @@ import datetime
 import json
 import re
 import six
+import warnings
 from testfixtures import LogCapture
 import os
 try:
@@ -196,8 +197,12 @@ class CaptchaCase(TestCase):
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_OUTPUT_FORMAT = u('%(image)s')
             try:
-                self.client.get(reverse(urlname))
-                self.fail()
+                with warnings.catch_warnings(record=True) as w:
+                    self.client.get(reverse(urlname))
+                    assert len(w) == 1
+                    self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(w[-1].message))
+                    self.fail()
+
             except ImproperlyConfigured as e:
                 self.assertTrue('CAPTCHA_OUTPUT_FORMAT' in str(e))
 

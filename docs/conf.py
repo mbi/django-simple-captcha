@@ -44,14 +44,14 @@ master_doc = 'index'
 
 # General information about the project.
 project = u('Django Simple Captcha')
-copyright = u('2011-2017 Marco Bonetti')
+copyright = u('2011-2018 Marco Bonetti and contributors')
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '0.5.6'
+version = '0.5.7'
 # The full version, including alpha/beta/rc tags.
 release = version
 

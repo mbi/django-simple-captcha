@@ -1,3 +1,8 @@
+Version 0.5.7 (unreleased)
+--------------------------
+* Use standard rendering of widgets (Issue #128, PR #133, thanks @ziima)
+
+
 Version 0.5.6
 -------------
 * Updated render method to adapt for Django 2.1 (PR #120, thanks @skozan)
