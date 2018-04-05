@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import unittest
+
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
@@ -292,9 +294,19 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertTrue(str(r.content).find('Form validated') > 0)
 
+    @unittest.skipUnless(django.VERSION < (1, 11), "Test only for Django < 1.11")
+    def test_autocomplete_off_django_110(self):
+        r = self.client.get(reverse('captcha-test'))
+        captcha_input = ('<input type="text" name="captcha_1" autocomplete="off" spellcheck="false" autocorrect="off" '
+                         'autocapitalize="off" id="id_captcha_1" />')
+        self.assertContains(r, captcha_input, html=True)
+
+    @unittest.skipIf(django.VERSION < (1, 11), "Test only for Django >= 1.11")
     def test_autocomplete_off(self):
         r = self.client.get(reverse('captcha-test'))
-        self.assertTrue('<input autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" ' in six.text_type(r.content))
+        captcha_input = ('<input type="text" name="captcha_1" autocomplete="off" spellcheck="false" autocorrect="off" '
+                         'autocapitalize="off" id="id_captcha_1" required />')
+        self.assertContains(r, captcha_input, html=True)
 
     def test_autocomplete_not_on_hidden_input(self):
         r = self.client.get(reverse('captcha-test'))
@@ -367,13 +379,16 @@ class CaptchaCase(TestCase):
 
     def test_template_overrides(self):
         __current_test_mode_setting = settings.CAPTCHA_IMAGE_TEMPLATE
+        __current_field_template = settings.CAPTCHA_FIELD_TEMPLATE
         settings.CAPTCHA_IMAGE_TEMPLATE = 'captcha_test/image.html'
+        settings.CAPTCHA_FIELD_TEMPLATE = 'captcha/field.html'
 
         for urlname in ('captcha-test', 'captcha-test-model-form'):
             settings.CAPTCHA_CHALLENGE_FUNCT = 'captcha.tests.trivial_challenge'
             r = self.client.get(reverse(urlname))
             self.assertTrue('captcha-template-test' in six.text_type(r.content))
         settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
+        settings.CAPTCHA_FIELD_TEMPLATE = __current_field_template
 
     def test_math_challenge(self):
         __current_test_mode_setting = settings.CAPTCHA_MATH_CHALLENGE_OPERATOR

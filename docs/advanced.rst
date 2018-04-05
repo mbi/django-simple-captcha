@@ -161,7 +161,7 @@ Defaults to: ``None``
 
 (Used to default to: ``u'%(image)s %(hidden_field)s %(text_field)s'``)
 
-Note: this settings is deprecated in favor of template-based field rendering, use ``CAPTCHA_FIELD_TEMPLATE`` instead (see the Rendering section below).
+.. warning:: This setting is deprecated in favor of template-based widget rendering (see the Rendering section below).
 
 
 CAPTCHA_TEST_MODE
@@ -194,6 +194,20 @@ Defaults to: 5
 Rendering
 +++++++++
 
+``CaptchaTextInput`` supports the widget rendering using template introduced in Django 1.11.
+To change the output HTML, change the ``template_name`` to a custom template or modify ``get_context`` method to provide further context.
+See https://docs.djangoproject.com/en/dev/ref/forms/renderers/ for description of rendering API.
+Keep in mind that ``CaptchaTextInput`` is a subclass of ``MultiWidget`` whic affects the context, see https://docs.djangoproject.com/en/2.0/ref/forms/widgets/#multiwidget.
+
+.. attention:: To provide backwards compatibility, the old style rendering has priority over the widget templates.
+   If the ``CAPTCHA_FIELD_TEMPLATE`` or ``CAPTCHA_OUTPUT_FORMAT`` settings or ``field_templates`` or ``output_format`` parameter are set, the direct rendering gets higher priority.
+   If widget templates are ignored, make sure you're using Django >= 1.11 and disable these settings and parameters.
+
+Old style rendering
+-------------------
+
+.. warning:: This rendering method is deprecated. Use Django >= 1.11 and widgets templates instead.
+
 A CAPTCHA field is made up of three components:
 
 * The actual image that the end user has to copy from
@@ -212,7 +226,7 @@ As of version 0.4.7 you can control how the individual components are rendered, 
 These templates can be overriden in your own ``templates`` folder, or you can change the actual template names by settings ``CAPTCHA_IMAGE_TEMPLATE``, ``CAPTCHA_TEXT_FIELD_TEMPLATE``, ``CAPTCHA_HIDDEN_FIELD_TEMPLATE`` and ``CAPTCHA_FIELD_TEMPLATE``, respectively.
 
 Context
--------
+~~~~~~~
 
 The following context variables are passed to the three "individual" templates:
 
