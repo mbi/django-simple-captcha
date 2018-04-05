@@ -18,6 +18,20 @@ from django.utils.safestring import mark_safe
 from six import u
 
 
+class CaptchaAnswerInput(TextInput):
+    """Text input for captcha answer."""
+
+    # Use *args and **kwargs because signature changed in Django 1.11
+    def build_attrs(self, *args, **kwargs):
+        """Disable automatic corrections and completions."""
+        attrs = super(CaptchaAnswerInput, self).build_attrs(*args, **kwargs)
+        attrs['autocapitalize'] = 'off'
+        attrs['autocomplete'] = 'off'
+        attrs['autocorrect'] = 'off'
+        attrs['spellcheck'] = 'false'
+        return attrs
+
+
 class BaseCaptchaTextInput(MultiWidget):
     """
     Base class for Captcha widgets
@@ -25,7 +39,7 @@ class BaseCaptchaTextInput(MultiWidget):
     def __init__(self, attrs=None):
         widgets = (
             HiddenInput(attrs),
-            TextInput(attrs),
+            CaptchaAnswerInput(attrs),
         )
         super(BaseCaptchaTextInput, self).__init__(widgets, attrs)
 
