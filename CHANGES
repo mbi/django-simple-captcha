@@ -7,6 +7,7 @@ Version 0.5.7 (unreleased)
 * Always defined audio context variable  (PR #132, thanks @ziima)
 * Test against Django 2.1a
 * Updated AJAX update docs (PR #140, thanks @CNmanyue)
+* Fixed a typo in a variable name (PR #130, thanks @galeo)
 
 
 Version 0.5.6
