@@ -2,6 +2,7 @@ Version 0.5.7 (unreleased)
 --------------------------
 * Use standard rendering of widgets (Issue #128, PR #133, thanks @ziima)
 * Always defined audio context variable  (PR #132, thanks @ziima)
+* Test against Django 2.1a
 
 
 Version 0.5.6
