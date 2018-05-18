@@ -38,3 +38,4 @@ Contents:
 
    usage.rst
    advanced.rst
+   changes.rst
