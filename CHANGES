@@ -6,6 +6,7 @@ Version 0.5.7 (unreleased)
 * Use templates for rendering of widgets (Issue #128, #134, PR #133, #139, thanks @ziima)
 * Always defined audio context variable  (PR #132, thanks @ziima)
 * Test against Django 2.1a
+* Updated AJAX update docs (PR #140, thanks @CNmanyue)
 
 
 Version 0.5.6
