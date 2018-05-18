@@ -30,7 +30,7 @@ class Tox(test_command):
 install_requires = [
     'setuptools',
     'six >=1.2.0',
-    'Django >= 1.7',
+    'Django >= 1.8',
     'Pillow >=2.2.2',
     'django-ranged-response == 0.2.0'
 ]
@@ -52,8 +52,9 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Security',
         'Topic :: Internet :: WWW/HTTP',
         'Framework :: Django',
