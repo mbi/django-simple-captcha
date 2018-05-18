@@ -35,10 +35,15 @@ install_requires = [
     'django-ranged-response == 0.2.0'
 ]
 
+
+with open('README.rst') as readme:
+    long_description = readme.read()
+
 setup(
     name='django-simple-captcha',
     version=get_captcha_version(),
     description='A very simple, yet powerful, Django captcha application',
+    long_description=long_description,
     author='Marco Bonetti',
     author_email='mbonetti@gmail.com',
     url='https://github.com/mbi/django-simple-captcha',
