@@ -28,12 +28,14 @@ class Tox(test_command):
 
 
 install_requires = [
-    'setuptools',
     'six >=1.2.0',
     'Django >= 1.8',
-    'Pillow >=2.2.2',
+    'Pillow >=2.2.2,<5.0',
     'django-ranged-response == 0.2.0'
 ]
+EXTRAS_REQUIRE = {
+    'test': ('testfixtures', ),
+}
 
 setup(
     name='django-simple-captcha',
@@ -62,6 +64,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=install_requires,
+    extras_require=EXTRAS_REQUIRE,
     tests_require=['tox'],
     cmdclass={'test': Tox},
 )
