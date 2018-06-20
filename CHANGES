@@ -1,6 +1,11 @@
 Version History
 ===============
 
+Version 0.5.8
+-------------
+* Add support for Jinja2 templates (Issue #145, PR #146, thanks @ziima)
+
+
 Version 0.5.7
 -------------
 * Use templates for rendering of widgets (Issue #128, #134, PR #133, #139, thanks @ziima)
