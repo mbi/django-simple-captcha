@@ -4,6 +4,7 @@ Version History
 Version 0.5.8
 -------------
 * Add support for Jinja2 templates (Issue #145, PR #146, thanks @ziima)
+* Cleanup, drop dependency on South (#141, #142 thanks @ziima)
 
 
 Version 0.5.7
