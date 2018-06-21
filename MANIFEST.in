@@ -7,6 +7,7 @@ include .pep8
 recursive-include captcha/fonts *
 recursive-include captcha/locale *
 recursive-include captcha/templates *
+recursive-include captcha/jinja2 *
 recursive-include testproject *
 recursive-include docs *
 exclude testproject/django-simple-captcha.db

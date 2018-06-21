@@ -51,7 +51,7 @@ copyright = u('2011-2018 Marco Bonetti and contributors')
 # built documents.
 #
 # The short X.Y version.
-version = '0.5.8'
+version = '0.5.9'
 # The full version, including alpha/beta/rc tags.
 release = version
 
