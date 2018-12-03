@@ -1,7 +1,7 @@
-# django-simple-captcha French translation.
+# django-simple-captcha Swedish translation.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Patrick Samson <maxcom@laposte.net>, 2010.
+# Stefan Norman <stefan.norman@bricco.se>, 2018.
 #
 msgid ""
 msgstr ""
