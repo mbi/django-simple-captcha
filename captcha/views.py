@@ -127,7 +127,7 @@ def captcha_audio(request, key):
 
         text = store.challenge
         if 'captcha.helpers.math_challenge' == settings.CAPTCHA_CHALLENGE_FUNCT:
-            text = text.replace('*', 'times').replace('-', 'minus')
+            text = text.replace('*', 'times').replace('-', 'minus').replace('+', 'plus')
         else:
             text = ', '.join(list(text))
         path = str(os.path.join(tempfile.gettempdir(), '%s.wav' % key))
