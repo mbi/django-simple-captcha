@@ -52,7 +52,7 @@ To embed a CAPTCHA in your forms, simply add a ``CaptchaField`` to the form defi
 Validate the Form
 -----------------
 
-In your view, validate the form as usually: if the user didn't provide a valid response to the CAPTCHA challenge, the form will raise a ``ValidationError``::
+In your view, validate the form as usual. If the user didn't provide a valid response to the CAPTCHA challenge, the form will raise a ``ValidationError``::
 
     def some_view(request):
         if request.POST:
