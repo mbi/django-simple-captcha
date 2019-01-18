@@ -199,9 +199,48 @@ To change the output HTML, change the ``template_name`` to a custom template or 
 See https://docs.djangoproject.com/en/dev/ref/forms/renderers/ for description of rendering API.
 Keep in mind that ``CaptchaTextInput`` is a subclass of ``MultiWidget`` which affects the context, see https://docs.djangoproject.com/en/2.0/ref/forms/widgets/#multiwidget.
 
-.. attention:: To provide backwards compatibility, the old style rendering has priority over the widget templates.
+For example, you would::
+
+    class CustomCaptchaTextInput(CaptchaTextInput):
+        template_name = 'custom_field.html'
+
+    class CaptchaForm(forms.Form):
+        captcha = CaptchaField(widget=CustomCaptchaTextInput)
+
+
+And then have a ``custom_field.html`` template::
+
+    {% load i18n %}
+    {% spaceless %}
+    <div class="form-group">
+      <label class="control-label">{{ label }}</label>
+      <div class="form-group">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            {% if audio %}
+                <a title="{% trans "Play CAPTCHA as audio file" %}" href="{{ audio }}">
+            {% endif %}
+            <img src="{{ image }}" alt="captcha" class="captcha" />
+          </div>
+          {% include "django/forms/widgets/multiwidget.html" %}
+        </div>
+      </div>
+    </div>
+    {% endspaceless %}
+
+
+.. note:: For this to work, you MUST
+   add ``django.forms`` to your ``INSTALLED_APPS`` and
+   set ``FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'`` to your settings.py.
+   (See here_ for an explanation)
+
+.. _here: https://docs.djangoproject.com/en/2.0/ref/forms/renderers/#django.forms.renderers.TemplatesSetting
+
+.. warning:: To provide backwards compatibility, the old style rendering has priority over the widget templates.
    If the ``CAPTCHA_FIELD_TEMPLATE`` or ``CAPTCHA_OUTPUT_FORMAT`` settings or ``field_templates`` or ``output_format`` parameter are set, the direct rendering gets higher priority.
    If widget templates are ignored, make sure you're using Django >= 1.11 and disable these settings and parameters.
+
+
 
 Old style rendering
 -------------------

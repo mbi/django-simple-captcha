@@ -7,6 +7,7 @@ Version 0.5.10 (unreleased)
 * Docs: Grammar correction (#160, thanks @DanAtShenTech)
 * Fix: Add '+' to text replacement for audio support (#157, thanks @geirkairam)
 * I18N: Added Swedish translation (#155, thanks @stefannorman)
+* Docs: Provide an example of custom field template (#158, thanks @TheBuky)
 
 
 Version 0.5.9
