@@ -6,6 +6,7 @@ Version 0.5.10 (unreleased)
 * Test against Django 2.2a1
 * Docs: Grammar correction (#160, thanks @DanAtShenTech)
 * Fix: Add '+' to text replacement for audio support (#157, thanks @geirkairam)
+* I18N: Added Swedish translation (#155, thanks @stefannorman)
 
 
 Version 0.5.9
