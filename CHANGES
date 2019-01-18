@@ -1,6 +1,13 @@
 Version History
 ===============
 
+Version 0.5.10 (unreleased)
+---------------------------
+* Test against Django 2.2a1
+* Docs: Grammar correction (#160, thanks @DanAtShenTech)
+* Fix: Add '+' to text replacement for audio support (#157, thanks @geirkairam)
+
+
 Version 0.5.9
 -------------
 * Add missing Jinja2 templates in the pypi packages.

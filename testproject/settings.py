@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.messages',
 
     'captcha',
 ]
@@ -74,6 +75,13 @@ if django.VERSION >= (1, 10):
     MIDDLEWARE = ()
 else:
     MIDDLEWARE_CLASSES = ()
+
+if django.VERSION >= (2, 2):
+    MIDDLEWARE = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware'
+    )
 
 CAPTCHA_FLITE_PATH = os.environ.get('CAPTCHA_FLITE_PATH', None)
 CAPTCHA_SOX_PATH = os.environ.get('CAPTCHA_SOX_PATH', None)
