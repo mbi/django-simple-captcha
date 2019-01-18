@@ -197,7 +197,7 @@ Rendering
 ``CaptchaTextInput`` supports the widget rendering using template introduced in Django 1.11.
 To change the output HTML, change the ``template_name`` to a custom template or modify ``get_context`` method to provide further context.
 See https://docs.djangoproject.com/en/dev/ref/forms/renderers/ for description of rendering API.
-Keep in mind that ``CaptchaTextInput`` is a subclass of ``MultiWidget`` whic affects the context, see https://docs.djangoproject.com/en/2.0/ref/forms/widgets/#multiwidget.
+Keep in mind that ``CaptchaTextInput`` is a subclass of ``MultiWidget`` which affects the context, see https://docs.djangoproject.com/en/2.0/ref/forms/widgets/#multiwidget.
 
 .. attention:: To provide backwards compatibility, the old style rendering has priority over the widget templates.
    If the ``CAPTCHA_FIELD_TEMPLATE`` or ``CAPTCHA_OUTPUT_FORMAT`` settings or ``field_templates`` or ``output_format`` parameter are set, the direct rendering gets higher priority.
