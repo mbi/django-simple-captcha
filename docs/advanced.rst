@@ -312,7 +312,7 @@ Dictionary Word
 
 .. image:: _static/dict.png
 
-Picks a random word from a dictionary file. Note, you must define ``CAPTCHA_WORDS_DICTIONARY`` in your cofiguration to use this generator. ::
+Picks a random word from a dictionary file. Note, you must define ``CAPTCHA_WORDS_DICTIONARY`` in your configuration to use this generator. ::
 
     CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.word_challenge'
 
