@@ -10,7 +10,7 @@ Installation
 4. Add an entry to your ``urls.py``::
 
         urlpatterns += [
-            url(r'^captcha/', include('captcha.urls')),
+            path('captcha/', include('captcha.urls')),
         ]
 
 .. _pip: http://pypi.python.org/pypi/pip
@@ -151,6 +151,4 @@ Example usage ajax refresh
             $('.captcha').attr('src', result['image_url']);
             $('#id_captcha_0').val(result['key'])
         });
-
-
     });
