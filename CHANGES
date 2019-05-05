@@ -4,6 +4,7 @@ Version History
 Version 0.5.12 (unreleased)
 ---------------------------
 * Doc: Update url include line for Django (#164, thanks @jpic)
+* Doc: Fixed a typo (#162, thanks @RubenGarcia)
 
 
 Version 0.5.11
