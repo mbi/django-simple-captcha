@@ -1,6 +1,11 @@
 Version History
 ===============
 
+Version 0.5.11
+--------------
+* Fix: CAPTCHA_TEST_MODE was broken. (#163, thanks @ohlr for reporting)
+
+
 Version 0.5.10
 --------------
 * Test against Django 2.2a1
