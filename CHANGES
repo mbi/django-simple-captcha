@@ -1,6 +1,11 @@
 Version History
 ===============
 
+Version 0.5.12 (unreleased)
+---------------------------
+* Doc: Update url include line for Django (#164, thanks @jpic)
+
+
 Version 0.5.11
 --------------
 * Fix: CAPTCHA_TEST_MODE was broken. (#163, thanks @ohlr for reporting)
