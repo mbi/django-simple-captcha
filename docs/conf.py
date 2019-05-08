@@ -12,8 +12,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
+# import sys
+# import os
 from six import u
 # sys.path.insert(0, '..')
 # import captcha

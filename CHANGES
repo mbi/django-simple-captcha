@@ -5,6 +5,7 @@ Version 0.5.12 (unreleased)
 ---------------------------
 * Doc: Update url include line for Django (#164, thanks @jpic)
 * Doc: Fixed a typo (#162, thanks @RubenGarcia)
+* Initial fixes and test against Django 3.0 (#166, #165. Thanks @devkral)
 
 
 Version 0.5.11
