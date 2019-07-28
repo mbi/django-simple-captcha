@@ -36,7 +36,7 @@ def unicode_challenge():
 
 
 def word_challenge():
-    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, 'rb')
+    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, 'r')
     l = fd.readlines()
     fd.close()
     while True:
