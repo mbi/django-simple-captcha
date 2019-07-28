@@ -15,6 +15,7 @@
 # import sys
 # import os
 from six import u
+
 # sys.path.insert(0, '..')
 # import captcha
 # print captcha.get_version()
@@ -51,7 +52,7 @@ copyright = u('2011-2019 Marco Bonetti and contributors')
 # built documents.
 #
 # The short X.Y version.
-version = '0.5.11'
+version = '0.5.12'
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -180,9 +181,13 @@ htmlhelp_basename = 'DjangoSimpleCaptchadoc'
 # (source start file, target name, title, author,
 #   documentclass [howto/manual]).
 latex_documents = [
-    ('index', 'DjangoSimpleCaptcha.tex',
-     u('Django Simple Captcha Documentation'),
-     u('Marco Bonetti'), 'manual'),
+    (
+        'index',
+        'DjangoSimpleCaptcha.tex',
+        u('Django Simple Captcha Documentation'),
+        u('Marco Bonetti'),
+        'manual',
+    )
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
