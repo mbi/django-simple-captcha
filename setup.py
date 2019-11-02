@@ -30,7 +30,7 @@ class Tox(test_command):
 install_requires = [
     'six >=1.2.0',
     'Django >= 1.8',
-    'Pillow >=2.2.2,!=5.1.0',
+    'Pillow >=6.2.0',
     'django-ranged-response == 0.2.0'
 ]
 EXTRAS_REQUIRE = {
