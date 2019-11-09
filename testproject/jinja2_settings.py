@@ -1,3 +1,3 @@
 from .settings import *  # noqa
 
-FORM_RENDERER = 'django.forms.renderers.Jinja2'
+FORM_RENDERER = "django.forms.renderers.Jinja2"

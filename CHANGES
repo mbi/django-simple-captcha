@@ -1,6 +1,12 @@
 Version History
 ===============
 
+Version 0.5.13 (Unreleased)
+---------------------------
+* Fix DeprecationWarnings on Django 3 related to unicode (#173, thanks @jannh)
+* Applied black to the codebase and ignored W503
+
+
 Version 0.5.12
 --------------
 * Doc: Update url include line for Django (#164, thanks @jpic)

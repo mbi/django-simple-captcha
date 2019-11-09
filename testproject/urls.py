@@ -5,7 +5,4 @@ except ImportError:
 
 from .views import home
 
-urlpatterns = [
-    url(r'^$', home),
-    url(r'^captcha/', include('captcha.urls')),
-]
+urlpatterns = [url(r"^$", home), url(r"^captcha/", include("captcha.urls"))]
