@@ -16,6 +16,7 @@
 # import os
 from six import u
 
+
 # sys.path.insert(0, '..')
 # import captcha
 # print captcha.get_version()
@@ -32,27 +33,27 @@ from six import u
 extensions = []
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 # source_encoding = 'utf-8'
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u('Django Simple Captcha')
-copyright = u('2011-2019 Marco Bonetti and contributors')
+project = u("Django Simple Captcha")
+copyright = u("2011-2019 Marco Bonetti and contributors")
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = '0.5.12'
+version = "0.5.13"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -71,7 +72,7 @@ release = version
 
 # List of directories, relative to source directory, that shouldn't be searched
 # for source files.
-exclude_trees = ['_build']
+exclude_trees = ["_build"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -89,7 +90,7 @@ exclude_trees = ['_build']
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -99,7 +100,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = 'default'
+html_theme = "default"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -128,7 +129,7 @@ html_theme = 'default'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -166,7 +167,7 @@ html_static_path = ['_static']
 # html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'DjangoSimpleCaptchadoc'
+htmlhelp_basename = "DjangoSimpleCaptchadoc"
 
 
 # -- Options for LaTeX output -------------------------------------------------
@@ -182,11 +183,11 @@ htmlhelp_basename = 'DjangoSimpleCaptchadoc'
 #   documentclass [howto/manual]).
 latex_documents = [
     (
-        'index',
-        'DjangoSimpleCaptcha.tex',
-        u('Django Simple Captcha Documentation'),
-        u('Marco Bonetti'),
-        'manual',
+        "index",
+        "DjangoSimpleCaptcha.tex",
+        u("Django Simple Captcha Documentation"),
+        u("Marco Bonetti"),
+        "manual",
     )
 ]
 
