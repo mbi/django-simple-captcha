@@ -5,6 +5,7 @@ Version 0.5.13 (Unreleased)
 ---------------------------
 * Fix DeprecationWarnings on Django 3 related to unicode (#173, thanks @jannh)
 * Applied black to the codebase and ignored W503
+* Test Django 2.0 through 3.0 on Python 3.8, too (#171, thanks @devkral)
 
 
 Version 0.5.12
