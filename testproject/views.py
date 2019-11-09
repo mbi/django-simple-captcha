@@ -7,8 +7,8 @@ def home(request):
     if request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
-            return HttpResponseRedirect(request.path + '?ok')
+            return HttpResponseRedirect(request.path + "?ok")
     else:
         form = CaptchaForm()
 
-    return render(request, 'home.html', {'form': form})
+    return render(request, "home.html", {"form": form})

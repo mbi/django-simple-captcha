@@ -2,6 +2,7 @@
 import random
 from captcha.conf import settings
 import django
+
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
 else:  # NOQA
@@ -10,54 +11,61 @@ from six import u, text_type
 
 
 def math_challenge():
-    operators = ('+', '*', '-',)
+    operators = ("+", "*", "-")
     operands = (random.randint(1, 10), random.randint(1, 10))
     operator = random.choice(operators)
-    if operands[0] < operands[1] and '-' == operator:
+    if operands[0] < operands[1] and "-" == operator:
         operands = (operands[1], operands[0])
-    challenge = '%d%s%d' % (operands[0], operator, operands[1])
-    return '{}='.format(
-        challenge.replace('*', settings.CAPTCHA_MATH_CHALLENGE_OPERATOR)
-    ), text_type(eval(challenge))
+    challenge = "%d%s%d" % (operands[0], operator, operands[1])
+    return (
+        "{}=".format(challenge.replace("*", settings.CAPTCHA_MATH_CHALLENGE_OPERATOR)),
+        text_type(eval(challenge)),
+    )
 
 
 def random_char_challenge():
-    chars, ret = u('abcdefghijklmnopqrstuvwxyz'), u('')
+    chars, ret = u("abcdefghijklmnopqrstuvwxyz"), u("")
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
     return ret.upper(), ret
 
 
 def unicode_challenge():
-    chars, ret = u('äàáëéèïíîöóòüúù'), u('')
+    chars, ret = u("äàáëéèïíîöóòüúù"), u("")
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
     return ret.upper(), ret
 
 
 def word_challenge():
-    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, 'r')
+    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, "r")
     l = fd.readlines()
     fd.close()
     while True:
         word = random.choice(l).strip()
-        if len(word) >= settings.CAPTCHA_DICTIONARY_MIN_LENGTH and len(word) <= settings.CAPTCHA_DICTIONARY_MAX_LENGTH:
+        if (
+            len(word) >= settings.CAPTCHA_DICTIONARY_MIN_LENGTH
+            and len(word) <= settings.CAPTCHA_DICTIONARY_MAX_LENGTH
+        ):
             break
     return word.upper(), word.lower()
 
 
 def huge_words_and_punctuation_challenge():
     "Yay, undocumneted. Mostly used to test Issue 39 - http://code.google.com/p/django-simple-captcha/issues/detail?id=39"
-    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, 'rb')
+    fd = open(settings.CAPTCHA_WORDS_DICTIONARY, "rb")
     l = fd.readlines()
     fd.close()
-    word = ''
+    word = ""
     while True:
         word1 = random.choice(l).strip()
         word2 = random.choice(l).strip()
         punct = random.choice(settings.CAPTCHA_PUNCTUATION)
-        word = '%s%s%s' % (word1, punct, word2)
-        if len(word) >= settings.CAPTCHA_DICTIONARY_MIN_LENGTH and len(word) <= settings.CAPTCHA_DICTIONARY_MAX_LENGTH:
+        word = "%s%s%s" % (word1, punct, word2)
+        if (
+            len(word) >= settings.CAPTCHA_DICTIONARY_MIN_LENGTH
+            and len(word) <= settings.CAPTCHA_DICTIONARY_MAX_LENGTH
+        ):
             break
     return word.upper(), word.lower()
 
@@ -65,7 +73,9 @@ def huge_words_and_punctuation_challenge():
 def noise_arcs(draw, image):
     size = image.size
     draw.arc([-20, -20, size[0], 20], 0, 295, fill=settings.CAPTCHA_FOREGROUND_COLOR)
-    draw.line([-20, 20, size[0] + 20, size[1] - 20], fill=settings.CAPTCHA_FOREGROUND_COLOR)
+    draw.line(
+        [-20, 20, size[0] + 20, size[1] - 20], fill=settings.CAPTCHA_FOREGROUND_COLOR
+    )
     draw.line([-20, 0, size[0] + 20, size[1]], fill=settings.CAPTCHA_FOREGROUND_COLOR)
     return draw
 
@@ -73,7 +83,10 @@ def noise_arcs(draw, image):
 def noise_dots(draw, image):
     size = image.size
     for p in range(int(size[0] * size[1] * 0.1)):
-        draw.point((random.randint(0, size[0]), random.randint(0, size[1])), fill=settings.CAPTCHA_FOREGROUND_COLOR)
+        draw.point(
+            (random.randint(0, size[0]), random.randint(0, size[1])),
+            fill=settings.CAPTCHA_FOREGROUND_COLOR,
+        )
     return draw
 
 
@@ -83,14 +96,15 @@ def noise_null(draw, image):
 
 def post_smooth(image):
     from PIL import ImageFilter
+
     return image.filter(ImageFilter.SMOOTH)
 
 
 def captcha_image_url(key):
     """Return url to image. Need for ajax refresh and, etc"""
-    return reverse('captcha-image', args=[key])
+    return reverse("captcha-image", args=[key])
 
 
 def captcha_audio_url(key):
     """Return url to image. Need for ajax refresh and, etc"""
-    return reverse('captcha-audio', args=[key])
+    return reverse("captcha-audio", args=[key])
