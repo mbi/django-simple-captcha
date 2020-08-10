@@ -2,6 +2,7 @@ from captcha.conf import settings
 from captcha.models import CaptchaStore
 
 from django.utils import timezone
+import django
 if django.VERSION >= (3, 0):
     from django.utils.translation import gettext_lazy as ugettext_lazy
 else:
