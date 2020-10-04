@@ -55,16 +55,13 @@ class CaptchaCase(TestCase):
             settings.CAPTCHA_WORDS_DICTIONARY = "/usr/share/dict/words"
             settings.CAPTCHA_PUNCTUATION = ";-,."
             tested_helpers.append("captcha.helpers.word_challenge")
-            tested_helpers.append(
-                "captcha.helpers.huge_words_and_punctuation_challenge"
-            )
+            tested_helpers.append("captcha.helpers.huge_words_and_punctuation_challenge")
         for helper in tested_helpers:
             challenge, response = settings._callable_from_string(helper)()
-            self.stores[
-                helper.rsplit(".", 1)[-1].replace("_challenge", "_store")
-            ], _ = CaptchaStore.objects.get_or_create(
-                challenge=challenge, response=response
-            )
+            (
+                self.stores[helper.rsplit(".", 1)[-1].replace("_challenge", "_store")],
+                _,
+            ) = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
         challenge, response = settings.get_challenge()()
         self.stores["default_store"], _ = CaptchaStore.objects.get_or_create(
             challenge=challenge, response=response
@@ -402,7 +399,7 @@ class CaptchaCase(TestCase):
     def test_get_version(self):
         import captcha
 
-        captcha.get_version(True)
+        captcha.get_version()
 
     def test_missing_value(self):
         r = self.client.get(reverse("captcha-test-non-required"))
@@ -534,9 +531,7 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_FONT_PATH = False
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             try:
-                response = self.client.get(
-                    reverse("captcha-image", kwargs=dict(key=key))
-                )
+                response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
                 self.fail()
             except ImproperlyConfigured:
                 pass
@@ -569,9 +564,7 @@ class CaptchaCase(TestCase):
             response,
             text_type(
                 eval(
-                    challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, "*")[
-                        :-1
-                    ]
+                    challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, "*")[:-1]
                 )
             ),
         )
