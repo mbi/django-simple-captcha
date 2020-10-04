@@ -4,37 +4,19 @@ sudo: false
 
 matrix:
   include:
-  - python: "3.6"
-    env: TOX_ENV=py36-django18
-  - python: "3.6"
-    env: TOX_ENV=py36-django19
-  - python: "3.6"
-    env: TOX_ENV=py36-django110
-  - python: "3.6"
-    env: TOX_ENV=py36-django111
-  - python: "3.6"
-    env: TOX_ENV=py36-django20
-  - python: "3.6"
-    env: TOX_ENV=py36-django21
-  - python: "3.6"
     env: TOX_ENV=py36-django22
     dist: xenial
   - python: "3.6"
-    env: TOX_ENV=py36-django30
+    env: TOX_ENV=py37-django30
+    dist: xenial
+  - python: "3.6"
+    env: TOX_ENV=py37-django31
     dist: xenial
   - python: "3.6"
     env: TOX_ENV=py36-django22-jinja2
-  - python: "2.7"
-    env: TOX_ENV=py27-django18
-  - python: "2.7"
-    env: TOX_ENV=py27-django19
-  - python: "2.7"
-    env: TOX_ENV=py27-django110
-  - python: "2.7"
-    env: TOX_ENV=py27-django111
-  - python: "2.7"
+  - python: "3.6"
     env: TOX_ENV=flake8
-  - python: "2.7"
+  - python: "3.6"
     env: TOX_ENV=gettext
 
 install:

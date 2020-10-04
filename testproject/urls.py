@@ -1,7 +1,9 @@
-try:
-    from django.conf.urls import include, url
-except ImportError:
-    from django.conf.urls.defaults import include, url
+import django
+
+if django.VERSION >= (3, 1, 0):
+    from django.urls import re_path as url, include
+else:
+    from django.conf.urls import url, include
 
 from .views import home
 

@@ -52,6 +52,7 @@ TEMPLATES = [
         "OPTIONS": {
             "debug": False,
             "context_processors": (
+                "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.i18n",
@@ -67,18 +68,11 @@ TEMPLATES = [
 
 USE_TZ = True
 SECRET_KEY = "empty"
-
-if django.VERSION >= (1, 10):
-    MIDDLEWARE = ()
-else:
-    MIDDLEWARE_CLASSES = ()
-
-if django.VERSION >= (2, 2):
-    MIDDLEWARE = (
-        "django.contrib.sessions.middleware.SessionMiddleware",
-        "django.contrib.auth.middleware.AuthenticationMiddleware",
-        "django.contrib.messages.middleware.MessageMiddleware",
-    )
+MIDDLEWARE = (
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+)
 
 CAPTCHA_FLITE_PATH = os.environ.get("CAPTCHA_FLITE_PATH", None)
 CAPTCHA_SOX_PATH = os.environ.get("CAPTCHA_SOX_PATH", None)

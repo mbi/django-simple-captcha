@@ -1,5 +1,11 @@
-from django.conf.urls import url
+import django
 from captcha import views
+
+if django.VERSION >= (3, 1, 0):
+    from django.urls import re_path as url
+else:
+    from django.conf.urls import url
+
 
 urlpatterns = [
     url(

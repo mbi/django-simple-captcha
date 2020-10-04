@@ -19,10 +19,7 @@ if django.VERSION < (1, 10):  # NOQA
 else:  # NOQA
     from django.urls import reverse, NoReverseMatch  # NOQA
 
-if django.VERSION >= (3, 0):
-    from django.utils.translation import gettext_lazy as ugettext_lazy
-else:
-    from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 
 class CaptchaAnswerInput(TextInput):
@@ -190,15 +187,11 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             else attrs.get("id"),
             "audio": self.audio_url(),
         }
-        self.image_and_audio = render_to_string(
-            settings.CAPTCHA_IMAGE_TEMPLATE, context
-        )
+        self.image_and_audio = render_to_string(settings.CAPTCHA_IMAGE_TEMPLATE, context)
         self.hidden_field = render_to_string(
             settings.CAPTCHA_HIDDEN_FIELD_TEMPLATE, context
         )
-        self.text_field = render_to_string(
-            settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context
-        )
+        self.text_field = render_to_string(settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context)
         return self.format_output(None)
 
     def render(self, name, value, attrs=None, renderer=None):
@@ -225,9 +218,7 @@ class CaptchaField(MultiValueField):
         ):
             if "error_messages" not in kwargs:
                 kwargs["error_messages"] = {}
-            kwargs["error_messages"].update(
-                {"invalid": ugettext_lazy("Invalid CAPTCHA")}
-            )
+            kwargs["error_messages"].update({"invalid": gettext_lazy("Invalid CAPTCHA")})
 
         kwargs["widget"] = kwargs.pop(
             "widget",
@@ -268,7 +259,7 @@ class CaptchaField(MultiValueField):
             except CaptchaStore.DoesNotExist:
                 raise ValidationError(
                     getattr(self, "error_messages", {}).get(
-                        "invalid", ugettext_lazy("Invalid CAPTCHA")
+                        "invalid", gettext_lazy("Invalid CAPTCHA")
                     )
                 )
         return value

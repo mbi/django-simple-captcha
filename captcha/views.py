@@ -194,24 +194,20 @@ def captcha_audio(request, key):
             response = RangedFileResponse(
                 request, open(path, "rb"), content_type="audio/wav"
             )
-            response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(
-                key
-            )
+            response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(key)
             return response
     raise Http404
 
 
 def captcha_refresh(request):
     """  Return json with new captcha for ajax refresh request """
-    if not request.is_ajax():
+    if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
         raise Http404
 
     new_key = CaptchaStore.pick()
     to_json_response = {
         "key": new_key,
         "image_url": captcha_image_url(new_key),
-        "audio_url": captcha_audio_url(new_key)
-        if settings.CAPTCHA_FLITE_PATH
-        else None,
+        "audio_url": captcha_audio_url(new_key) if settings.CAPTCHA_FLITE_PATH else None,
     }
     return HttpResponse(json.dumps(to_json_response), content_type="application/json")
