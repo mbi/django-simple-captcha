@@ -20,14 +20,10 @@ Features
 Requirements
 ++++++++++++
 
-* Django 1.8+
+* Django 2.2+, Python3.6+
 * A recent version of Pillow compiled with FreeType support
 * Flite is required for text-to-speech (audio) output, but not mandatory
 
-Python 3 compatibility
-++++++++++++++++++++++
-
-The current development version supports Python3 via the `six <https://pypi.python.org/pypi/six>`_ compatibility layer.
 
 ******************
 Contents:

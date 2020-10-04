@@ -16,7 +16,7 @@ Installation
 .. _pip: http://pypi.python.org/pypi/pip
 
 
-Note: PIL and Pillow require that image libraries are installed on your system. On e.g. Debian or Ubuntu, you'd need these packages to compile and install Pillow::
+Note: Pillow requires that image libraries are installed on your system. On e.g. Debian or Ubuntu, you'd need these packages to compile and install Pillow::
 
        apt-get -y install libz-dev libjpeg-dev libfreetype6-dev python-dev
 
@@ -38,7 +38,7 @@ To embed a CAPTCHA in your forms, simply add a ``CaptchaField`` to the form defi
         myfield = AnyOtherField()
         captcha = CaptchaField()
 
-…or, as a ``ModelForm``::
+…or, in a ``ModelForm``::
 
 
     from django import forms
@@ -52,7 +52,7 @@ To embed a CAPTCHA in your forms, simply add a ``CaptchaField`` to the form defi
 Validate the Form
 -----------------
 
-In your view, validate the form as usual. If the user didn't provide a valid response to the CAPTCHA challenge, the form will raise a ``ValidationError``::
+In your view, validate the form as usual. If the user didn't provide a valid response to the CAPTCHA challenge, the form will raise a ``ValidationError`` and display an error message to the user::
 
     def some_view(request):
         if request.POST:
@@ -65,7 +65,7 @@ In your view, validate the form as usual. If the user didn't provide a valid res
         else:
             form = CaptchaTestForm()
 
-        return render_to_response('template.html',locals())
+        return render(request, 'template.html', {'form': form})
 
 Passing arguments to the field
 ------------------------------

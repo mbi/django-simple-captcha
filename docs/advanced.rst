@@ -13,7 +13,7 @@ Full path and filename of a TrueType (TTF), OpenType, or pilfont font file used 
 
 Defaults to: ``fonts/Vera.ttf`` (included in the application, GPL font).
 
-Note that your PIL installation must support TTF and/or OpenFont if you want to use these kind of glyphs (most modern distributions of PIL do.)
+Note that your Pillow installation must support TTF and/or OpenFont if you want to use these kind of glyphs (most modern distributions of Pillow do.)
 
 Note: as of version 0.4.6, ``CAPTCHA_FONT_PATH`` may be an iterable of font paths, in which case a font will be picked randomly from the list for each CAPTCHA.
 
@@ -27,7 +27,7 @@ Defaults to '22'.
 CAPTCHA_IMAGE_SIZE
 ------------------
 
-Image size in pixels of generated captcha, specified by 2-tuple (width, height)
+Image size in pixels of generated captcha, specified as a tuple (width, height)
 
 Defaults to `None` (automatically calculated)
 
@@ -73,7 +73,7 @@ Defaults to: ``'*'`` (asterisk sign)
 CAPTCHA_NOISE_FUNCTIONS
 ------------------------
 
-List of strings of python callables that take a PIL ``DrawImage`` object and an ``Image`` image as input, modify the ``DrawImage``, then return it.
+List of strings of python callables that take a Pillow ``DrawImage`` object and an ``Image`` image as input, modify the ``DrawImage``, then return it.
 
 Defaults to: ``('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)``
 
