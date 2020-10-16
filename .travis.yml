@@ -4,12 +4,13 @@ sudo: false
 
 matrix:
   include:
+  - python: "3.6"
     env: TOX_ENV=py36-django22
     dist: xenial
-  - python: "3.6"
+  - python: "3.7"
     env: TOX_ENV=py37-django30
     dist: xenial
-  - python: "3.6"
+  - python: "3.7"
     env: TOX_ENV=py37-django31
     dist: xenial
   - python: "3.6"
@@ -18,9 +19,33 @@ matrix:
     env: TOX_ENV=flake8
   - python: "3.6"
     env: TOX_ENV=gettext
-
+    # Adding jobs for ppc64le architecture
+  - python: "3.6"
+    arch: ppc64le
+    env: TOX_ENV=py36-django22
+    dist: xenial
+  - python: "3.7"
+    arch: ppc64le
+    env: TOX_ENV=py37-django30
+    dist: xenial
+  - python: "3.7"
+    arch: ppc64le
+    env: TOX_ENV=py37-django31
+    dist: xenial
+  - python: "3.6"
+    arch: ppc64le
+    env: TOX_ENV=py36-django22-jinja2
+  - python: "3.6"
+    arch: ppc64le
+    env: TOX_ENV=flake8
+  - python: "3.6"
+    arch: ppc64le
+    env: TOX_ENV=gettext
 install:
   - pip install tox
+
+before_install:
+  - if [[ "${TRAVIS_CPU_ARCH}" == "ppc64le" ]]; then sudo apt-get install gettext; fi
 
 script:
   - tox -e $TOX_ENV
