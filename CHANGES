@@ -9,6 +9,7 @@ Version 0.5.13 (Unreleased)
 * i18n: add Persian (fa) language translation files (#190, thanks @mavenium)
 * Test Django 2.2, 3.0 and 3.1 on Python 3.6, 3.7 and 3.8 (#171, thanks @devkral)
 * Fix deprecation warnings on Django 3.1 (#186, thanks @ jannh and @TheBuky)
+* Travis fixes and test on ppc64le arch (#192 and #191, thanks @kishorkunal-raj)
 
 
 Version 0.5.12
