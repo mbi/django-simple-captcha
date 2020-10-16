@@ -1,7 +1,8 @@
-from setuptools import setup, find_packages
-from setuptools.command.test import test as test_command
-from captcha import get_version as get_captcha_version
 import sys
+
+from captcha import get_version as get_captcha_version
+from setuptools import find_packages, setup
+from setuptools.command.test import test as test_command
 
 
 class Tox(test_command):
@@ -30,7 +31,7 @@ class Tox(test_command):
 
 install_requires = [
     "six >=1.2.0",
-    "Django >= 1.8",
+    "Django >= 2.2",
     "Pillow >=6.2.0",
     "django-ranged-response == 0.2.0",
 ]
@@ -57,10 +58,9 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Topic :: Security",
         "Topic :: Internet :: WWW/HTTP",
         "Framework :: Django",

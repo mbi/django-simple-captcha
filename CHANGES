@@ -1,8 +1,8 @@
 Version History
 ===============
 
-Version 0.5.13 (Unreleased)
----------------------------
+Version 0.5.13
+--------------
 * Fix DeprecationWarnings on Django 3 related to unicode (#173, thanks @jannh)
 * Applied black to the codebase and ignored W503
 * tox: remove superfluous basepython statement (#172, thanks @devkral)
