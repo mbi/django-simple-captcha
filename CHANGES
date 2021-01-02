@@ -1,6 +1,11 @@
 Version History
 ===============
 
+Version 0.5.14 (unreleased)
+---------------------------
+* Generate deterministic CAPTCHA images for each Captcha instance (#194, thanks @mjnaderi)
+
+
 Version 0.5.13
 --------------
 * Fix DeprecationWarnings on Django 3 related to unicode (#173, thanks @jannh)
