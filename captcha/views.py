@@ -48,6 +48,8 @@ def captcha_image(request, key, scale=1):
         # HTTP 410 Gone status so that crawlers don't index these expired urls.
         return HttpResponse(status=410)
 
+    random.seed(key)  # Do not generate different images for the same key
+
     text = store.challenge
 
     if isinstance(settings.CAPTCHA_FONT_PATH, six.string_types):
