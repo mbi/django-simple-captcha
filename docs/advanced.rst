@@ -194,7 +194,7 @@ Defaults to: 5
 CAPTCHA_2X_IMAGE
 ----------------
 
-When set to True, a double resolution version of captcha image is served by adding `@2` to the end of image URL (`image/<key>@2/`).
+When set to True, a double resolution version of the captcha image is made served by adding `@2` to the end of the image URL (`image/<key>@2/`). Note that this makes the image slightly more readable on e.g. HiDPI screens, but could also make the CAPTCHA potentially easier to break by a bot.
 
 Defaults to: True
 

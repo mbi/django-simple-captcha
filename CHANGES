@@ -4,6 +4,7 @@ Version History
 Version 0.5.14 (unreleased)
 ---------------------------
 * Generate deterministic CAPTCHA images for each Captcha instance (#194, thanks @mjnaderi)
+* New setting CAPTCHA_2X_IMAGE to disable the double resolution image option (#195, thanks @mjnaderi)
 
 
 Version 0.5.13
