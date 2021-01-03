@@ -191,6 +191,14 @@ This is a timeout value in minutes used only if `CAPTCHA_GET_FROM_POOL` (see abo
 Defaults to: 5
 
 
+CAPTCHA_2X_IMAGE
+----------------
+
+When set to True, a double resolution version of captcha image is served by adding `@2` to the end of image URL (`image/<key>@2/`).
+
+Defaults to: True
+
+
 Rendering
 +++++++++
 

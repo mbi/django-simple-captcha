@@ -42,6 +42,8 @@ def makeimg(size):
 
 
 def captcha_image(request, key, scale=1):
+    if scale == 2 and not settings.CAPTCHA_2X_IMAGE:
+        raise Http404
     try:
         store = CaptchaStore.objects.get(hashkey=key)
     except CaptchaStore.DoesNotExist:
