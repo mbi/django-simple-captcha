@@ -83,9 +83,7 @@ class CaptchaCase(TestCase):
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header("content-type"))
-            self.assertEqual(
-                response._headers.get("content-type"), ("Content-Type", "image/png")
-            )
+            self.assertEqual(response["content-type"], "image/png")
 
     def test_audio(self):
         if not settings.CAPTCHA_FLITE_PATH:
@@ -99,9 +97,7 @@ class CaptchaCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.ranged_file.size > 1024)
             self.assertTrue(response.has_header("content-type"))
-            self.assertEqual(
-                response._headers.get("content-type"), ("Content-Type", "audio/wav")
-            )
+            self.assertEqual(response["content-type"], "audio/wav")
 
     def test_form_submit(self):
         r = self.client.get(reverse("captcha-test"))
@@ -467,9 +463,7 @@ class CaptchaCase(TestCase):
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header("content-type"))
-            self.assertEqual(
-                response._headers.get("content-type"), ("Content-Type", "image/png")
-            )
+            self.assertEqual(response["content-type"], "image/png")
 
         settings.CAPTCHA_BACKGROUND_COLOR = __current_test_mode_setting
 
@@ -501,9 +495,7 @@ class CaptchaCase(TestCase):
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header("content-type"))
-            self.assertEqual(
-                response._headers.get("content-type"), ("Content-Type", "image/png")
-            )
+            self.assertEqual(response["content-type"], "image/png")
             self.assertEqual(Image.open(StringIO(response.content)).size, (201, 97))
 
         settings.CAPTCHA_IMAGE_SIZE = __current_test_mode_setting
@@ -516,17 +508,13 @@ class CaptchaCase(TestCase):
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(
-                response._headers.get("content-type"), ("Content-Type", "image/png")
-            )
+            self.assertEqual(response["content-type"], "image/png")
 
         settings.CAPTCHA_FONT_PATH = [vera, vera, vera]
         for key in [store.hashkey for store in six.itervalues(self.stores)]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
-            self.assertEqual(
-                response._headers.get("content-type"), ("Content-Type", "image/png")
-            )
+            self.assertEqual(response["content-type"], "image/png")
 
         settings.CAPTCHA_FONT_PATH = False
         for key in [store.hashkey for store in six.itervalues(self.stores)]:

@@ -5,7 +5,7 @@ Version 0.5.14 (unreleased)
 ---------------------------
 * Generate deterministic CAPTCHA images for each Captcha instance (#194, thanks @mjnaderi)
 * New setting CAPTCHA_2X_IMAGE to disable the double resolution image option (#195, thanks @mjnaderi)
-
+* Test against Django 3.2a
 
 Version 0.5.13
 --------------
