@@ -18,7 +18,7 @@ matrix:
     dist: xenial
   - python: "3.6"
     env: TOX_ENV=py36-django22-jinja2
-  - python: "3.6"
+  - python: "3.7"
     env: TOX_ENV=flake8
   - python: "3.6"
     env: TOX_ENV=gettext
@@ -38,7 +38,7 @@ matrix:
   - python: "3.6"
     arch: ppc64le
     env: TOX_ENV=py36-django22-jinja2
-  - python: "3.6"
+  - python: "3.7"
     arch: ppc64le
     env: TOX_ENV=flake8
   - python: "3.6"
