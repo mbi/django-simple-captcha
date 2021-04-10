@@ -2,8 +2,8 @@
 Django Simple Captcha
 *********************
 
-.. image:: https://travis-ci.org/mbi/django-simple-captcha.png?branch=master
-  :target: http://travis-ci.org/mbi/django-simple-captcha
+.. image:: https://github.com/mbi/django-simple-captcha/actions/workflows/test.yml/badge.svg
+  :target: https://github.com/mbi/django-simple-captcha/actions/workflows/test.yml
   
 .. image:: https://img.shields.io/pypi/v/django-simple-captcha
   :target: https://pypi.org/project/django-simple-captcha/
