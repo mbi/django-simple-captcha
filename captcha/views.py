@@ -9,6 +9,7 @@ import tempfile
 import os
 import subprocess
 import six
+from ratelimit.decorators import ratelimit
 
 try:
     from cStringIO import StringIO
@@ -40,7 +41,7 @@ def makeimg(size):
         image = Image.new("RGB", size, settings.CAPTCHA_BACKGROUND_COLOR)
     return image
 
-
+@ratelimit(key='ip', rate='1/s',block=True)
 def captcha_image(request, key, scale=1):
     if scale == 2 and not settings.CAPTCHA_2X_IMAGE:
         raise Http404
@@ -140,7 +141,7 @@ def captcha_image(request, key, scale=1):
 
     return response
 
-
+@ratelimit(key='ip', rate='1/s',block=True)
 def captcha_audio(request, key):
     if settings.CAPTCHA_FLITE_PATH:
         try:
@@ -202,7 +203,7 @@ def captcha_audio(request, key):
             return response
     raise Http404
 
-
+@ratelimit(key='ip', rate='1/s',block=True)
 def captcha_refresh(request):
     """  Return json with new captcha for ajax refresh request """
     if not request.headers.get('x-requested-with') == 'XMLHttpRequest':

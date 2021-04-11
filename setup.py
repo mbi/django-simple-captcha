@@ -33,6 +33,7 @@ install_requires = [
     "six >=1.2.0",
     "Django >= 2.2",
     "Pillow >=6.2.0",
+    "django-ratelimit>=2.0.0",
     "django-ranged-response == 0.2.0",
 ]
 EXTRAS_REQUIRE = {"test": ("testfixtures",)}
