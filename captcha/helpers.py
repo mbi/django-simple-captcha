@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 import random
 
 import django
 from captcha.conf import settings
-from six import text_type, u
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
@@ -20,19 +18,19 @@ def math_challenge():
     challenge = "%d%s%d" % (operands[0], operator, operands[1])
     return (
         "{}=".format(challenge.replace("*", settings.CAPTCHA_MATH_CHALLENGE_OPERATOR)),
-        text_type(eval(challenge)),
+        str(eval(challenge)),
     )
 
 
 def random_char_challenge():
-    chars, ret = u("abcdefghijklmnopqrstuvwxyz"), u("")
+    chars, ret = "abcdefghijklmnopqrstuvwxyz", ""
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
     return ret.upper(), ret
 
 
 def unicode_challenge():
-    chars, ret = u("äàáëéèïíîöóòüúù"), u("")
+    chars, ret = "äàáëéèïíîöóòüúù", ""
     for i in range(settings.CAPTCHA_LENGTH):
         ret += random.choice(chars)
     return ret.upper(), ret

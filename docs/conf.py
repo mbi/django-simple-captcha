@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Django Simple Captcha documentation build configuration file, created by
 # sphinx-quickstart on Sun Jul 10 12:35:54 2011.
 #
@@ -14,8 +12,6 @@
 
 # import sys
 # import os
-from six import u
-
 
 # sys.path.insert(0, '..')
 # import captcha
@@ -45,15 +41,15 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u("Django Simple Captcha")
-copyright = u("2011-2019 Marco Bonetti and contributors")
+project = "Django Simple Captcha"
+copyright = "2011-2021 Marco Bonetti and contributors"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = "0.5.14"
+version = "0.5.15"
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -185,8 +181,8 @@ latex_documents = [
     (
         "index",
         "DjangoSimpleCaptcha.tex",
-        u("Django Simple Captcha Documentation"),
-        u("Marco Bonetti"),
+        "Django Simple Captcha Documentation",
+        "Marco Bonetti",
         "manual",
     )
 ]

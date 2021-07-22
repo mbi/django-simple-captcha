@@ -7,7 +7,6 @@ import unittest
 import warnings
 
 import django
-import six
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
@@ -16,7 +15,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from PIL import Image
-from six import text_type, u
 from testfixtures import LogCapture
 
 if django.VERSION < (1, 10):  # NOQA
@@ -77,7 +75,7 @@ class CaptchaCase(TestCase):
         return hash_, response
 
     def test_image(self):
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header("content-type"))
@@ -279,7 +277,7 @@ class CaptchaCase(TestCase):
 
     def test_output_format(self):
         for urlname in ("captcha-test", "captcha-test-model-form"):
-            settings.CAPTCHA_OUTPUT_FORMAT = u(
+            settings.CAPTCHA_OUTPUT_FORMAT = (
                 "%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s"
             )
             r = self.client.get(reverse(urlname))
@@ -288,7 +286,7 @@ class CaptchaCase(TestCase):
 
     def test_invalid_output_format(self):
         for urlname in ("captcha-test", "captcha-test-model-form"):
-            settings.CAPTCHA_OUTPUT_FORMAT = u("%(image)s")
+            settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s"
             try:
                 with warnings.catch_warnings(record=True) as w:
                     self.client.get(reverse(urlname))
@@ -300,7 +298,7 @@ class CaptchaCase(TestCase):
                 self.assertTrue("CAPTCHA_OUTPUT_FORMAT" in str(e))
 
     def test_per_form_format(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = u(
+        settings.CAPTCHA_OUTPUT_FORMAT = (
             "%(image)s testCustomFormatString %(hidden_field)s %(text_field)s"
         )
         r = self.client.get(reverse("captcha-test"))
@@ -314,7 +312,7 @@ class CaptchaCase(TestCase):
         self.assertEqual(response, u"111111")
 
     def test_issue31_proper_abel(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = u("%(image)s %(hidden_field)s %(text_field)s")
+        settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s %(hidden_field)s %(text_field)s"
         r = self.client.get(reverse("captcha-test"))
         self.assertTrue('<label for="id_captcha_1"' in str(r.content))
 
@@ -323,14 +321,14 @@ class CaptchaCase(TestCase):
             reverse("captcha-refresh"), HTTP_X_REQUESTED_WITH="XMLHttpRequest"
         )
         try:
-            new_data = json.loads(six.text_type(r.content, encoding="ascii"))
+            new_data = json.loads(str(r.content, encoding="ascii"))
             self.assertTrue("image_url" in new_data)
             self.assertTrue("audio_url" in new_data)
         except Exception:
             self.fail()
 
     def test_content_length(self):
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertTrue(response.has_header("content-length"))
             self.assertTrue(response["content-length"].isdigit())
@@ -341,7 +339,7 @@ class CaptchaCase(TestCase):
         This test covers a default django field and widget behavior
         It not assert anything. If something is wrong it will raise a error!
         """
-        settings.CAPTCHA_OUTPUT_FORMAT = u("%(image)s %(hidden_field)s %(text_field)s")
+        settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s %(hidden_field)s %(text_field)s"
         widget = CaptchaTextInput(attrs={"class": "required"})
         CaptchaField(widget=widget)
 
@@ -447,17 +445,17 @@ class CaptchaCase(TestCase):
         r = self.client.get(reverse("captcha-test"))
         self.assertFalse(
             'autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" type="hidden" name="captcha_0"'
-            in six.text_type(r.content)
+            in str(r.content)
         )
         self.assertFalse(
             'autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="id_captcha_0" name="captcha_0" type="hidden"'
-            in six.text_type(r.content)
+            in str(r.content)
         )
 
     def test_transparent_background(self):
         __current_test_mode_setting = settings.CAPTCHA_BACKGROUND_COLOR
         settings.CAPTCHA_BACKGROUND_COLOR = "transparent"
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header("content-type"))
@@ -466,7 +464,7 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_BACKGROUND_COLOR = __current_test_mode_setting
 
     def test_expired_captcha_returns_410(self):
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             CaptchaStore.objects.filter(hashkey=key).delete()
@@ -476,19 +474,17 @@ class CaptchaCase(TestCase):
     def test_id_prefix(self):
         r = self.client.get(reverse("captcha-test-id-prefix"))
         self.assertTrue(
-            '<label for="form1_id_captcha1_1">Captcha1:</label>'
-            in six.text_type(r.content)
+            '<label for="form1_id_captcha1_1">Captcha1:</label>' in str(r.content)
         )
-        self.assertTrue('id="form1_id_captcha1_1"' in six.text_type(r.content))
+        self.assertTrue('id="form1_id_captcha1_1"' in str(r.content))
         self.assertTrue(
-            '<label for="form2_id_captcha2_1">Captcha2:</label>'
-            in six.text_type(r.content)
+            '<label for="form2_id_captcha2_1">Captcha2:</label>' in str(r.content)
         )
-        self.assertTrue('id="form2_id_captcha2_1"' in six.text_type(r.content))
+        self.assertTrue('id="form2_id_captcha2_1"' in str(r.content))
 
     def test_image_size(self):
         __current_test_mode_setting = settings.CAPTCHA_IMAGE_SIZE
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             settings.CAPTCHA_IMAGE_SIZE = (201, 97)
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
@@ -503,19 +499,19 @@ class CaptchaCase(TestCase):
         __current_test_mode_setting = settings.CAPTCHA_FONT_PATH
         settings.CAPTCHA_FONT_PATH = vera
 
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response["content-type"], "image/png")
 
         settings.CAPTCHA_FONT_PATH = [vera, vera, vera]
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
             self.assertEqual(response.status_code, 200)
             self.assertEqual(response["content-type"], "image/png")
 
         settings.CAPTCHA_FONT_PATH = False
-        for key in [store.hashkey for store in six.itervalues(self.stores)]:
+        for key in [store.hashkey for store in self.stores.values()]:
             try:
                 response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
                 self.fail()
@@ -533,7 +529,7 @@ class CaptchaCase(TestCase):
         for urlname in ("captcha-test", "captcha-test-model-form"):
             settings.CAPTCHA_CHALLENGE_FUNCT = "captcha.tests.trivial_challenge"
             r = self.client.get(reverse(urlname))
-            self.assertTrue("captcha-template-test" in six.text_type(r.content))
+            self.assertTrue("captcha-template-test" in str(r.content))
         settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
         settings.CAPTCHA_FIELD_TEMPLATE = __current_field_template
 
@@ -548,7 +544,7 @@ class CaptchaCase(TestCase):
 
         self.assertEqual(
             response,
-            text_type(
+            str(
                 eval(
                     challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, "*")[:-1]
                 )

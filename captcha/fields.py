@@ -1,6 +1,8 @@
 import warnings
 
 import django
+from captcha.conf import settings
+from captcha.models import CaptchaStore
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
@@ -8,18 +10,12 @@ from django.forms.widgets import HiddenInput, MultiWidget, TextInput
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.safestring import mark_safe
-
-from captcha.conf import settings
-from captcha.models import CaptchaStore
-from six import u
-
+from django.utils.translation import gettext_lazy
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse, NoReverseMatch  # NOQA
 else:  # NOQA
     from django.urls import reverse, NoReverseMatch  # NOQA
-
-from django.utils.translation import gettext_lazy
 
 
 class CaptchaAnswerInput(TextInput):
@@ -68,7 +64,7 @@ class BaseCaptchaTextInput(MultiWidget):
             key = CaptchaStore.generate_key(generator)
 
         # these can be used by format_output and render
-        self._value = [key, u("")]
+        self._value = [key, ""]
         self._key = key
         self.id_ = self.build_attrs(attrs).get("id", None)
 

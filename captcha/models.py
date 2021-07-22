@@ -5,12 +5,9 @@ import random
 import time
 
 import django
+from captcha.conf import settings as captcha_settings
 from django.db import models
 from django.utils import timezone
-
-from captcha.conf import settings as captcha_settings
-from six import python_2_unicode_compatible
-
 
 if django.VERSION >= (3, 0):
     from django.utils.encoding import smart_str as smart_text
@@ -29,7 +26,6 @@ MAX_RANDOM_KEY = 18446744073709551616  # 2 << 63
 logger = logging.getLogger(__name__)
 
 
-@python_2_unicode_compatible
 class CaptchaStore(models.Model):
     challenge = models.CharField(blank=False, max_length=32)
     response = models.CharField(blank=False, max_length=32)

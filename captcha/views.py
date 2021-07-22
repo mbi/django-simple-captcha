@@ -1,21 +1,21 @@
-from captcha.conf import settings
-from captcha.helpers import captcha_image_url, captcha_audio_url
-from captcha.models import CaptchaStore
-from django.http import HttpResponse, Http404
-from django.core.exceptions import ImproperlyConfigured
-from ranged_response import RangedFileResponse
-import random
-import tempfile
 import os
+import random
 import subprocess
-import six
+import tempfile
+
+from captcha.conf import settings
+from captcha.helpers import captcha_audio_url, captcha_image_url
+from captcha.models import CaptchaStore
+from django.core.exceptions import ImproperlyConfigured
+from django.http import Http404, HttpResponse
+from PIL import Image, ImageDraw, ImageFont
+from ranged_response import RangedFileResponse
 
 try:
     from cStringIO import StringIO
 except ImportError:
     from io import BytesIO as StringIO
 
-from PIL import Image, ImageDraw, ImageFont
 
 try:
     import json
@@ -54,7 +54,7 @@ def captcha_image(request, key, scale=1):
 
     text = store.challenge
 
-    if isinstance(settings.CAPTCHA_FONT_PATH, six.string_types):
+    if isinstance(settings.CAPTCHA_FONT_PATH, str):
         fontpath = settings.CAPTCHA_FONT_PATH
     elif isinstance(settings.CAPTCHA_FONT_PATH, (list, tuple)):
         fontpath = random.choice(settings.CAPTCHA_FONT_PATH)

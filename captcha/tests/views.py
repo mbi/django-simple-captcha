@@ -1,8 +1,7 @@
-from django import forms
 from captcha.fields import CaptchaField
-from django.http import HttpResponse
+from django import forms
 from django.contrib.auth.models import User
-from six import u
+from django.http import HttpResponse
 
 try:
     from django.template import engines
@@ -57,9 +56,7 @@ def _test(request, form_class):
 
     t = _get_template(TEST_TEMPLATE)
 
-    return HttpResponse(
-        t.render(context=dict(passed=passed, form=form), request=request)
-    )
+    return HttpResponse(t.render(context=dict(passed=passed, form=form), request=request))
 
 
 def test(request):
@@ -112,10 +109,8 @@ def test_per_form_format(request):
             help_text="asdasd",
             error_messages=dict(invalid="TEST CUSTOM ERROR MESSAGE"),
             output_format=(
-                u(
-                    "%(image)s testPerFieldCustomFormatString "
-                    "%(hidden_field)s %(text_field)s"
-                )
+                "%(image)s testPerFieldCustomFormatString "
+                "%(hidden_field)s %(text_field)s"
             ),
         )
 
