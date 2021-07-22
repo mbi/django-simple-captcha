@@ -7,19 +7,17 @@ import unittest
 import warnings
 
 import django
-from django.core import management
-from django.core.exceptions import ImproperlyConfigured
-from django.test import TestCase, override_settings
-from django.utils import timezone
-
 import six
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
+from django.core import management
+from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase, override_settings
+from django.utils import timezone
 from PIL import Image
 from six import text_type, u
 from testfixtures import LogCapture
-
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
@@ -193,7 +191,7 @@ class CaptchaCase(TestCase):
         try:
             CaptchaStore.objects.get(hashkey=hash_)
             self.fail()
-        except:
+        except Exception:
             pass
 
     def test_custom_error_message(self):
@@ -242,7 +240,7 @@ class CaptchaCase(TestCase):
             try:
                 store_1 = CaptchaStore.objects.get(hashkey=hash_1)
                 store_2 = CaptchaStore.objects.get(hashkey=hash_2)
-            except:
+            except Exception:
                 self.fail()
 
             self.assertTrue(store_1.pk != store_2.pk)
@@ -263,7 +261,7 @@ class CaptchaCase(TestCase):
 
             try:
                 store_2 = CaptchaStore.objects.get(hashkey=hash_2)
-            except:
+            except Exception:
                 self.fail()
 
             r2 = self.client.post(
@@ -328,7 +326,7 @@ class CaptchaCase(TestCase):
             new_data = json.loads(six.text_type(r.content, encoding="ascii"))
             self.assertTrue("image_url" in new_data)
             self.assertTrue("audio_url" in new_data)
-        except:
+        except Exception:
             self.fail()
 
     def test_content_length(self):
@@ -592,9 +590,9 @@ class CaptchaCase(TestCase):
         __current_test_get_from_pool_setting = settings.CAPTCHA_GET_FROM_POOL
         settings.CAPTCHA_GET_FROM_POOL = True
         CaptchaStore.objects.all().delete()  # Delete objects created during SetUp
-        with LogCapture() as l:
+        with LogCapture() as log:
             CaptchaStore.pick()
-        l.check(
+        log.check(
             ("captcha.models", "ERROR", "Couldn't get a captcha from pool, generating")
         )
         self.assertEqual(CaptchaStore.objects.count(), 1)

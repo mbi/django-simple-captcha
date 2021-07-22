@@ -1,6 +1,12 @@
 Version History
 ===============
 
+
+Version 0.5.15 (unreleased)
+---------------------------
+* Updated test matrix, drop tests against Python3.6, test against Python3.9
+
+
 Version 0.5.14
 --------------
 * Generate deterministic CAPTCHA images for each Captcha instance (#194, thanks @mjnaderi)

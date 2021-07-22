@@ -1,6 +1,7 @@
+import sys
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-import sys
 
 
 class Command(BaseCommand):
@@ -10,14 +11,12 @@ class Command(BaseCommand):
         from captcha.models import CaptchaStore
 
         verbose = int(options.get("verbosity"))
-        expired_keys = CaptchaStore.objects.filter(
-            expiration__lte=timezone.now()
-        ).count()
+        expired_keys = CaptchaStore.objects.filter(expiration__lte=timezone.now()).count()
         if verbose >= 1:
             print("Currently %d expired hashkeys" % expired_keys)
         try:
             CaptchaStore.remove_expired()
-        except:
+        except Exception:
             if verbose >= 1:
                 print("Unable to delete expired hashkeys.")
             sys.exit(1)

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 import random
-from captcha.conf import settings
+
 import django
+from captcha.conf import settings
+from six import text_type, u
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
 else:  # NOQA
     from django.urls import reverse  # NOQA
-from six import u, text_type
 
 
 def math_challenge():
@@ -39,10 +40,10 @@ def unicode_challenge():
 
 def word_challenge():
     fd = open(settings.CAPTCHA_WORDS_DICTIONARY, "r")
-    l = fd.readlines()
+    lines = fd.readlines()
     fd.close()
     while True:
-        word = random.choice(l).strip()
+        word = random.choice(lines).strip()
         if (
             len(word) >= settings.CAPTCHA_DICTIONARY_MIN_LENGTH
             and len(word) <= settings.CAPTCHA_DICTIONARY_MAX_LENGTH
@@ -54,12 +55,12 @@ def word_challenge():
 def huge_words_and_punctuation_challenge():
     "Yay, undocumneted. Mostly used to test Issue 39 - http://code.google.com/p/django-simple-captcha/issues/detail?id=39"
     fd = open(settings.CAPTCHA_WORDS_DICTIONARY, "rb")
-    l = fd.readlines()
+    lines = fd.readlines()
     fd.close()
     word = ""
     while True:
-        word1 = random.choice(l).strip()
-        word2 = random.choice(l).strip()
+        word1 = random.choice(lines).strip()
+        word2 = random.choice(lines).strip()
         punct = random.choice(settings.CAPTCHA_PUNCTUATION)
         word = "%s%s%s" % (word1, punct, word2)
         if (
