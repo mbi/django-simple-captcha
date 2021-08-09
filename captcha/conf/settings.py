@@ -12,6 +12,7 @@ CAPTCHA_FONT_SIZE = getattr(settings, "CAPTCHA_FONT_SIZE", 22)
 CAPTCHA_LETTER_ROTATION = getattr(settings, "CAPTCHA_LETTER_ROTATION", (-35, 35))
 CAPTCHA_BACKGROUND_COLOR = getattr(settings, "CAPTCHA_BACKGROUND_COLOR", "#ffffff")
 CAPTCHA_FOREGROUND_COLOR = getattr(settings, "CAPTCHA_FOREGROUND_COLOR", "#001100")
+CAPTCHA_LETTER_COLOR_FUNCT = getattr(settings, "CAPTCHA_LETTER_COLOR_FUNCT", None)
 CAPTCHA_CHALLENGE_FUNCT = getattr(
     settings, "CAPTCHA_CHALLENGE_FUNCT", "captcha.helpers.random_char_challenge"
 )
@@ -96,3 +97,9 @@ def filter_functions():
     if CAPTCHA_FILTER_FUNCTIONS:
         return map(_callable_from_string, CAPTCHA_FILTER_FUNCTIONS)
     return []
+
+
+def get_letter_color():
+    if CAPTCHA_LETTER_COLOR_FUNCT:
+        return _callable_from_string(CAPTCHA_LETTER_COLOR_FUNCT)()
+    return CAPTCHA_FOREGROUND_COLOR

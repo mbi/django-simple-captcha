@@ -54,6 +54,13 @@ Foreground-color of the captcha.
 
 Defaults to ``'#001100'``
 
+CAPTCHA_LETTER_COLOR_FUNCT
+------------------------
+
+String representing a python callable (i.e. a function) to use as function that returns color of letters.
+
+Defaults to ``None`` (Uses CAPTCHA_FOREGROUND_COLOR)
+
 CAPTCHA_CHALLENGE_FUNCT
 ------------------------
 
