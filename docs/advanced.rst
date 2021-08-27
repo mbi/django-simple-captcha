@@ -265,7 +265,7 @@ These three elements are rendered individually, then assembled into a single bit
 
 As of version 0.4.7 you can control how the individual components are rendered, as well as how all components are assembled, by overriding four templates:
 
-* ``captcha/image.html`` controls the rendering of the image (and optionnally audio) element
+* ``captcha/image.html`` controls the rendering of the image (and optionally audio) element
 * ``captcha/text_field.html`` controls the rendering of the text field
 * ``captcha/hidden_field.html`` controls the rendering of the hidden input
 * ``captcha/field.html`` controls the assembling of the previous three elements
