@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import django
 import os
 import sys
+
+import django
 
 SITE_ID = 1
 
@@ -73,6 +74,9 @@ MIDDLEWARE = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
 )
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 
 CAPTCHA_FLITE_PATH = os.environ.get("CAPTCHA_FLITE_PATH", None)
 CAPTCHA_SOX_PATH = os.environ.get("CAPTCHA_SOX_PATH", None)
