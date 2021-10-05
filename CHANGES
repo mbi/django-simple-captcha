@@ -7,6 +7,8 @@ Version 0.5.15 (unreleased)
 * Updated test matrix, drop tests against Python3.6, test against Python3.9
 * Remove dependency on six
 * Test against Django 4.0a1
+* Test with Python 3.10 (Django 3.2 and Django 4.0)
+* Remove warning for django 3.2 (#206, thanks @MiStErLu)
 
 
 Version 0.5.14
