@@ -5,6 +5,7 @@ import os
 import re
 import unittest
 import warnings
+import re
 
 import django
 from django.core import management
@@ -432,15 +433,16 @@ class CaptchaCase(TestCase):
         )
         self.assertContains(r, captcha_input, html=True)
 
-    def test_autocomplete_not_on_hidden_input(self):
+    def test_issue201_autocomplete_off_on_hiddeninput(self):
         r = self.client.get(reverse("captcha-test"))
-        self.assertFalse(
-            'autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" type="hidden" name="captcha_0"'
-            in str(r.content)
-        )
-        self.assertFalse(
-            'autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="id_captcha_0" name="captcha_0" type="hidden"'
-            in str(r.content)
+
+        # Inspect the response context to find out the captcha key.
+        key = r.context['form']['captcha'].field.widget._key
+
+        # Assety that autocomplete=off is set on the hidden captcha field.
+        self.assertInHTML(
+            '<input type="hidden" name="captcha_0" value="{}" id="id_captcha_0" autocomplete="off" required />'.format(key),
+            str(r.content)
         )
 
     def test_transparent_background(self):
