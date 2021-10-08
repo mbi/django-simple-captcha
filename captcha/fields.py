@@ -17,6 +17,16 @@ if django.VERSION < (1, 10):  # NOQA
 else:  # NOQA
     from django.urls import reverse, NoReverseMatch  # NOQA
 
+class CaptchaHiddenInput(HiddenInput):
+    """Hidden input for the captcha key."""
+
+    # Use *args and **kwargs because signature changed in Django 1.11
+    def build_attrs(self, *args, **kwargs):
+        """Disable autocomplete to prevent problems on page reload."""
+
+        attrs = super(CaptchaHiddenInput, self).build_attrs(*args, **kwargs)
+        attrs["autocomplete"] = "off"
+        return attrs
 
 class CaptchaAnswerInput(TextInput):
     """Text input for captcha answer."""
@@ -38,7 +48,7 @@ class BaseCaptchaTextInput(MultiWidget):
     """
 
     def __init__(self, attrs=None):
-        widgets = (HiddenInput(attrs), CaptchaAnswerInput(attrs))
+        widgets = (CaptchaHiddenInput(attrs), CaptchaAnswerInput(attrs))
         super(BaseCaptchaTextInput, self).__init__(widgets, attrs)
 
     def decompress(self, value):
