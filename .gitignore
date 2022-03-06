@@ -1,4 +1,5 @@
 dist
+build
 *.pyc
 *.egg-info
 docs/_build/
