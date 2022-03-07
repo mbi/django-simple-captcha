@@ -1,6 +1,12 @@
 Version History
 ===============
 
+
+Version 0.5.17
+--------------
+* English translation created from Spanish ones (#209, thanks @tpazderka)
+
+
 Version 0.5.16
 --------------
 * Adds a migration missing from 0.5.15 (#208, thanks @atodorov)

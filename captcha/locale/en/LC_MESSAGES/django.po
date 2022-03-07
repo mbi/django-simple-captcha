@@ -23,8 +23,8 @@ msgstr "Play CAPTCHA as audio file"
 
 #: fields.py:66 fields.py:89 tests/__init__.py:62
 msgid "Invalid CAPTCHA"
-msgstr ""
+msgstr "Invalid CAPTCHA"
 
 #: tests/__init__.py:88
 msgid "This field is required."
-msgstr ""
+msgstr "This field is required."
