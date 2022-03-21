@@ -70,7 +70,7 @@ In your view, validate the form as usual. If the user didn't provide a valid res
 Passing arguments to the field
 ------------------------------
 
-``CaptchaField`` takes a few optional arguements:
+``CaptchaField`` takes a few optional arguments:
 
 * ``output_format`` will let you format the layout of the rendered field. Defaults to the value defined in : :ref:`output_format_ref`.
 * ``id_prefix`` Optional prefix that will be added to the ID attribute in the generated fields and labels, to be used when e.g. several Captcha fields are being displayed on a same page. (added in version 0.4.4)

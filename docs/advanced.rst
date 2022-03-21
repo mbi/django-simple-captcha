@@ -38,7 +38,7 @@ A random rotation in this interval is applied to each letter in the challenge te
 
 Defaults to ``(-35,35)``.
 
-New in version 0.1.6: set this to None to disable letter roation.
+New in version 0.1.6: set this to None to disable letter rotation.
 
 CAPTCHA_BACKGROUND_COLOR
 ------------------------
@@ -270,7 +270,7 @@ As of version 0.4.7 you can control how the individual components are rendered, 
 * ``captcha/hidden_field.html`` controls the rendering of the hidden input
 * ``captcha/field.html`` controls the assembling of the previous three elements
 
-These templates can be overriden in your own ``templates`` folder, or you can change the actual template names by settings ``CAPTCHA_IMAGE_TEMPLATE``, ``CAPTCHA_TEXT_FIELD_TEMPLATE``, ``CAPTCHA_HIDDEN_FIELD_TEMPLATE`` and ``CAPTCHA_FIELD_TEMPLATE``, respectively.
+These templates can be overridden in your own ``templates`` folder, or you can change the actual template names by settings ``CAPTCHA_IMAGE_TEMPLATE``, ``CAPTCHA_TEXT_FIELD_TEMPLATE``, ``CAPTCHA_HIDDEN_FIELD_TEMPLATE`` and ``CAPTCHA_FIELD_TEMPLATE``, respectively.
 
 Context
 ~~~~~~~
@@ -284,7 +284,7 @@ The following context variables are passed to the three "individual" templates:
 
 The ``captcha/field.html`` template receives the following context:
 
-* ``image``: the rendered (HTML) image and optionnaly audio elements
+* ``image``: the rendered (HTML) image and optionally audio elements
 * ``hidden_field``: the rendered hidden input
 * ``text_field``: the rendered text input
 
