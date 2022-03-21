@@ -1,6 +1,10 @@
 Version History
 ===============
 
+Version 0.5.18 (unreleased)
+---------------------------
+* Fix some typos in documentation (#210, thanks @stweil) 
+
 
 Version 0.5.17
 --------------
