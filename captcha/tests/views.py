@@ -1,17 +1,9 @@
-from captcha.fields import CaptchaField
 from django import forms
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.template import engines
 
-try:
-    from django.template import engines
-
-    __is_18 = True
-except ImportError:
-    from django.template import loader
-
-    __is_18 = False
-
+from captcha.fields import CaptchaField
 
 TEST_TEMPLATE = r"""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -39,10 +31,7 @@ TEST_TEMPLATE = r"""
 
 
 def _get_template(template_string):
-    if __is_18:
-        return engines["django"].from_string(template_string)
-    else:
-        return loader.get_template_from_string(template_string)
+    return engines["django"].from_string(template_string)
 
 
 def _test(request, form_class):

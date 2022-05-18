@@ -7,15 +7,16 @@ import unittest
 import warnings
 
 import django
-from captcha.conf import settings
-from captcha.fields import CaptchaField, CaptchaTextInput
-from captcha.models import CaptchaStore
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from PIL import Image
 from testfixtures import LogCapture
+
+from captcha.conf import settings
+from captcha.fields import CaptchaField, CaptchaTextInput
+from captcha.models import CaptchaStore
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
@@ -423,16 +424,6 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertTrue(str(r.content).find("Form validated") > 0)
 
-    @unittest.skipUnless(django.VERSION < (1, 11), "Test only for Django < 1.11")
-    def test_autocomplete_off_django_110(self):
-        r = self.client.get(reverse("captcha-test"))
-        captcha_input = (
-            '<input type="text" name="captcha_1" autocomplete="off" spellcheck="false" autocorrect="off" '
-            'autocapitalize="off" id="id_captcha_1" />'
-        )
-        self.assertContains(r, captcha_input, html=True)
-
-    @unittest.skipIf(django.VERSION < (1, 11), "Test only for Django >= 1.11")
     def test_autocomplete_off(self):
         r = self.client.get(reverse("captcha-test"))
         captcha_input = (

@@ -3,13 +3,14 @@ import random
 import subprocess
 import tempfile
 
-from captcha.conf import settings
-from captcha.helpers import captcha_audio_url, captcha_image_url
-from captcha.models import CaptchaStore
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404, HttpResponse
 from PIL import Image, ImageDraw, ImageFont
 from ranged_response import RangedFileResponse
+
+from captcha.conf import settings
+from captcha.helpers import captcha_audio_url, captcha_image_url
+from captcha.models import CaptchaStore
 
 try:
     from cStringIO import StringIO
@@ -92,7 +93,7 @@ def captcha_image(request, key, scale=1):
             charimage = charimage.rotate(
                 random.randrange(*settings.CAPTCHA_LETTER_ROTATION),
                 expand=0,
-                resample=Image.BICUBIC,
+                resample=Image.Resampling.BICUBIC,
             )
         charimage = charimage.crop(charimage.getbbox())
         maskimage = Image.new("L", size)
@@ -204,8 +205,8 @@ def captcha_audio(request, key):
 
 
 def captcha_refresh(request):
-    """  Return json with new captcha for ajax refresh request """
-    if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    """Return json with new captcha for ajax refresh request"""
+    if not request.headers.get("x-requested-with") == "XMLHttpRequest":
         raise Http404
 
     new_key = CaptchaStore.pick()

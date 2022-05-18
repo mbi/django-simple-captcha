@@ -4,7 +4,7 @@ Django Simple Captcha
 
 .. image:: https://github.com/mbi/django-simple-captcha/actions/workflows/test.yml/badge.svg
   :target: https://github.com/mbi/django-simple-captcha/actions/workflows/test.yml
-  
+
 .. image:: https://img.shields.io/pypi/v/django-simple-captcha
   :target: https://pypi.org/project/django-simple-captcha/
 
@@ -28,7 +28,7 @@ Features
 Requirements
 ++++++++++++
 
-* Django 2.2+, Python3.6+
+* Django 3.2+, Python3.8+
 * A recent version of the Pillow compiled with FreeType support
 * Flite is required for text-to-speech (audio) output, but not mandatory
 
