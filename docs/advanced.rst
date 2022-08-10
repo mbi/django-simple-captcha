@@ -61,6 +61,10 @@ String representing a python callable (i.e. a function) to use as function that 
 
 Defaults to ``None`` (Uses CAPTCHA_FOREGROUND_COLOR)
 
+This function is called for each letter of the captcha string.
+It has two arguments, the first is the index of the position of each letter and
+the second is the captcha string that was created.
+
 CAPTCHA_CHALLENGE_FUNCT
 ------------------------
 

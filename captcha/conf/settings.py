@@ -99,7 +99,7 @@ def filter_functions():
     return []
 
 
-def get_letter_color():
+def get_letter_color(index, charlist):
     if CAPTCHA_LETTER_COLOR_FUNCT:
-        return _callable_from_string(CAPTCHA_LETTER_COLOR_FUNCT)()
+        return _callable_from_string(CAPTCHA_LETTER_COLOR_FUNCT)(index, charlist)
     return CAPTCHA_FOREGROUND_COLOR
