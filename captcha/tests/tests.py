@@ -1,23 +1,19 @@
-# -*- coding: utf-8 -*-
 import datetime
 import json
 import os
 import re
-import unittest
 import warnings
-import re
 
 import django
+from captcha.conf import settings
+from captcha.fields import CaptchaField, CaptchaTextInput
+from captcha.models import CaptchaStore
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from PIL import Image
 from testfixtures import LogCapture
-
-from captcha.conf import settings
-from captcha.fields import CaptchaField, CaptchaTextInput
-from captcha.models import CaptchaStore
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
