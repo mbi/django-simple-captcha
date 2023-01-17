@@ -11,7 +11,9 @@ class Command(BaseCommand):
         from captcha.models import CaptchaStore
 
         verbose = int(options.get("verbosity"))
-        expired_keys = CaptchaStore.objects.filter(expiration__lte=timezone.now()).count()
+        expired_keys = CaptchaStore.objects.filter(
+            expiration__lte=timezone.now()
+        ).count()
         if verbose >= 1:
             print("Currently %d expired hashkeys" % expired_keys)
         try:

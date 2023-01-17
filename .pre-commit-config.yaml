@@ -1,0 +1,29 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+        - id: fix-encoding-pragma
+          args: ['--remove']
+        - id: debug-statements
+        - id: check-merge-conflict
+        - id: check-ast
+        - id: end-of-file-fixer
+        - id: trailing-whitespace
+
+-   repo: https://github.com/timothycrosley/isort
+    rev: 5.7.0
+    hooks:
+    - id: isort
+      additional_dependencies: [toml]
+
+-   repo: https://github.com/psf/black
+    rev: 2d0c14989dca41676fc83fb36f2d652cf93fad58
+    hooks:
+    - id: black
+
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.4
+    hooks:
+    - id: flake8
+      args: ['--config', '.flake8']
+      exclude: '.*/migrations/.*|conf'

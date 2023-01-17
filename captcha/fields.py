@@ -1,21 +1,18 @@
 import warnings
 
 import django
-from captcha.conf import settings
-from captcha.models import CaptchaStore
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import HiddenInput, MultiWidget, TextInput
 from django.template.loader import render_to_string
+from django.urls import NoReverseMatch, reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy
 
-if django.VERSION < (1, 10):  # NOQA
-    from django.core.urlresolvers import reverse, NoReverseMatch  # NOQA
-else:  # NOQA
-    from django.urls import reverse, NoReverseMatch  # NOQA
+from captcha.conf import settings
+from captcha.models import CaptchaStore
 
 
 class CaptchaHiddenInput(HiddenInput):
@@ -190,16 +187,20 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             "image": self.image_url(),
             "name": name,
             "key": self._key,
-            "id": u"%s_%s" % (self.id_prefix, attrs.get("id"))
+            "id": "%s_%s" % (self.id_prefix, attrs.get("id"))
             if self.id_prefix
             else attrs.get("id"),
             "audio": self.audio_url(),
         }
-        self.image_and_audio = render_to_string(settings.CAPTCHA_IMAGE_TEMPLATE, context)
+        self.image_and_audio = render_to_string(
+            settings.CAPTCHA_IMAGE_TEMPLATE, context
+        )
         self.hidden_field = render_to_string(
             settings.CAPTCHA_HIDDEN_FIELD_TEMPLATE, context
         )
-        self.text_field = render_to_string(settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context)
+        self.text_field = render_to_string(
+            settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context
+        )
         return self.format_output(None)
 
     def render(self, name, value, attrs=None, renderer=None):
@@ -226,7 +227,9 @@ class CaptchaField(MultiValueField):
         ):
             if "error_messages" not in kwargs:
                 kwargs["error_messages"] = {}
-            kwargs["error_messages"].update({"invalid": gettext_lazy("Invalid CAPTCHA")})
+            kwargs["error_messages"].update(
+                {"invalid": gettext_lazy("Invalid CAPTCHA")}
+            )
 
         kwargs["widget"] = kwargs.pop(
             "widget",

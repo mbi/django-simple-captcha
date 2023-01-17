@@ -5,6 +5,7 @@ from django.template import engines
 
 from captcha.fields import CaptchaField
 
+
 TEST_TEMPLATE = r"""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -45,7 +46,9 @@ def _test(request, form_class):
 
     t = _get_template(TEST_TEMPLATE)
 
-    return HttpResponse(t.render(context=dict(passed=passed, form=form), request=request))
+    return HttpResponse(
+        t.render(context=dict(passed=passed, form=form), request=request)
+    )
 
 
 def test(request):

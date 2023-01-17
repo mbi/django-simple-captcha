@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 import os
 import sys
 
-import django
 
 SITE_ID = 1
 

@@ -3,33 +3,22 @@ import json
 import os
 import re
 import warnings
+from io import BytesIO
+
+from PIL import Image
+from testfixtures import LogCapture
 
 import django
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
+from django.urls import reverse
 from django.utils import timezone
-from PIL import Image
-from testfixtures import LogCapture
+from django.utils.translation import gettext_lazy
 
 from captcha.conf import settings
 from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
-
-if django.VERSION < (1, 10):  # NOQA
-    from django.core.urlresolvers import reverse  # NOQA
-else:  # NOQA
-    from django.urls import reverse  # NOQA
-
-if django.VERSION >= (3, 0):
-    from django.utils.translation import gettext_lazy as ugettext_lazy
-else:
-    from django.utils.translation import ugettext_lazy
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
 
 
 @override_settings(ROOT_URLCONF="captcha.tests.urls")
@@ -175,9 +164,7 @@ class CaptchaCase(TestCase):
                     sender="asasd@asdasd.com",
                 ),
             )
-            self._assertFormError(
-                r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA")
-            )
+            self._assertFormError(r, "form", "captcha", gettext_lazy("Invalid CAPTCHA"))
 
     def test_deleted_expired(self):
         self.default_store.expiration = timezone.now() - datetime.timedelta(minutes=5)
@@ -218,7 +205,7 @@ class CaptchaCase(TestCase):
             dict(captcha_0="abc", captcha_1=""),
         )
         self._assertFormError(
-            r, "form", "captcha", ugettext_lazy("This field is required.")
+            r, "form", "captcha", gettext_lazy("This field is required.")
         )
 
     def test_repeated_challenge(self):
@@ -320,7 +307,7 @@ class CaptchaCase(TestCase):
     def test_custom_generator(self):
         r = self.client.get(reverse("test_custom_generator"))
         hash_, response = self.__extract_hash_and_response(r)
-        self.assertEqual(response, u"111111")
+        self.assertEqual(response, "111111")
 
     def test_issue31_proper_abel(self):
         settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s %(hidden_field)s %(text_field)s"
@@ -368,7 +355,7 @@ class CaptchaCase(TestCase):
                 sender="asasd@asdasd.com",
             ),
         )
-        self._assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
+        self._assertFormError(r, "form", "captcha", gettext_lazy("Invalid CAPTCHA"))
 
         settings.CAPTCHA_TEST_MODE = True
         # Test mode, only 'PASSED' is accepted
@@ -383,7 +370,7 @@ class CaptchaCase(TestCase):
                 sender="asasd@asdasd.com",
             ),
         )
-        self._assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
+        self._assertFormError(r, "form", "captcha", gettext_lazy("Invalid CAPTCHA"))
 
         r = self.client.get(reverse("captcha-test"))
         self.assertEqual(r.status_code, 200)
@@ -494,7 +481,7 @@ class CaptchaCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertTrue(response.has_header("content-type"))
             self.assertEqual(response["content-type"], "image/png")
-            self.assertEqual(Image.open(StringIO(response.content)).size, (201, 97))
+            self.assertEqual(Image.open(BytesIO(response.content)).size, (201, 97))
 
         settings.CAPTCHA_IMAGE_SIZE = __current_test_mode_setting
 

@@ -4,15 +4,11 @@ import logging
 import random
 import time
 
-import django
-from captcha.conf import settings as captcha_settings
 from django.db import models
 from django.utils import timezone
+from django.utils.encoding import smart_str
 
-if django.VERSION >= (3, 0):
-    from django.utils.encoding import smart_str as smart_text
-else:
-    from django.utils.encoding import smart_text
+from captcha.conf import settings as captcha_settings
 
 
 # Heavily based on session key generation in Django
@@ -41,10 +37,10 @@ class CaptchaStore(models.Model):
             )
         if not self.hashkey:
             key_ = (
-                smart_text(randrange(0, MAX_RANDOM_KEY))
-                + smart_text(time.time())
-                + smart_text(self.challenge, errors="ignore")
-                + smart_text(self.response, errors="ignore")
+                smart_str(randrange(0, MAX_RANDOM_KEY))
+                + smart_str(time.time())
+                + smart_str(self.challenge, errors="ignore")
+                + smart_str(self.response, errors="ignore")
             ).encode("utf8")
             self.hashkey = hashlib.sha1(key_).hexdigest()
             del key_

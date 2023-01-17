@@ -1,12 +1,8 @@
 import random
 
-import django
-from captcha.conf import settings
+from django.urls import reverse
 
-if django.VERSION < (1, 10):  # NOQA
-    from django.core.urlresolvers import reverse  # NOQA
-else:  # NOQA
-    from django.urls import reverse  # NOQA
+from captcha.conf import settings
 
 
 def math_challenge():

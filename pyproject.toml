@@ -1,0 +1,35 @@
+[tool.isort]
+profile = "black"
+lines_after_imports = 2
+multi_line_output = 3
+order_by_type = true
+known_django = "django"
+known_django_third_party = "django_*"
+known_first_party = "apps,captcha"
+sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,DJANGO_THIRD_PARTY,FIRSTPARTY,LOCALFOLDER"
+skip_glob= "**/migrations/**"
+
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | node_modules
+  )/
+  | foo.py           # also separately exclude a file named foo.py in
+                     # the root of the project
+)
+'''

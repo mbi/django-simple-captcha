@@ -139,9 +139,9 @@ Example usage ajax refresh button
 
         return false;
     });
-    
 
-Example usage ajax refresh 
+
+Example usage ajax refresh
 ---------------------------------
 
 # javascript::

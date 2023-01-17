@@ -29,4 +29,3 @@ msgstr "认证码错误"
 #: tests/__init__.py:95
 msgid "This field is required."
 msgstr "这个字段是必须的"
-

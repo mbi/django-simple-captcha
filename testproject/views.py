@@ -1,5 +1,6 @@
-from django.http import HttpResponseRedirect
 from forms import CaptchaForm
+
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 

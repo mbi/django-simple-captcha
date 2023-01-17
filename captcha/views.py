@@ -1,27 +1,20 @@
+import json
 import os
 import random
 import subprocess
 import tempfile
+from io import BytesIO
+
+from PIL import Image, ImageDraw, ImageFont
+from ranged_response import RangedFileResponse
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404, HttpResponse
-from PIL import Image, ImageDraw, ImageFont
-from ranged_response import RangedFileResponse
 
 from captcha.conf import settings
 from captcha.helpers import captcha_audio_url, captcha_image_url
 from captcha.models import CaptchaStore
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import BytesIO as StringIO
-
-
-try:
-    import json
-except ImportError:
-    from django.utils import simplejson as json
 
 # Distance of the drawn text from the top of the captcha image
 DISTANCE_FROM_TOP = 4
@@ -134,7 +127,7 @@ def captcha_image(request, key, scale=1):
     for f in settings.filter_functions():
         image = f(image)
 
-    out = StringIO()
+    out = BytesIO()
     image.save(out, "PNG")
     out.seek(0)
 

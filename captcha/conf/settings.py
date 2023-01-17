@@ -3,6 +3,7 @@ import warnings
 
 from django.conf import settings
 
+
 CAPTCHA_FONT_PATH = getattr(
     settings,
     "CAPTCHA_FONT_PATH",
