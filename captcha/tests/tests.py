@@ -5,15 +5,16 @@ import re
 import warnings
 
 import django
-from captcha.conf import settings
-from captcha.fields import CaptchaField, CaptchaTextInput
-from captcha.models import CaptchaStore
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 from django.utils import timezone
 from PIL import Image
 from testfixtures import LogCapture
+
+from captcha.conf import settings
+from captcha.fields import CaptchaField, CaptchaTextInput
+from captcha.models import CaptchaStore
 
 if django.VERSION < (1, 10):  # NOQA
     from django.core.urlresolvers import reverse  # NOQA
@@ -49,13 +50,17 @@ class CaptchaCase(TestCase):
             settings.CAPTCHA_WORDS_DICTIONARY = "/usr/share/dict/words"
             settings.CAPTCHA_PUNCTUATION = ";-,."
             tested_helpers.append("captcha.helpers.word_challenge")
-            tested_helpers.append("captcha.helpers.huge_words_and_punctuation_challenge")
+            tested_helpers.append(
+                "captcha.helpers.huge_words_and_punctuation_challenge"
+            )
         for helper in tested_helpers:
             challenge, response = settings._callable_from_string(helper)()
             (
                 self.stores[helper.rsplit(".", 1)[-1].replace("_challenge", "_store")],
                 _,
-            ) = CaptchaStore.objects.get_or_create(challenge=challenge, response=response)
+            ) = CaptchaStore.objects.get_or_create(
+                challenge=challenge, response=response
+            )
         challenge, response = settings.get_challenge()()
         self.stores["default_store"], _ = CaptchaStore.objects.get_or_create(
             challenge=challenge, response=response
@@ -66,6 +71,12 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_OUTPUT_FORMAT = self.__current_settings_output_format
         settings.CAPTCHA_WORDS_DICTIONARY = self.__current_settings_dictionary
         settings.CAPTCHA_PUNCTUATION = self.__current_settings_punctuation
+
+    def _assertFormError(self, response, form_name, *args, **kwargs):
+        if django.VERSION >= (4, 1):
+            self.assertFormError(response.context.get(form_name), *args, **kwargs)
+        else:
+            self.assertFormError(response, form_name, *args, **kwargs)
 
     def __extract_hash_and_response(self, r):
         hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]
@@ -164,7 +175,9 @@ class CaptchaCase(TestCase):
                     sender="asasd@asdasd.com",
                 ),
             )
-            self.assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
+            self._assertFormError(
+                r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA")
+            )
 
     def test_deleted_expired(self):
         self.default_store.expiration = timezone.now() - datetime.timedelta(minutes=5)
@@ -198,13 +211,13 @@ class CaptchaCase(TestCase):
             reverse("captcha-test-custom-error-message"),
             dict(captcha_0="abc", captcha_1="wrong response"),
         )
-        self.assertFormError(r, "form", "captcha", "TEST CUSTOM ERROR MESSAGE")
+        self._assertFormError(r, "form", "captcha", "TEST CUSTOM ERROR MESSAGE")
         # empty answer
         r = self.client.post(
             reverse("captcha-test-custom-error-message"),
             dict(captcha_0="abc", captcha_1=""),
         )
-        self.assertFormError(
+        self._assertFormError(
             r, "form", "captcha", ugettext_lazy("This field is required.")
         )
 
@@ -355,7 +368,7 @@ class CaptchaCase(TestCase):
                 sender="asasd@asdasd.com",
             ),
         )
-        self.assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
+        self._assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
 
         settings.CAPTCHA_TEST_MODE = True
         # Test mode, only 'PASSED' is accepted
@@ -370,7 +383,7 @@ class CaptchaCase(TestCase):
                 sender="asasd@asdasd.com",
             ),
         )
-        self.assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
+        self._assertFormError(r, "form", "captcha", ugettext_lazy("Invalid CAPTCHA"))
 
         r = self.client.get(reverse("captcha-test"))
         self.assertEqual(r.status_code, 200)
@@ -433,12 +446,14 @@ class CaptchaCase(TestCase):
         r = self.client.get(reverse("captcha-test"))
 
         # Inspect the response context to find out the captcha key.
-        key = r.context['form']['captcha'].field.widget._key
+        key = r.context["form"]["captcha"].field.widget._key
 
         # Assety that autocomplete=off is set on the hidden captcha field.
         self.assertInHTML(
-            '<input type="hidden" name="captcha_0" value="{}" id="id_captcha_0" autocomplete="off" required />'.format(key),
-            str(r.content)
+            '<input type="hidden" name="captcha_0" value="{}" id="id_captcha_0" autocomplete="off" required />'.format(
+                key
+            ),
+            str(r.content),
         )
 
     def test_transparent_background(self):
@@ -502,7 +517,9 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_FONT_PATH = False
         for key in [store.hashkey for store in self.stores.values()]:
             try:
-                response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
+                response = self.client.get(
+                    reverse("captcha-image", kwargs=dict(key=key))
+                )
                 self.fail()
             except ImproperlyConfigured:
                 pass
@@ -535,7 +552,9 @@ class CaptchaCase(TestCase):
             response,
             str(
                 eval(
-                    challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, "*")[:-1]
+                    challenge.replace(settings.CAPTCHA_MATH_CHALLENGE_OPERATOR, "*")[
+                        :-1
+                    ]
                 )
             ),
         )

@@ -7,6 +7,8 @@ Version 0.5.18 (unreleased)
 * Test against Django 4.1a
 * Stopped testing Django < 3.2
 * BaseCaptchaTextInput should set autocomplete=off on the hashkey HiddenInput (#201, thanks @eerotal)
+* Test against Django 4.2a
+* Fix some deprecation warnings in Pillow 9.2+
 
 
 Version 0.5.17

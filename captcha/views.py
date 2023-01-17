@@ -28,7 +28,10 @@ DISTANCE_FROM_TOP = 4
 
 
 def getsize(font, text):
-    if hasattr(font, "getoffset"):
+    if hasattr(font, "getbbox"):
+        _top, _left, _right, _bottom = font.getbbox(text)
+        return _right - _left, _bottom - _top
+    elif hasattr(font, "getoffset"):
         return tuple([x + y for x, y in zip(font.getsize(text), font.getoffset(text))])
     else:
         return font.getsize(text)
@@ -93,7 +96,7 @@ def captcha_image(request, key, scale=1):
             charimage = charimage.rotate(
                 random.randrange(*settings.CAPTCHA_LETTER_ROTATION),
                 expand=0,
-                resample=Image.Resampling.BICUBIC,
+                resample=Image.BICUBIC,
             )
         charimage = charimage.crop(charimage.getbbox())
         maskimage = Image.new("L", size)
@@ -199,7 +202,9 @@ def captcha_audio(request, key):
             response = RangedFileResponse(
                 request, open(path, "rb"), content_type="audio/wav"
             )
-            response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(key)
+            response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(
+                key
+            )
             return response
     raise Http404
 
@@ -213,6 +218,8 @@ def captcha_refresh(request):
     to_json_response = {
         "key": new_key,
         "image_url": captcha_image_url(new_key),
-        "audio_url": captcha_audio_url(new_key) if settings.CAPTCHA_FLITE_PATH else None,
+        "audio_url": captcha_audio_url(new_key)
+        if settings.CAPTCHA_FLITE_PATH
+        else None,
     }
     return HttpResponse(json.dumps(to_json_response), content_type="application/json")

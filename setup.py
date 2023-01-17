@@ -1,8 +1,9 @@
 import sys
 
-from captcha import get_version as get_captcha_version
 from setuptools import find_packages, setup
 from setuptools.command.test import test as test_command
+
+from captcha import get_version as get_captcha_version
 
 
 class Tox(test_command):
@@ -19,8 +20,9 @@ class Tox(test_command):
 
     def run_tests(self):
         # import here, cause outside the eggs aren't loaded
-        import tox
         import shlex
+
+        import tox
 
         args = self.tox_args
         if args:
@@ -29,7 +31,11 @@ class Tox(test_command):
         sys.exit(errno)
 
 
-install_requires = ["Django >= 2.2", "Pillow >=6.2.0", "django-ranged-response == 0.2.0"]
+install_requires = [
+    "Django >= 3.2",
+    "Pillow >=6.2.0",
+    "django-ranged-response == 0.2.0",
+]
 EXTRAS_REQUIRE = {"test": ("testfixtures",)}
 
 
