@@ -1,10 +1,10 @@
 Version History
 ===============
 
-Version 0.5.18 (unreleased)
----------------------------
+Version 0.5.18
+--------------
 * Fix some typos in documentation (#210, thanks @stweil)
-* Test against Django 4.1a
+* Test against Django 4.2
 * Stopped testing Django < 3.2
 * BaseCaptchaTextInput should set autocomplete=off on the hashkey HiddenInput (#201, thanks @eerotal)
 * Test against Django 4.2a
