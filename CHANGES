@@ -1,8 +1,8 @@
 Version History
 ===============
 
-Version 0.5.18 (unreleased)
----------------------------
+Version 0.5.18
+--------------
 * Fix some typos in documentation (#210, thanks @stweil)
 * Test against Django 4.1a
 * Stopped testing Django < 3.2
