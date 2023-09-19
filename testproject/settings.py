@@ -27,9 +27,11 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.sites",
+    "django.forms",
     "django.contrib.messages",
     "captcha",
 ]
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 LANGUAGE_CODE = "en"
 
@@ -78,4 +80,3 @@ CAPTCHA_FLITE_PATH = os.environ.get("CAPTCHA_FLITE_PATH", None)
 CAPTCHA_SOX_PATH = os.environ.get("CAPTCHA_SOX_PATH", None)
 CAPTCHA_BACKGROUND_COLOR = "transparent"
 # CAPTCHA_BACKGROUND_COLOR = '#ffffffff'
-CAPTCHA_IMAGE_TEMPLATE = "captcha_test/image_html5_audio.html"

@@ -2,7 +2,6 @@ import datetime
 import json
 import os
 import re
-import warnings
 from io import BytesIO
 
 from PIL import Image
@@ -17,16 +16,13 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy
 
 from captcha.conf import settings
-from captcha.fields import CaptchaField, CaptchaTextInput
 from captcha.models import CaptchaStore
 
 
 @override_settings(ROOT_URLCONF="captcha.tests.urls")
 class CaptchaCase(TestCase):
     def setUp(self):
-
         self.stores = {}
-        self.__current_settings_output_format = settings.CAPTCHA_OUTPUT_FORMAT
         self.__current_settings_dictionary = settings.CAPTCHA_WORDS_DICTIONARY
         self.__current_settings_punctuation = settings.CAPTCHA_PUNCTUATION
 
@@ -57,7 +53,6 @@ class CaptchaCase(TestCase):
         self.default_store = self.stores["default_store"]
 
     def tearDown(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = self.__current_settings_output_format
         settings.CAPTCHA_WORDS_DICTIONARY = self.__current_settings_dictionary
         settings.CAPTCHA_PUNCTUATION = self.__current_settings_punctuation
 
@@ -273,46 +268,10 @@ class CaptchaCase(TestCase):
             self.assertTrue(str(r2.content).find("Form validated") > 0)
         settings.CAPTCHA_CHALLENGE_FUNCT = __current_challange_function
 
-    def test_output_format(self):
-        for urlname in ("captcha-test", "captcha-test-model-form"):
-            settings.CAPTCHA_OUTPUT_FORMAT = (
-                "%(image)s<p>Hello, captcha world</p>%(hidden_field)s%(text_field)s"
-            )
-            r = self.client.get(reverse(urlname))
-            self.assertEqual(r.status_code, 200)
-            self.assertTrue("<p>Hello, captcha world</p>" in str(r.content))
-
-    def test_invalid_output_format(self):
-        for urlname in ("captcha-test", "captcha-test-model-form"):
-            settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s"
-            try:
-                with warnings.catch_warnings(record=True) as w:
-                    self.client.get(reverse(urlname))
-                    assert len(w) == 1
-                    self.assertTrue("CAPTCHA_OUTPUT_FORMAT" in str(w[-1].message))
-                    self.fail()
-
-            except ImproperlyConfigured as e:
-                self.assertTrue("CAPTCHA_OUTPUT_FORMAT" in str(e))
-
-    def test_per_form_format(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = (
-            "%(image)s testCustomFormatString %(hidden_field)s %(text_field)s"
-        )
-        r = self.client.get(reverse("captcha-test"))
-        self.assertTrue("testCustomFormatString" in str(r.content))
-        r = self.client.get(reverse("test_per_form_format"))
-        self.assertTrue("testPerFieldCustomFormatString" in str(r.content))
-
     def test_custom_generator(self):
         r = self.client.get(reverse("test_custom_generator"))
         hash_, response = self.__extract_hash_and_response(r)
         self.assertEqual(response, "111111")
-
-    def test_issue31_proper_abel(self):
-        settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s %(hidden_field)s %(text_field)s"
-        r = self.client.get(reverse("captcha-test"))
-        self.assertTrue('<label for="id_captcha_1"' in str(r.content))
 
     def test_refresh_view(self):
         r = self.client.get(
@@ -331,15 +290,6 @@ class CaptchaCase(TestCase):
             self.assertTrue(response.has_header("content-length"))
             self.assertTrue(response["content-length"].isdigit())
             self.assertTrue(int(response["content-length"]))
-
-    def test_issue12_proper_instantiation(self):
-        """
-        This test covers a default django field and widget behavior
-        It not assert anything. If something is wrong it will raise a error!
-        """
-        settings.CAPTCHA_OUTPUT_FORMAT = "%(image)s %(hidden_field)s %(text_field)s"
-        widget = CaptchaTextInput(attrs={"class": "required"})
-        CaptchaField(widget=widget)
 
     def test_test_mode_issue15(self):
         __current_test_mode_setting = settings.CAPTCHA_TEST_MODE
@@ -424,9 +374,17 @@ class CaptchaCase(TestCase):
     def test_autocomplete_off(self):
         r = self.client.get(reverse("captcha-test"))
         captcha_input = (
-            '<input type="text" name="captcha_1" autocomplete="off" spellcheck="false" autocorrect="off" '
+            '<input type="text" name="captcha_1" autocomplete="off" '
+            'spellcheck="false" autocorrect="off" '
             'autocapitalize="off" id="id_captcha_1" required />'
         )
+        if django.VERSION >= (5, 0):
+            captcha_input = (
+                '<input type="text" name="captcha_1" autocomplete="off" '
+                'spellcheck="false" autocorrect="off" '
+                'autocapitalize="off" id="id_captcha_1" '
+                'required aria-describedby="id_captcha_1_helptext" />'
+            )
         self.assertContains(r, captcha_input, html=True)
 
     def test_issue201_autocomplete_off_on_hiddeninput(self):
@@ -436,12 +394,24 @@ class CaptchaCase(TestCase):
         key = r.context["form"]["captcha"].field.widget._key
 
         # Assety that autocomplete=off is set on the hidden captcha field.
-        self.assertInHTML(
-            '<input type="hidden" name="captcha_0" value="{}" id="id_captcha_0" autocomplete="off" required />'.format(
-                key
-            ),
-            str(r.content),
-        )
+        if django.VERSION >= (5, 0):
+            self.assertInHTML(
+                (
+                    f'<input type="hidden" name="captcha_0" value="{key}" '
+                    'id="id_captcha_0" autocomplete="off" '
+                    'aria-describedby="id_captcha_1_helptext" required />'
+                ),
+                str(r.content),
+            )
+
+        else:
+            self.assertInHTML(
+                (
+                    f'<input type="hidden" name="captcha_0" value="{key}" '
+                    'id="id_captcha_0" autocomplete="off" required />'
+                ),
+                str(r.content),
+            )
 
     def test_transparent_background(self):
         __current_test_mode_setting = settings.CAPTCHA_BACKGROUND_COLOR
@@ -512,19 +482,6 @@ class CaptchaCase(TestCase):
                 pass
 
         settings.CAPTCHA_FONT_PATH = __current_test_mode_setting
-
-    def test_template_overrides(self):
-        __current_test_mode_setting = settings.CAPTCHA_IMAGE_TEMPLATE
-        __current_field_template = settings.CAPTCHA_FIELD_TEMPLATE
-        settings.CAPTCHA_IMAGE_TEMPLATE = "captcha_test/image.html"
-        settings.CAPTCHA_FIELD_TEMPLATE = "captcha/field.html"
-
-        for urlname in ("captcha-test", "captcha-test-model-form"):
-            settings.CAPTCHA_CHALLENGE_FUNCT = "captcha.tests.trivial_challenge"
-            r = self.client.get(reverse(urlname))
-            self.assertTrue("captcha-template-test" in str(r.content))
-        settings.CAPTCHA_IMAGE_TEMPLATE = __current_test_mode_setting
-        settings.CAPTCHA_FIELD_TEMPLATE = __current_field_template
 
     def test_math_challenge(self):
         __current_test_mode_setting = settings.CAPTCHA_MATH_CHALLENGE_OPERATOR

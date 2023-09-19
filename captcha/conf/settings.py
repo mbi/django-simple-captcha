@@ -1,5 +1,4 @@
 import os
-import warnings
 
 from django.conf import settings
 
@@ -36,24 +35,6 @@ CAPTCHA_LENGTH = int(getattr(settings, "CAPTCHA_LENGTH", 4))  # Chars
 CAPTCHA_DICTIONARY_MIN_LENGTH = getattr(settings, "CAPTCHA_DICTIONARY_MIN_LENGTH", 0)
 CAPTCHA_DICTIONARY_MAX_LENGTH = getattr(settings, "CAPTCHA_DICTIONARY_MAX_LENGTH", 99)
 CAPTCHA_IMAGE_SIZE = getattr(settings, "CAPTCHA_IMAGE_SIZE", None)
-CAPTCHA_IMAGE_TEMPLATE = getattr(
-    settings, "CAPTCHA_IMAGE_TEMPLATE", "captcha/image.html"
-)
-CAPTCHA_HIDDEN_FIELD_TEMPLATE = getattr(
-    settings, "CAPTCHA_HIDDEN_FIELD_TEMPLATE", "captcha/hidden_field.html"
-)
-CAPTCHA_TEXT_FIELD_TEMPLATE = getattr(
-    settings, "CAPTCHA_TEXT_FIELD_TEMPLATE", "captcha/text_field.html"
-)
-
-if getattr(settings, "CAPTCHA_FIELD_TEMPLATE", None):
-    msg = "CAPTCHA_FIELD_TEMPLATE setting is deprecated in favor of widget's template_name."
-    warnings.warn(msg, DeprecationWarning)
-CAPTCHA_FIELD_TEMPLATE = getattr(settings, "CAPTCHA_FIELD_TEMPLATE", None)
-if getattr(settings, "CAPTCHA_OUTPUT_FORMAT", None):
-    msg = "CAPTCHA_OUTPUT_FORMAT setting is deprecated in favor of widget's template_name."
-    warnings.warn(msg, DeprecationWarning)
-CAPTCHA_OUTPUT_FORMAT = getattr(settings, "CAPTCHA_OUTPUT_FORMAT", None)
 
 CAPTCHA_MATH_CHALLENGE_OPERATOR = getattr(
     settings, "CAPTCHA_MATH_CHALLENGE_OPERATOR", "*"

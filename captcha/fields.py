@@ -1,14 +1,9 @@
-import warnings
-
-import django
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
 from django.forms.widgets import HiddenInput, MultiWidget, TextInput
-from django.template.loader import render_to_string
 from django.urls import NoReverseMatch, reverse
 from django.utils import timezone
-from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy
 
 from captcha.conf import settings
@@ -97,34 +92,19 @@ class BaseCaptchaTextInput(MultiWidget):
 
 
 class CaptchaTextInput(BaseCaptchaTextInput):
-
     template_name = "captcha/widgets/captcha.html"
 
     def __init__(
         self,
         attrs=None,
-        field_template=None,
         id_prefix=None,
         generator=None,
-        output_format=None,
+        # output_format=None,
     ):
         self.id_prefix = id_prefix
         self.generator = generator
-        if field_template is not None:
-            msg = "CaptchaTextInput's field_template argument is deprecated in favor of widget's template_name."
-            warnings.warn(msg, DeprecationWarning)
-        self.field_template = field_template or settings.CAPTCHA_FIELD_TEMPLATE
-        if output_format is not None:
-            msg = "CaptchaTextInput's output_format argument is deprecated in favor of widget's template_name."
-            warnings.warn(msg, DeprecationWarning)
-        self.output_format = output_format or settings.CAPTCHA_OUTPUT_FORMAT
-        # Fallback to custom rendering in Django < 1.11
-        if (
-            not hasattr(self, "_render")
-            and self.field_template is None
-            and self.output_format is None
-        ):
-            self.field_template = "captcha/field.html"
+
+        self.output_format = None
 
         if self.output_format:
             for key in ("image", "hidden_field", "text_field"):
@@ -173,46 +153,11 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             }
             return ret
 
-        elif self.field_template:
-            context = {
-                "image": mark_safe(self.image_and_audio),
-                "hidden_field": mark_safe(self.hidden_field),
-                "text_field": mark_safe(self.text_field),
-            }
-            return render_to_string(self.field_template, context)
-
-    def _direct_render(self, name, attrs):
-        """Render the widget the old way - using field_template or output_format."""
-        context = {
-            "image": self.image_url(),
-            "name": name,
-            "key": self._key,
-            "id": "%s_%s" % (self.id_prefix, attrs.get("id"))
-            if self.id_prefix
-            else attrs.get("id"),
-            "audio": self.audio_url(),
-        }
-        self.image_and_audio = render_to_string(
-            settings.CAPTCHA_IMAGE_TEMPLATE, context
-        )
-        self.hidden_field = render_to_string(
-            settings.CAPTCHA_HIDDEN_FIELD_TEMPLATE, context
-        )
-        self.text_field = render_to_string(
-            settings.CAPTCHA_TEXT_FIELD_TEMPLATE, context
-        )
-        return self.format_output(None)
-
     def render(self, name, value, attrs=None, renderer=None):
         self.fetch_captcha_store(name, value, attrs, self.generator)
 
-        if self.field_template or self.output_format:
-            return self._direct_render(name, attrs)
-
         extra_kwargs = {}
-        if django.VERSION >= (1, 11):
-            # https://docs.djangoproject.com/en/1.11/ref/forms/widgets/#django.forms.Widget.render
-            extra_kwargs["renderer"] = renderer
+        extra_kwargs["renderer"] = renderer
 
         return super(CaptchaTextInput, self).render(
             name, self._value, attrs=attrs, **extra_kwargs
@@ -234,7 +179,6 @@ class CaptchaField(MultiValueField):
         kwargs["widget"] = kwargs.pop(
             "widget",
             CaptchaTextInput(
-                output_format=kwargs.pop("output_format", None),
                 id_prefix=kwargs.pop("id_prefix", None),
                 generator=kwargs.pop("generator", None),
             ),

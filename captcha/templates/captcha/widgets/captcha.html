@@ -6,4 +6,4 @@
     <img src="{{ image }}" alt="captcha" class="captcha" />
     {% if audio %}</a>{% endif %}
 {% endspaceless %}
-{% include "django/forms/widgets/multiwidget.html" %}
+{% spaceless %}{% for widget in widget.subwidgets %}{% include widget.template_name %}{% endfor %}{% endspaceless %}

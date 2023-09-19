@@ -148,21 +148,6 @@ Defaults to: 99
 
 Note: it's perfectly safe to specify e.g. ``CAPTCHA_DICTIONARY_MIN_LENGTH = CAPTCHA_DICTIONARY_MAX_LENGTH = 6`` but it's considered an error to define ``CAPTCHA_DICTIONARY_MAX_LENGTH`` to be smaller than ``CAPTCHA_DICTIONARY_MIN_LENGTH``.
 
-.. _output_format_ref:
-
-CAPTCHA_OUTPUT_FORMAT
-------------------------
-
-New in version 0.1.6
-
-Specify your own output format for the generated markup, when e.g. you want to position the captcha image relative to the text field in your form.
-
-Defaults to: ``None``
-
-(Used to default to: ``u'%(image)s %(hidden_field)s %(text_field)s'``)
-
-.. warning:: This setting is deprecated in favor of template-based widget rendering (see the Rendering section below).
-
 
 CAPTCHA_TEST_MODE
 ------------------------
@@ -239,38 +224,12 @@ And then have a ``custom_field.html`` template::
 
 .. note:: For this to work, you MUST
    add ``django.forms`` to your ``INSTALLED_APPS`` and
-   set ``FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'`` to your settings.py.
+   set ``FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'`` in your settings.py.
    (See here_ for an explanation)
 
 .. _here: https://docs.djangoproject.com/en/2.0/ref/forms/renderers/#django.forms.renderers.TemplatesSetting
 
-.. warning:: To provide backwards compatibility, the old style rendering has priority over the widget templates.
-   If the ``CAPTCHA_FIELD_TEMPLATE`` or ``CAPTCHA_OUTPUT_FORMAT`` settings or ``field_templates`` or ``output_format`` parameter are set, the direct rendering gets higher priority.
-   If widget templates are ignored, make sure you're using Django >= 1.11 and disable these settings and parameters.
 
-
-
-Old style rendering
--------------------
-
-.. warning:: This rendering method is deprecated. Use Django >= 1.11 and widgets templates instead.
-
-A CAPTCHA field is made up of three components:
-
-* The actual image that the end user has to copy from
-* A text field, that the user has to fill with the content of the image
-* A hidden field, containing the database reference of the CAPTCHA (for verification).
-
-These three elements are rendered individually, then assembled into a single bit of HTML.
-
-As of version 0.4.7 you can control how the individual components are rendered, as well as how all components are assembled, by overriding four templates:
-
-* ``captcha/image.html`` controls the rendering of the image (and optionally audio) element
-* ``captcha/text_field.html`` controls the rendering of the text field
-* ``captcha/hidden_field.html`` controls the rendering of the hidden input
-* ``captcha/field.html`` controls the assembling of the previous three elements
-
-These templates can be overridden in your own ``templates`` folder, or you can change the actual template names by settings ``CAPTCHA_IMAGE_TEMPLATE``, ``CAPTCHA_TEXT_FIELD_TEMPLATE``, ``CAPTCHA_HIDDEN_FIELD_TEMPLATE`` and ``CAPTCHA_FIELD_TEMPLATE``, respectively.
 
 Context
 ~~~~~~~
