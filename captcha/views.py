@@ -134,7 +134,7 @@ def captcha_image(request, key, scale=1):
     response = HttpResponse(content_type="image/png")
     response.write(out.read())
     response["Content-length"] = out.tell()
-
+    random.seed()
     return response
 
 
