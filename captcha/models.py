@@ -44,7 +44,7 @@ class CaptchaStore(models.Model):
             ).encode("utf8")
             self.hashkey = hashlib.sha1(key_).hexdigest()
             del key_
-        super(CaptchaStore, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.challenge

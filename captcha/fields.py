@@ -43,7 +43,7 @@ class BaseCaptchaTextInput(MultiWidget):
 
     def __init__(self, attrs=None):
         widgets = (CaptchaHiddenInput(attrs), CaptchaAnswerInput(attrs))
-        super(BaseCaptchaTextInput, self).__init__(widgets, attrs)
+        super().__init__(widgets, attrs)
 
     def decompress(self, value):
         if value:
@@ -103,42 +103,23 @@ class CaptchaTextInput(BaseCaptchaTextInput):
     ):
         self.id_prefix = id_prefix
         self.generator = generator
-
-        self.output_format = None
-
-        if self.output_format:
-            for key in ("image", "hidden_field", "text_field"):
-                if "%%(%s)s" % key not in self.output_format:
-                    raise ImproperlyConfigured(
-                        "All of %s must be present in your CAPTCHA_OUTPUT_FORMAT setting. Could not find %s"
-                        % (
-                            ", ".join(
-                                [
-                                    "%%(%s)s" % k
-                                    for k in ("image", "hidden_field", "text_field")
-                                ]
-                            ),
-                            "%%(%s)s" % key,
-                        )
-                    )
-
-        super(CaptchaTextInput, self).__init__(attrs)
+        super().__init__(attrs)
 
     def build_attrs(self, *args, **kwargs):
-        ret = super(CaptchaTextInput, self).build_attrs(*args, **kwargs)
+        ret = super().build_attrs(*args, **kwargs)
         if self.id_prefix and "id" in ret:
             ret["id"] = "%s_%s" % (self.id_prefix, ret["id"])
         return ret
 
     def id_for_label(self, id_):
-        ret = super(CaptchaTextInput, self).id_for_label(id_)
+        ret = super().id_for_label(id_)
         if self.id_prefix and "id" in ret:
             ret = "%s_%s" % (self.id_prefix, ret)
         return ret
 
     def get_context(self, name, value, attrs):
         """Add captcha specific variables to context."""
-        context = super(CaptchaTextInput, self).get_context(name, value, attrs)
+        context = super().get_context(name, value, attrs)
         context["image"] = self.image_url()
         context["audio"] = self.audio_url()
         return context
@@ -159,9 +140,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         extra_kwargs = {}
         extra_kwargs["renderer"] = renderer
 
-        return super(CaptchaTextInput, self).render(
-            name, self._value, attrs=attrs, **extra_kwargs
-        )
+        return super().render(name, self._value, attrs=attrs, **extra_kwargs)
 
 
 class CaptchaField(MultiValueField):
@@ -184,7 +163,7 @@ class CaptchaField(MultiValueField):
             ),
         )
 
-        super(CaptchaField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
         if data_list:
@@ -192,7 +171,7 @@ class CaptchaField(MultiValueField):
         return None
 
     def clean(self, value):
-        super(CaptchaField, self).clean(value)
+        super().clean(value)
         response, value[1] = (value[1] or "").strip().lower(), ""
         if not settings.CAPTCHA_GET_FROM_POOL:
             CaptchaStore.remove_expired()
