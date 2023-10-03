@@ -32,7 +32,7 @@ class Tox(test_command):
 
 
 install_requires = [
-    "Django >= 3.2",
+    "Django >= 4.2",
     "Pillow >=6.2.0",
     "django-ranged-response == 0.2.0",
 ]
@@ -59,7 +59,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

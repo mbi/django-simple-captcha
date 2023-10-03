@@ -1,11 +1,14 @@
 Version History
 ===============
 
-
 Version 0.6.0
 -------------
 * Only Django versions 4.2 or above are now supported
 * Removed the old rendering methods that were deprecated in 2017.
+
+Version 0.5.19
+--------------
+* SECURITY ISSUE: reset the random seed after an image was generated (#221, thanks @ibuler)
 
 Version 0.5.18
 --------------
