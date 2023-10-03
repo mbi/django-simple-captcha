@@ -1,6 +1,11 @@
 Version History
 ===============
 
+Version 0.5.19
+--------------
+* SECURITY ISSUE: reset the random seed after an image was generated (#221, thanks @ibuler)
+
+
 Version 0.5.18
 --------------
 * Fix some typos in documentation (#210, thanks @stweil)

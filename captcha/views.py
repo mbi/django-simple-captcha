@@ -134,7 +134,14 @@ def captcha_image(request, key, scale=1):
     response = HttpResponse(content_type="image/png")
     response.write(out.read())
     response["Content-length"] = out.tell()
+
+    # At line :50 above we fixed the random seed so that we always generate the
+    # same image, see: https://github.com/mbi/django-simple-captcha/pull/194
+    # This is a problem though, because knowledge of the seed will let an attacker
+    # predict the next random (globally). We therefore reset the random here.
+    # Reported in https://github.com/mbi/django-simple-captcha/pull/221
     random.seed()
+
     return response
 
 
