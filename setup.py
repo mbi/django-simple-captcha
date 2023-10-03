@@ -32,7 +32,7 @@ class Tox(test_command):
 
 
 install_requires = [
-    "Django >= 4.2",
+    "Django >= 3.2",
     "Pillow >=6.2.0",
     "django-ranged-response == 0.2.0",
 ]
