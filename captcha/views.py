@@ -202,6 +202,7 @@ def captcha_audio(request, key):
             response = RangedFileResponse(
                 request, open(path, "rb"), content_type="audio/wav"
             )
+            os.remove(path)
             response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(
                 key
             )
