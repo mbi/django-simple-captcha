@@ -383,7 +383,7 @@ class CaptchaCase(TestCase):
                 '<input type="text" name="captcha_1" autocomplete="off" '
                 'spellcheck="false" autocorrect="off" '
                 'autocapitalize="off" id="id_captcha_1" '
-                'required aria-describedby="id_captcha_1_helptext" />'
+                "required />"
             )
         self.assertContains(r, captcha_input, html=True)
 
@@ -399,7 +399,7 @@ class CaptchaCase(TestCase):
                 (
                     f'<input type="hidden" name="captcha_0" value="{key}" '
                     'id="id_captcha_0" autocomplete="off" '
-                    'aria-describedby="id_captcha_1_helptext" required />'
+                    "required />"
                 ),
                 str(r.content),
             )
