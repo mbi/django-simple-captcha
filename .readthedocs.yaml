@@ -9,3 +9,10 @@ build:
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
    configuration: docs/conf.py
+
+# Dependencies required to build your docs
+python:
+   install:
+   - requirements: docs/requirements.txt
+
+
