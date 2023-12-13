@@ -71,6 +71,6 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     extras_require=EXTRAS_REQUIRE,
-    tests_require=["tox"],
+    tests_require=["tox~=4.11.4"],
     cmdclass={"test": Tox},
 )

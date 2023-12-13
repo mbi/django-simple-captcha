@@ -1,6 +1,11 @@
 Version History
 ===============
 
+Version 0.6.1 (unreleased)
+--------------------------
+* Fixed docs and test configuration
+
+
 Version 0.6.0
 -------------
 * Only Django versions 4.2 or above are now supported

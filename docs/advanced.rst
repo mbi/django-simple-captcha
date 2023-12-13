@@ -232,7 +232,7 @@ And then have a ``custom_field.html`` template::
 
 
 Context
-~~~~~~~
+-------
 
 The following context variables are passed to the three "individual" templates:
 
