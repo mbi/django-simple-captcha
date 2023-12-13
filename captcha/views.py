@@ -199,8 +199,13 @@ def captcha_audio(request, key):
             os.rename(mergedpath, path)
 
         if os.path.isfile(path):
+            # Move the response file to a filelike that will be deleted on close
+            temporary_file = tempfile.TemporaryFile()
+            with open(path,'rb') as file:
+                temporary_file.write(file.read())
+            os.remove(path)
             response = RangedFileResponse(
-                request, open(path, "rb"), content_type="audio/wav"
+                request, temporary_file, content_type="audio/wav"
             )
             response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(
                 key
