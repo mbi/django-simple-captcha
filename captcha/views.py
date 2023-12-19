@@ -201,11 +201,11 @@ def captcha_audio(request, key):
         if os.path.isfile(path):
             # Move the response file to a filelike that will be deleted on close
             temporary_file = tempfile.TemporaryFile()
-            with open(path,'rb') as original_file:
+            with open(path, "rb") as original_file:
                 temporary_file.write(original_file.read())
             temporary_file.seek(0)
             os.remove(path)
-            
+
             response = RangedFileResponse(
                 request, temporary_file, content_type="audio/wav"
             )
