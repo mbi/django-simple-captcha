@@ -24,3 +24,24 @@ jobs:
          pip install tox tox-gh-actions
      - name: Test with tox
        run: tox
+
+
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: "3.11"
+
+    steps:
+     - uses: actions/checkout@v1
+     - name: Set up Python ${{ matrix.python-version }}
+       uses: actions/setup-python@v4
+       with:
+         python-version: ${{ matrix.python-version }}
+     - name: Install dependencies
+       run: |
+         sudo apt-get install gettext
+         python -m pip install --upgrade pip
+         pip install tox tox-gh-actions
+     - name: Test with tox
+       run: tox -e py311-django50
