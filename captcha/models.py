@@ -3,7 +3,7 @@ import hashlib
 import logging
 import random
 import time
-from typing import Final
+from typing import Callable, Final
 
 from django.db import models
 from django.utils import timezone
@@ -14,7 +14,7 @@ from captcha.conf import settings as captcha_settings
 
 # Heavily based on session key generation in Django
 # Use the system (hardware-based) random number generator if it exists.
-randrange: function = random.SystemRandom().randrange if hasattr(random, "SystemRandom") else random.randrange
+randrange: Callable = random.SystemRandom().randrange if hasattr(random, "SystemRandom") else random.randrange
 
 MAX_RANDOM_KEY: Final[int] = 18446744073709551616  # 2 << 63
 
