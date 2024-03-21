@@ -3,6 +3,7 @@ import hashlib
 import logging
 import random
 import time
+from typing import Final
 
 from django.db import models
 from django.utils import timezone
@@ -13,13 +14,11 @@ from captcha.conf import settings as captcha_settings
 
 # Heavily based on session key generation in Django
 # Use the system (hardware-based) random number generator if it exists.
-if hasattr(random, "SystemRandom"):
-    randrange = random.SystemRandom().randrange
-else:
-    randrange = random.randrange
-MAX_RANDOM_KEY = 18446744073709551616  # 2 << 63
+randrange: function = random.SystemRandom().randrange if hasattr(random, "SystemRandom") else random.randrange
 
-logger = logging.getLogger(__name__)
+MAX_RANDOM_KEY: Final[int] = 18446744073709551616  # 2 << 63
+
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 class CaptchaStore(models.Model):
@@ -29,40 +28,43 @@ class CaptchaStore(models.Model):
     hashkey = models.CharField(blank=False, max_length=40, unique=True)
     expiration = models.DateTimeField(blank=False)
 
-    def save(self, *args, **kwargs):
-        self.response = self.response.lower()
+    def save(self, *args, **kwargs) -> None:
+        self.response: models.CharField = self.response.lower()
+
         if not self.expiration:
             self.expiration = timezone.now() + datetime.timedelta(
                 minutes=int(captcha_settings.CAPTCHA_TIMEOUT)
             )
+
         if not self.hashkey:
-            key_ = (
+            key_: bytes = (
                 smart_str(randrange(0, MAX_RANDOM_KEY))
                 + smart_str(time.time())
                 + smart_str(self.challenge, errors="ignore")
                 + smart_str(self.response, errors="ignore")
             ).encode("utf8")
-            self.hashkey = hashlib.sha1(key_).hexdigest()
+
+            self.hashkey: models.CharField = hashlib.sha1(key_).hexdigest()
             del key_
+
         super().save(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.challenge
 
-    def remove_expired(cls):
+    @classmethod
+    def remove_expired(cls) -> None:
         cls.objects.filter(expiration__lte=timezone.now()).delete()
 
-    remove_expired = classmethod(remove_expired)
-
     @classmethod
-    def generate_key(cls, generator=None):
+    def generate_key(cls, generator=None) -> str:
         challenge, response = captcha_settings.get_challenge(generator)()
         store = cls.objects.create(challenge=challenge, response=response)
 
         return store.hashkey
 
     @classmethod
-    def pick(cls):
+    def pick(cls) -> str:
         if not captcha_settings.CAPTCHA_GET_FROM_POOL:
             return cls.generate_key()
 
@@ -81,7 +83,7 @@ class CaptchaStore(models.Model):
         return (store and store.hashkey) or fallback()
 
     @classmethod
-    def create_pool(cls, count=1000):
+    def create_pool(cls, count: int=1000):
         assert count > 0
         while count > 0:
             cls.generate_key()
