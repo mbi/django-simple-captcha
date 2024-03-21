@@ -1,9 +1,9 @@
-from django.urls import re_path
+from django.urls import re_path, URLPattern
 
 from captcha import views
 
 
-urlpatterns = [
+urlpatterns: list[URLPattern] = [
     re_path(
         r"image/(?P<key>\w+)/$",
         views.captcha_image,
