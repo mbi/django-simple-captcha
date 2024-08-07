@@ -5,7 +5,7 @@ Version 0.6.1 (unreleased)
 --------------------------
 * Fixed docs and test configuration
 * Delete leftover temporary audio files (#224, #225, #226 thanks @dawidratynski and @A-dead-pixel)
-
+* Test against Django 5.1
 
 Version 0.6.0
 -------------
