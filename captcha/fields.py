@@ -1,3 +1,5 @@
+from decimal import Decimal
+from typing import Any, Mapping
 from django.core.exceptions import ImproperlyConfigured
 from django.forms import ValidationError
 from django.forms.fields import CharField, MultiValueField
@@ -41,16 +43,16 @@ class BaseCaptchaTextInput(MultiWidget):
     Base class for Captcha widgets
     """
 
-    def __init__(self, attrs=None):
+    def __init__(self, attrs=None) -> None:
         widgets = (CaptchaHiddenInput(attrs), CaptchaAnswerInput(attrs))
         super().__init__(widgets, attrs)
 
-    def decompress(self, value):
+    def decompress(self, value) -> list[str | None]:
         if value:
             return value.split(",")
         return [None, None]
 
-    def fetch_captcha_store(self, name, value, attrs=None, generator=None):
+    def fetch_captcha_store(self, name, value, attrs=None, generator=None) -> None:
         """
         Fetches a new CaptchaStore
         This has to be called inside render
@@ -72,22 +74,22 @@ class BaseCaptchaTextInput(MultiWidget):
         self._key = key
         self.id_ = self.build_attrs(attrs).get("id", None)
 
-    def id_for_label(self, id_):
+    def id_for_label(self, id_: str) -> str:
         if id_:
             return id_ + "_1"
         return id_
 
-    def image_url(self):
+    def image_url(self) -> str:
         return reverse("captcha-image", kwargs={"key": self._key})
 
-    def audio_url(self):
+    def audio_url(self) -> str | None:
         return (
             reverse("captcha-audio", kwargs={"key": self._key})
             if settings.CAPTCHA_FLITE_PATH
             else None
         )
 
-    def refresh_url(self):
+    def refresh_url(self) -> str:
         return reverse("captcha-refresh")
 
 
@@ -105,21 +107,23 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         self.generator = generator
         super().__init__(attrs)
 
-    def build_attrs(self, *args, **kwargs):
-        ret = super().build_attrs(*args, **kwargs)
+    def build_attrs(self, *args, **kwargs) -> dict[str, str | float | Decimal]:
+        ret: dict[str, str | float | Decimal] = super().build_attrs(*args, **kwargs)
+
         if self.id_prefix and "id" in ret:
             ret["id"] = "%s_%s" % (self.id_prefix, ret["id"])
+
         return ret
 
-    def id_for_label(self, id_):
-        ret = super().id_for_label(id_)
+    def id_for_label(self, id_: str) -> str:
+        ret: str = super().id_for_label(id_)
         if self.id_prefix and "id" in ret:
             ret = "%s_%s" % (self.id_prefix, ret)
         return ret
 
-    def get_context(self, name, value, attrs):
+    def get_context(self, name, value, attrs) -> dict[str, Any]:
         """Add captcha specific variables to context."""
-        context = super().get_context(name, value, attrs)
+        context: dict[str, Any] = super().get_context(name, value, attrs)
         context["image"] = self.image_url()
         context["audio"] = self.audio_url()
         return context
@@ -134,7 +138,7 @@ class CaptchaTextInput(BaseCaptchaTextInput):
             }
             return ret
 
-    def render(self, name, value, attrs=None, renderer=None):
+    def render(self, name, value, attrs=None, renderer=None) -> str:
         self.fetch_captcha_store(name, value, attrs, self.generator)
 
         extra_kwargs = {}
@@ -173,8 +177,10 @@ class CaptchaField(MultiValueField):
     def clean(self, value):
         super().clean(value)
         response, value[1] = (value[1] or "").strip().lower(), ""
+
         if not settings.CAPTCHA_GET_FROM_POOL:
             CaptchaStore.remove_expired()
+
         if settings.CAPTCHA_TEST_MODE and response.lower() == "passed":
             # automatically pass the test
             try:
@@ -183,8 +189,10 @@ class CaptchaField(MultiValueField):
             except CaptchaStore.DoesNotExist:
                 # ignore errors
                 pass
+
         elif not self.required and not response:
             pass
+
         else:
             try:
                 CaptchaStore.objects.get(
@@ -196,4 +204,5 @@ class CaptchaField(MultiValueField):
                         "invalid", gettext_lazy("Invalid CAPTCHA")
                     )
                 )
+
         return value
