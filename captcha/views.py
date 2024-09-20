@@ -94,13 +94,14 @@ def captcha_image(request, key, scale=1):
         charimage = charimage.crop(charimage.getbbox())
         maskimage = Image.new("L", size)
 
+        yoffset = (size[1] - charimage.size[1]) // 2
         maskimage.paste(
             charimage,
             (
                 xpos,
-                DISTANCE_FROM_TOP,
+                yoffset,
                 xpos + charimage.size[0],
-                DISTANCE_FROM_TOP + charimage.size[1],
+                charimage.size[1] + yoffset,
             ),
         )
         size = maskimage.size
