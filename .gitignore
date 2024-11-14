@@ -9,3 +9,4 @@ testproject/.coverage
 testproject/coverage.xml
 testproject/htmlcov/
 .tox
+.idea

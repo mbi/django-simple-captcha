@@ -54,6 +54,15 @@ Foreground-color of the captcha.
 
 Defaults to ``'#001100'``
 
+CAPTCHA_LETTER_COLOR_FUNCT
+------------------------
+A string representing a Python callable (i.e., a function) to determine the color of the letters in the CAPTCHA.
+
+Defaults to ``'None'`` (uses CAPTCHA_FOREGROUND_COLOR) for all letters.
+
+This function is called for each letter of the CAPTCHA string.
+It takes two arguments: the first is the index of the current letter, and the second is the entire CAPTCHA string.
+
 CAPTCHA_CHALLENGE_FUNCT
 ------------------------
 
@@ -298,3 +307,4 @@ This sample generator that returns six random digits::
         for i in range(6):
             ret += str(random.randint(0,9))
         return ret, ret
+

@@ -3,6 +3,7 @@ import json
 import os
 import re
 from io import BytesIO
+from unittest.mock import patch, call
 
 from PIL import Image
 from testfixtures import LogCapture
@@ -209,6 +210,33 @@ class CaptchaCase(TestCase):
             CaptchaStore.objects.create(challenge="xxx", response="xxx")
         except Exception:
             self.fail()
+
+    @patch("captcha.tests.tests.random_color_challenge")
+    def test_custom_letters_color(self, color_challenge_func_mock):
+        color_challenge_func_mock.return_value = "#ffffff"
+        _current_captcha_challenge_func = settings.CAPTCHA_CHALLENGE_FUNCT
+
+        settings.CAPTCHA_LETTER_COLOR_FUNCT = "captcha.tests.tests.random_color_challenge"
+        settings.CAPTCHA_CHALLENGE_FUNCT = "captcha.tests.tests.random_char_challenge"
+
+        challenge, response = settings.get_challenge()()
+        _store, _ = CaptchaStore.objects.get_or_create(
+            challenge=challenge, response=response
+        )
+
+        _response = self.client.get(reverse(
+            "captcha-image",
+            kwargs=dict(key=_store.hashkey)
+        ))
+        assert _response.status_code == 200
+
+        _calls = []
+        for index, char in enumerate(challenge):
+            _calls.append(call(index, char))
+        color_challenge_func_mock.assert_has_calls(_calls, any_order=True)
+
+        settings.CAPTCHA_LETTER_COLOR_FUNCT = None
+        settings.CAPTCHA_CHALLENGE_FUNCT = _current_captcha_challenge_func
 
     def test_repeated_challenge_form_submit(self):
         __current_challange_function = settings.CAPTCHA_CHALLENGE_FUNCT
@@ -549,3 +577,13 @@ class CaptchaCase(TestCase):
 
 def trivial_challenge():
     return "trivial", "trivial"
+
+
+def random_color_challenge(index, char):
+    return "#ffffff"
+
+
+def random_char_challenge():
+    chars = "abcdefghijklmnopqrstuvwxyz"
+    ret = chars[:settings.CAPTCHA_LENGTH]
+    return ret.upper(), ret
