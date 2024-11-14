@@ -307,4 +307,3 @@ This sample generator that returns six random digits::
         for i in range(6):
             ret += str(random.randint(0,9))
         return ret, ret
-

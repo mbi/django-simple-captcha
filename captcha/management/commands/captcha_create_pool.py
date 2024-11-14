@@ -5,7 +5,6 @@ from captcha.models import CaptchaStore
 
 
 class Command(BaseCommand):
-
     help = "Create a pool of random captchas."
 
     def add_arguments(self, parser):
