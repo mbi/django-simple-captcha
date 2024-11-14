@@ -1,6 +1,7 @@
 import os
 
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 
 CAPTCHA_FONT_PATH = getattr(
@@ -58,11 +59,8 @@ if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:
 def _callable_from_string(string_or_callable):
     if callable(string_or_callable):
         return string_or_callable
-    else:
-        return getattr(
-            __import__(".".join(string_or_callable.split(".")[:-1]), {}, {}, [""]),
-            string_or_callable.split(".")[-1],
-        )
+    elif isinstance(string_or_callable, str):
+        return import_string(string_or_callable)
 
 
 def get_challenge(generator=None):
@@ -81,7 +79,7 @@ def filter_functions():
     return []
 
 
-def get_letter_color(index, char):
+def get_letter_color(index, challenge):
     if CAPTCHA_LETTER_COLOR_FUNCT:
-        return _callable_from_string(CAPTCHA_LETTER_COLOR_FUNCT)(index, char)
+        return _callable_from_string(CAPTCHA_LETTER_COLOR_FUNCT)(index, challenge)
     return CAPTCHA_FOREGROUND_COLOR
