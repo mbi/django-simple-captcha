@@ -152,3 +152,31 @@ Example usage ajax refresh
             $('#id_captcha_0').val(result['key'])
         });
     });
+
+Example usage in Django REST Framework
+---------------------------------
+
+To use CAPTCHA in a serializer, simply inherit ``CaptchaSerializer``::
+
+    from captcha.serializers import CaptchaSerializer
+    from rest_framework import serializers
+
+    class CheckCaptchaSerializer(CaptchaSerializer):
+        email = serializers.EmailField()
+
+…or use ``CaptchaModelSerializer``::
+
+    from captcha.serializers import CaptchaModelSerializer
+    from rest_framework import serializers
+
+    class CheckCaptchaModelSerializer(CaptchaModelSerializer):
+        sender = serializers.EmailField()
+
+        class Meta:
+            model = User
+            fields = ("captcha_code", "captcha_hashkey", "sender")
+
+``CaptchaSerializer`` and ``CaptchaModelSerializer`` implement the ``captcha_code`` and ``captcha_hashkey`` fields.
+In case of invalid captcha or hash code an exception is raised::
+
+    raise exceptions.ValidationError({"error": gettext_lazy("Invalid CAPTCHA")})
