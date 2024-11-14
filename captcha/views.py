@@ -80,8 +80,11 @@ def captcha_image(request, key, scale=1):
             charlist[-1] += char
         else:
             charlist.append(char)
+
     for index, char in enumerate(charlist):
-        fgimage = Image.new("RGB", size, settings.get_letter_color(index, char))
+        fgimage = Image.new(
+            "RGB", size, settings.get_letter_color(index, "".join(charlist))
+        )
         charimage = Image.new("L", getsize(font, " %s " % char), "#000000")
         chardraw = ImageDraw.Draw(charimage)
         chardraw.text((0, 0), " %s " % char, font=font, fill="#ffffff")

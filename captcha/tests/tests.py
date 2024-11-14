@@ -3,7 +3,7 @@ import json
 import os
 import re
 from io import BytesIO
-from unittest.mock import patch, call
+from unittest.mock import call, patch
 
 from PIL import Image
 from testfixtures import LogCapture
@@ -216,7 +216,9 @@ class CaptchaCase(TestCase):
         color_challenge_func_mock.return_value = "#ffffff"
         _current_captcha_challenge_func = settings.CAPTCHA_CHALLENGE_FUNCT
 
-        settings.CAPTCHA_LETTER_COLOR_FUNCT = "captcha.tests.tests.random_color_challenge"
+        settings.CAPTCHA_LETTER_COLOR_FUNCT = (
+            "captcha.tests.tests.random_color_challenge"
+        )
         settings.CAPTCHA_CHALLENGE_FUNCT = "captcha.tests.tests.random_char_challenge"
 
         challenge, response = settings.get_challenge()()
@@ -224,15 +226,14 @@ class CaptchaCase(TestCase):
             challenge=challenge, response=response
         )
 
-        _response = self.client.get(reverse(
-            "captcha-image",
-            kwargs=dict(key=_store.hashkey)
-        ))
+        _response = self.client.get(
+            reverse("captcha-image", kwargs=dict(key=_store.hashkey))
+        )
         assert _response.status_code == 200
 
         _calls = []
         for index, char in enumerate(challenge):
-            _calls.append(call(index, char))
+            _calls.append(call(index, challenge))
         color_challenge_func_mock.assert_has_calls(_calls, any_order=True)
 
         settings.CAPTCHA_LETTER_COLOR_FUNCT = None
@@ -579,11 +580,11 @@ def trivial_challenge():
     return "trivial", "trivial"
 
 
-def random_color_challenge(index, char):
+def random_color_challenge(index, string):
     return "#ffffff"
 
 
 def random_char_challenge():
     chars = "abcdefghijklmnopqrstuvwxyz"
-    ret = chars[:settings.CAPTCHA_LENGTH]
+    ret = chars[: settings.CAPTCHA_LENGTH]
     return ret.upper(), ret
