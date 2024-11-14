@@ -8,12 +8,16 @@ from .views import (
     test_model_form,
     test_non_required,
     test_per_form_format,
+    test_serializer,
+    test_model_serializer,
 )
 
 
 urlpatterns = [
     re_path(r"test/$", test, name="captcha-test"),
     re_path(r"test-modelform/$", test_model_form, name="captcha-test-model-form"),
+    re_path(r"test-serializer/$", test_serializer, name="captcha-test-serializer"),
+    re_path(r"test-model-serializer/$", test_model_serializer, name="captcha-test-model-serializer"),
     re_path(
         r"test2/$", test_custom_error_message, name="captcha-test-custom-error-message"
     ),

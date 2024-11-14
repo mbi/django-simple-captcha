@@ -575,6 +575,53 @@ class CaptchaCase(TestCase):
         self.assertEqual(CaptchaStore.objects.count(), 1)
         settings.CAPTCHA_GET_FROM_POOL = __current_test_get_from_pool_setting
 
+    def test_serializer(self):
+        r = self.client.post(
+            reverse("captcha-test-serializer"),
+            dict(
+                captcha_code=self.default_store.response,
+                captcha_hashkey=self.default_store.hashkey,
+            ),
+        )
+        self.assertEqual(r.status_code, 200)
+
+    def test_wrong_serializer(self):
+        r = self.client.post(
+            reverse("captcha-test-serializer"),
+            dict(
+                captcha_code="xxx",
+                captcha_hashkey="wrong hash",
+            ),
+        )
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(json.loads(r.content), {"error": "Invalid CAPTCHA"})
+
+
+    def test_model_serializer(self):
+        r = self.client.post(
+            reverse("captcha-test-model-serializer"),
+            dict(
+                captcha_code=self.default_store.response,
+                captcha_hashkey=self.default_store.hashkey,
+                subject="xxx",
+                sender="asasd@asdasd.com",
+            ),
+        )
+        self.assertEqual(r.status_code, 200)
+
+    def test_wrong_model_serializer(self):
+        r = self.client.post(
+            reverse("captcha-test-model-serializer"),
+            dict(
+                captcha_code="xxx",
+                captcha_hashkey="wrong hash",
+                subject="xxx",
+                sender="asasd@asdasd.com",
+            ),
+        )
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(json.loads(r.content), {"error": "Invalid CAPTCHA"})
+
 
 def trivial_challenge():
     return "trivial", "trivial"
