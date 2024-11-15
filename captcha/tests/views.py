@@ -1,14 +1,15 @@
+from rest_framework import serializers, status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 from django import forms
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.template import engines
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 
-from rest_framework import serializers
 from captcha.fields import CaptchaField
-from captcha.serializers import CaptchaSerializer, CaptchaModelSerializer
+from captcha.serializers import CaptchaModelSerializer, CaptchaSerializer
+
 
 TEST_TEMPLATE = r"""
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -132,14 +133,14 @@ def test_id_prefix(request):
     return _test(request, CaptchaTestForm)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def test_serializer(request):
     serializer = CaptchaSerializer(data=request.POST)
     serializer.is_valid(raise_exception=True)
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def test_model_serializer(request):
     class UserCaptchaModelSerializer(CaptchaModelSerializer):
         subject = serializers.CharField(max_length=100)

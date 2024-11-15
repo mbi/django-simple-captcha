@@ -596,7 +596,6 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 400)
         self.assertEqual(json.loads(r.content), {"error": "Invalid CAPTCHA"})
 
-
     def test_model_serializer(self):
         r = self.client.post(
             reverse("captcha-test-model-serializer"),
