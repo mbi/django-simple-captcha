@@ -7,6 +7,7 @@ Version 0.6.1 (unreleased)
 * Delete leftover temporary audio files (#224, #225, #226 thanks @dawidratynski and @A-dead-pixel)
 * Test against Django 5.1
 * Add ability to control color of each character (PR #235, thanks @mheidarian)
+* Add support for Django REST Framework (PR #236, thanks @michalwrona01)
 
 Version 0.6.0
 -------------
