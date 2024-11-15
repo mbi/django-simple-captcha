@@ -70,9 +70,8 @@ In your view, validate the form as usual. If the user didn't provide a valid res
 Passing arguments to the field
 ------------------------------
 
-``CaptchaField`` takes a few optional arguments:
+```` takes a few optional arguments:
 
-* ``output_format`` will let you format the layout of the rendered field. Defaults to the value defined in : :ref:`output_format_ref`.
 * ``id_prefix`` Optional prefix that will be added to the ID attribute in the generated fields and labels, to be used when e.g. several Captcha fields are being displayed on a same page. (added in version 0.4.4)
 * ``generator`` Optional callable or module path to callable that will be used to generate the challenge and the response, e.g. ``generator='path.to.generator_function'`` or ``generator=lambda: ('LOL', 'LOL')``, see also :ref:`generators_ref`. Defaults to whatever is defined in ``settings.CAPTCHA_CHALLENGE_FUNCT``.
 
@@ -156,7 +155,7 @@ Example usage ajax refresh
 Example usage in Django REST Framework
 ---------------------------------
 
-To use CAPTCHA in a serializer, simply inherit ``CaptchaSerializer``::
+To use CAPTCHA in a serializer, simply have your serializer inherit from ``CaptchaSerializer``::
 
     from captcha.serializers import CaptchaSerializer
     from rest_framework import serializers
