@@ -58,10 +58,7 @@ class CaptchaCase(TestCase):
         settings.CAPTCHA_PUNCTUATION = self.__current_settings_punctuation
 
     def _assertFormError(self, response, form_name, *args, **kwargs):
-        if django.VERSION >= (4, 1):
-            self.assertFormError(response.context.get(form_name), *args, **kwargs)
-        else:
-            self.assertFormError(response, form_name, *args, **kwargs)
+        self.assertFormError(response.context.get(form_name), *args, **kwargs)
 
     def __extract_hash_and_response(self, r):
         hash_ = re.findall(r'value="([0-9a-f]+)"', str(r.content))[0]

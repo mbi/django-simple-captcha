@@ -99,20 +99,6 @@ def test_custom_error_message(request):
     return _test(request, CaptchaTestErrorMessageForm)
 
 
-def test_per_form_format(request):
-    class CaptchaTestFormatForm(forms.Form):
-        captcha = CaptchaField(
-            help_text="asdasd",
-            error_messages=dict(invalid="TEST CUSTOM ERROR MESSAGE"),
-            output_format=(
-                "%(image)s testPerFieldCustomFormatString "
-                "%(hidden_field)s %(text_field)s"
-            ),
-        )
-
-    return _test(request, CaptchaTestFormatForm)
-
-
 def test_non_required(request):
     class CaptchaTestForm(forms.Form):
         sender = forms.EmailField()

@@ -124,16 +124,6 @@ class CaptchaTextInput(BaseCaptchaTextInput):
         context["audio"] = self.audio_url()
         return context
 
-    def format_output(self, rendered_widgets):
-        # hidden_field, text_field = rendered_widgets
-        if self.output_format:
-            ret = self.output_format % {
-                "image": self.image_and_audio,
-                "hidden_field": self.hidden_field,
-                "text_field": self.text_field,
-            }
-            return ret
-
     def render(self, name, value, attrs=None, renderer=None):
         self.fetch_captcha_store(name, value, attrs, self.generator)
 
