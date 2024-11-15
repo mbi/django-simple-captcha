@@ -1,13 +1,7 @@
 from rest_framework import exceptions
 
-import django
 from django.utils import timezone
-
-
-if django.VERSION >= (3, 0):
-    from django.utils.translation import gettext_lazy as gettext_lazy
-else:
-    from django.utils.translation import ugettext_lazy as gettext_lazy
+from django.utils.translation import gettext_lazy as gettext_lazy
 
 from captcha.conf import settings
 from captcha.models import CaptchaStore

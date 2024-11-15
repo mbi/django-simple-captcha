@@ -1,11 +1,5 @@
-import django
-
-
-if django.VERSION >= (3, 1, 0):
-    from django.urls import include
-    from django.urls import re_path as url
-else:
-    from django.conf.urls import url, include
+from django.urls import include
+from django.urls import re_path as url
 
 from .views import home
 
