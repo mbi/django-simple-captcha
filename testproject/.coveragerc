@@ -3,8 +3,10 @@ branch = True
 source =
     captcha
 omit =
-    ../*migrations*
-    ../*tests*
-    ../*management*
+    ../captcha/migrations/*
+    ../captcha/tests/*
+    ../captcha/management/*
+
 [report]
 precision = 2
+fail_under = 80.0
