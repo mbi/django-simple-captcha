@@ -78,11 +78,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install audio dependencies
+        run: sudo apt-get install sox flite
       - name: Install and upgrade packaging tools
         run: python -m pip install --upgrade pip setuptools wheel
       - run: python -m pip install tox tox-gh-actions
       - name: Run tests
         run: tox -e coverage
+        env:
+          CAPTCHA_FLITE_PATH: '/usr/bin/flite'
+          CAPTCHA_SOX_PATH: '/usr/bin/sox'
 
   gettext:
     runs-on: ubuntu-latest
