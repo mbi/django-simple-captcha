@@ -166,15 +166,27 @@ def captcha_audio(request, key):
 
         # Add arbitrary noise if sox is installed
         if settings.CAPTCHA_SOX_PATH:
+            try:
+                sample_rate = (
+                    subprocess.run(
+                        [settings.CAPTCHA_SOX_PATH, "--i", "-r", path],
+                        capture_output=True,
+                    )
+                    .stdout.decode()
+                    .strip()
+                )
+
+            except Exception:
+                sample_rate = "8000"
+
             arbnoisepath = str(
                 os.path.join(tempfile.gettempdir(), "%s_arbitrary.wav") % key
             )
-            mergedpath = str(os.path.join(tempfile.gettempdir(), "%s_merged.wav") % key)
             subprocess.call(
                 [
                     settings.CAPTCHA_SOX_PATH,
                     "-r",
-                    "8000",
+                    sample_rate,
                     "-n",
                     arbnoisepath,
                     "synth",
@@ -184,6 +196,7 @@ def captcha_audio(request, key):
                     "-15",
                 ]
             )
+            mergedpath = str(os.path.join(tempfile.gettempdir(), "%s_merged.wav") % key)
             subprocess.call(
                 [
                     settings.CAPTCHA_SOX_PATH,
