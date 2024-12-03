@@ -9,4 +9,4 @@ omit =
 
 [report]
 precision = 2
-fail_under = 78.0
+fail_under = 85.0
