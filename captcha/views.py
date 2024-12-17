@@ -161,8 +161,12 @@ def captcha_audio(request, key):
             text = text.replace("*", "times").replace("-", "minus").replace("+", "plus")
         else:
             text = ", ".join(list(text))
-        path = str(os.path.join(tempfile.gettempdir(), "%s.wav" % key))
-        subprocess.call([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
+        path = str(
+            os.path.join(
+                tempfile.gettempdir(), f"{key}_{random.randint(100_000, 999_999)}.wav"
+            )
+        )
+        subprocess.run([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
 
         # Add arbitrary noise if sox is installed
         if settings.CAPTCHA_SOX_PATH:
@@ -180,9 +184,12 @@ def captcha_audio(request, key):
                 sample_rate = "8000"
 
             arbnoisepath = str(
-                os.path.join(tempfile.gettempdir(), "%s_arbitrary.wav") % key
+                os.path.join(
+                    tempfile.gettempdir(),
+                    f"{key}_{random.randint(100_000, 999_999)}_noise.wav",
+                )
             )
-            subprocess.call(
+            subprocess.run(
                 [
                     settings.CAPTCHA_SOX_PATH,
                     "-r",
@@ -196,8 +203,13 @@ def captcha_audio(request, key):
                     "-15",
                 ]
             )
-            mergedpath = str(os.path.join(tempfile.gettempdir(), "%s_merged.wav") % key)
-            subprocess.call(
+            mergedpath = str(
+                os.path.join(
+                    tempfile.gettempdir(),
+                    f"{key}_{random.randint(100_000, 999_999)}_merged.wav",
+                )
+            )
+            subprocess.run(
                 [
                     settings.CAPTCHA_SOX_PATH,
                     "-m",

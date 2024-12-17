@@ -81,4 +81,4 @@ CAPTCHA_FLITE_PATH = os.environ.get("CAPTCHA_FLITE_PATH", None)
 CAPTCHA_SOX_PATH = os.environ.get("CAPTCHA_SOX_PATH", None)
 CAPTCHA_BACKGROUND_COLOR = "transparent"
 CAPTCHA_LETTER_COLOR_FUNCT = "captcha.helpers.random_letter_color_challenge"
-# CAPTCHA_BACKGROUND_COLOR = "#ffffff"
+CAPTCHA_BACKGROUND_COLOR = "#ffffff"
