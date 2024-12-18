@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import secrets
 import subprocess
 import tempfile
 from io import BytesIO
@@ -162,9 +163,7 @@ def captcha_audio(request, key):
         else:
             text = ", ".join(list(text))
         path = str(
-            os.path.join(
-                tempfile.gettempdir(), f"{key}_{random.randint(100_000, 999_999)}.wav"
-            )
+            os.path.join(tempfile.gettempdir(), f"{key}_{secrets.token_urlsafe(6)}.wav")
         )
         subprocess.run([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
 
@@ -186,7 +185,7 @@ def captcha_audio(request, key):
             arbnoisepath = str(
                 os.path.join(
                     tempfile.gettempdir(),
-                    f"{key}_{random.randint(100_000, 999_999)}_noise.wav",
+                    f"{key}_{secrets.token_urlsafe(6)}_noise.wav",
                 )
             )
             subprocess.run(
@@ -206,7 +205,7 @@ def captcha_audio(request, key):
             mergedpath = str(
                 os.path.join(
                     tempfile.gettempdir(),
-                    f"{key}_{random.randint(100_000, 999_999)}_merged.wav",
+                    f"{key}_{secrets.token_urlsafe(6)}_merged.wav",
                 )
             )
             subprocess.run(
