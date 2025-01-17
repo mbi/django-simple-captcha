@@ -1,8 +1,8 @@
 Version History
 ===============
 
-Version 0.6.1 (unreleased)
---------------------------
+Version 0.6.1
+-------------
 * Fixed docs and test configuration
 * Delete leftover temporary audio files (#224, #225, #226 thanks @dawidratynski and @A-dead-pixel)
 * Test against Django 5.1 and 5.2
