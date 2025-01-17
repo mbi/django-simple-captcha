@@ -5,7 +5,7 @@ Version 0.6.1 (unreleased)
 --------------------------
 * Fixed docs and test configuration
 * Delete leftover temporary audio files (#224, #225, #226 thanks @dawidratynski and @A-dead-pixel)
-* Test against Django 5.1
+* Test against Django 5.1 and 5.2
 * Add ability to control color of each character (PR #235, thanks @mheidarian)
 * Add support for Django REST Framework (PR #236, thanks @michalwrona01)
 * Audio CAPTCHA: try to detect the sample rate of the generated WAV file prior to merge (Issue #196)
