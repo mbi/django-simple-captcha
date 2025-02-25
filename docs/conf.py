@@ -49,7 +49,7 @@ copyright = "2011-2025 Marco Bonetti and contributors"
 # built documents.
 #
 # The short X.Y version.
-version = "0.6.1"
+version = "0.6.2"
 
 # The full version, including alpha/beta/rc tags.
 release = version
