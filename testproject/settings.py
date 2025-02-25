@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.forms",
     "django.contrib.messages",
-    "rest_framework",
+    # "rest_framework",
     "captcha",
 ]
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"

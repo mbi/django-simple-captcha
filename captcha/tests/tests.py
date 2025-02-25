@@ -15,9 +15,10 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
-
+from django.conf import settings as django_settings
 from captcha.conf import settings
 from captcha.models import CaptchaStore
+from unittest import skipIf
 
 
 @override_settings(ROOT_URLCONF="captcha.tests.urls")
@@ -572,6 +573,10 @@ class CaptchaCase(TestCase):
         self.assertEqual(CaptchaStore.objects.count(), 1)
         settings.CAPTCHA_GET_FROM_POOL = __current_test_get_from_pool_setting
 
+    @skipIf(
+        "rest_framework" not in django_settings.INSTALLED_APPS,
+        "Only run if DRF is installed",
+    )
     def test_serializer(self):
         r = self.client.post(
             reverse("captcha-test-serializer"),
@@ -582,6 +587,10 @@ class CaptchaCase(TestCase):
         )
         self.assertEqual(r.status_code, 200)
 
+    @skipIf(
+        "rest_framework" not in django_settings.INSTALLED_APPS,
+        "Only run if DRF is installed",
+    )
     def test_wrong_serializer(self):
         r = self.client.post(
             reverse("captcha-test-serializer"),
@@ -593,6 +602,10 @@ class CaptchaCase(TestCase):
         self.assertEqual(r.status_code, 400)
         self.assertEqual(json.loads(r.content), {"error": "Invalid CAPTCHA"})
 
+    @skipIf(
+        "rest_framework" not in django_settings.INSTALLED_APPS,
+        "Only run if DRF is installed",
+    )
     def test_model_serializer(self):
         r = self.client.post(
             reverse("captcha-test-model-serializer"),
@@ -605,6 +618,10 @@ class CaptchaCase(TestCase):
         )
         self.assertEqual(r.status_code, 200)
 
+    @skipIf(
+        "rest_framework" not in django_settings.INSTALLED_APPS,
+        "Only run if DRF is installed",
+    )
     def test_wrong_model_serializer(self):
         r = self.client.post(
             reverse("captcha-test-model-serializer"),
