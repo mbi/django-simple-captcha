@@ -3,22 +3,23 @@ import json
 import os
 import re
 from io import BytesIO
+from unittest import skipIf
 from unittest.mock import call, patch
 
 from PIL import Image
 from testfixtures import LogCapture
 
 import django
+from django.conf import settings as django_settings
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
-from django.conf import settings as django_settings
+
 from captcha.conf import settings
 from captcha.models import CaptchaStore
-from unittest import skipIf
 
 
 @override_settings(ROOT_URLCONF="captcha.tests.urls")

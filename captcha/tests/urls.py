@@ -1,5 +1,5 @@
-from django.urls import include, re_path
 from django.conf import settings
+from django.urls import include, re_path
 
 from .views import (
     test,
@@ -26,8 +26,8 @@ urlpatterns = [
 ]
 
 
-if 'rest_framework' in settings.INSTALLED_APPS:
-    from .drf_views import test_serializer, test_model_serializer
+if "rest_framework" in settings.INSTALLED_APPS:
+    from .drf_views import test_model_serializer, test_serializer
 
     urlpatterns += [
         re_path(r"test-serializer/$", test_serializer, name="captcha-test-serializer"),
@@ -36,5 +36,4 @@ if 'rest_framework' in settings.INSTALLED_APPS:
             test_model_serializer,
             name="captcha-test-model-serializer",
         ),
-
     ]

@@ -1,4 +1,3 @@
-
 from django import forms
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -112,4 +111,3 @@ def test_id_prefix(request):
         captcha2 = CaptchaField(id_prefix="form2")
 
     return _test(request, CaptchaTestForm)
-
