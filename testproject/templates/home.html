@@ -1,12 +1,55 @@
-<body style="background-color: #aba">
+<html lang="en">
+<head>
+    <title>Captcha test</title>
+    <style>
+        body {
+            background-color: #eee;
+            padding: 2rem;
+            font: 400 1rem/1.5  sans-serif;
+        }
+
+        input[type="text"] {
+            display: inline-block;
+            height: 32px;
+            width: 4.5rem;
+            vertical-align: top;
+            margin: 0 0.25rem;
+            border: 1px solid #ccc;
+            text-transform: uppercase;
+        }
+        input[type="submit"] {
+            display: inline-block;
+            height: 32px;
+            width: auto;
+            border: 1px solid #ccc;
+            background-color: black;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            margin: 1rem 0;
+        }
+        p.ok {
+            color: forestgreen;
+        }
+        ul.errorlist {
+            list-style-type: none;
+            color: red;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
 <form action="." method="post">
     {% csrf_token %}
 
-    {{form.captcha.errors}}
-    {{form.captcha}}
+    {% if 'ok' in request.GET %}
+        <p class="ok">Correct answer</p>
+    {% endif %}
+    {{ form.captcha.errors }}
+    {{ form.captcha }}
 
     <div>
         <input type="submit" value="Submit" />
     </div>
 </form>
 </body>
+</html>

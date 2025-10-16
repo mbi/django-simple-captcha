@@ -88,6 +88,29 @@ class CaptchaCase(TestCase):
             self.assertTrue(response.has_header("content-type"))
             self.assertEqual(response["content-type"], "audio/wav")
 
+    def test_animation(self):
+        _setting = settings.CAPTCHA_ANIMATED
+        settings.CAPTCHA_ANIMATED = True
+        for key in [store.hashkey for store in self.stores.values()]:
+            response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.has_header("content-type"))
+            self.assertEqual(
+                response["content-type"],
+                "image/avif" if settings.CAPTCHA_ANIMATED_USE_AVIF else "image/gif",
+            )
+        settings.CAPTCHA_ANIMATED = _setting
+
+    def test_background_color(self):
+        _setting = settings.CAPTCHA_BACKGROUND_COLOR
+        settings.CAPTCHA_BACKGROUND_COLOR = "#f00"
+        for key in [store.hashkey for store in self.stores.values()]:
+            response = self.client.get(reverse("captcha-image", kwargs=dict(key=key)))
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.has_header("content-type"))
+            self.assertEqual(response["content-type"], "image/png")
+        settings.CAPTCHA_BACKGROUND_COLOR = _setting
+
     def test_form_submit(self):
         r = self.client.get(reverse("captcha-test"))
         self.assertEqual(r.status_code, 200)

@@ -1,5 +1,7 @@
 import os
 
+from PIL.features import check as check_pil_feature
+
 from django.conf import settings
 from django.utils.module_loading import import_string
 
@@ -43,10 +45,10 @@ CAPTCHA_MATH_CHALLENGE_OPERATOR = getattr(
 )
 CAPTCHA_GET_FROM_POOL = getattr(settings, "CAPTCHA_GET_FROM_POOL", False)
 CAPTCHA_GET_FROM_POOL_TIMEOUT = getattr(settings, "CAPTCHA_GET_FROM_POOL_TIMEOUT", 5)
-
 CAPTCHA_TEST_MODE = getattr(settings, "CAPTCHA_TEST_MODE", False)
-
 CAPTCHA_2X_IMAGE = getattr(settings, "CAPTCHA_2X_IMAGE", True)
+CAPTCHA_ANIMATED = getattr(settings, "CAPTCHA_ANIMATED", False)
+CAPTCHA_ANIMATED_USE_AVIF = CAPTCHA_ANIMATED and check_pil_feature("avif")
 
 # Failsafe
 if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:

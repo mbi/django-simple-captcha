@@ -39,6 +39,17 @@ def makeimg(size):
     return image
 
 
+def add_noise(image):
+    draw = ImageDraw.Draw(image)
+
+    for f in settings.noise_functions():
+        draw = f(draw, image)
+    for f in settings.filter_functions():
+        image = f(image)
+
+    return image
+
+
 def captcha_image(request, key, scale=1):
     if scale == 2 and not settings.CAPTCHA_2X_IMAGE:
         raise Http404
@@ -82,7 +93,15 @@ def captcha_image(request, key, scale=1):
         else:
             charlist.append(char)
 
+    if settings.CAPTCHA_ANIMATED:
+        frames = []
+
     for index, char in enumerate(charlist):
+        # If we're rendering an animated captcha, render
+        # each char onto a fresh image.
+        if settings.CAPTCHA_ANIMATED:
+            image = makeimg(size)
+
         fgimage = Image.new(
             "RGB", size, settings.get_letter_color(index, "".join(charlist))
         )
@@ -111,31 +130,66 @@ def captcha_image(request, key, scale=1):
         image = Image.composite(fgimage, image, maskimage)
         xpos = xpos + 2 + charimage.size[0]
 
-    if settings.CAPTCHA_IMAGE_SIZE:
-        # centering captcha on the image
-        tmpimg = makeimg(size)
-        tmpimg.paste(
-            image,
-            (
-                int((size[0] - xpos) / 2),
-                int((size[1] - charimage.size[1]) / 2 - DISTANCE_FROM_TOP),
-            ),
-        )
-        image = tmpimg.crop((0, 0, size[0], size[1]))
-    else:
-        image = image.crop((0, 0, xpos + 1, size[1]))
-    draw = ImageDraw.Draw(image)
+        # Animated captcha: apply individual noise on each frame
+        if settings.CAPTCHA_ANIMATED:
+            image = add_noise(image)
+            frames.append(image)
 
-    for f in settings.noise_functions():
-        draw = f(draw, image)
-    for f in settings.filter_functions():
-        image = f(image)
+    if settings.CAPTCHA_ANIMATED:
+        for i, frame in enumerate(frames):
+            if settings.CAPTCHA_IMAGE_SIZE:
+                # centering captcha on the image
+                tmpimg = makeimg(size)
+                tmpimg.paste(
+                    frame,
+                    (
+                        int((size[0] - xpos) / 2),
+                        int((size[1] - charimage.size[1]) / 2 - DISTANCE_FROM_TOP),
+                    ),
+                )
+                frames[i] = tmpimg.crop((0, 0, size[0], size[1]))
+            else:
+                frames[i] = frame.crop((0, 0, xpos + 1, size[1]))
+
+    else:
+        if settings.CAPTCHA_IMAGE_SIZE:
+            # centering captcha on the image
+            tmpimg = makeimg(size)
+            tmpimg.paste(
+                image,
+                (
+                    int((size[0] - xpos) / 2),
+                    int((size[1] - charimage.size[1]) / 2 - DISTANCE_FROM_TOP),
+                ),
+            )
+            image = tmpimg.crop((0, 0, size[0], size[1]))
+        else:
+            image = image.crop((0, 0, xpos + 1, size[1]))
 
     out = BytesIO()
-    image.save(out, "PNG")
-    out.seek(0)
+    if settings.CAPTCHA_ANIMATED:
+        frames[0].save(
+            out,
+            "AVIF" if settings.CAPTCHA_ANIMATED_USE_AVIF else "GIF",
+            save_all=True,
+            append_images=frames[1:],
+            optimise=False,
+            duration=500,
+            loop=0,
+            disposal=2,
+        )
+        content_type = (
+            "image/avif" if settings.CAPTCHA_ANIMATED_USE_AVIF else "image/gif"
+        )
 
-    response = HttpResponse(content_type="image/png")
+    else:
+        image = add_noise(image)
+
+        image.save(out, "PNG")
+        content_type = "image/png"
+
+    out.seek(0)
+    response = HttpResponse(content_type=content_type)
     response.write(out.read())
     response["Content-length"] = out.tell()
 

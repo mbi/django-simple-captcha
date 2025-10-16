@@ -193,6 +193,13 @@ When set to True, a double resolution version of the captcha image is made serve
 Defaults to: True
 
 
+CAPTCHA_ANIMATED
+----------------
+
+Renders an animated CAPTCHA, each frame containing an individual character from the challenge. By default returns an AVIF animation if the installed Pillow version supports it, otherwise falls back to animated GIFs.
+
+Defaults to: False
+
 Rendering
 +++++++++
 
