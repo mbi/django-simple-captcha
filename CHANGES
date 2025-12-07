@@ -2,9 +2,9 @@ Version History
 ===============
 
 
-Version 0.6.3 (unreleased)
---------------------------
-* Test against Django 6.0a1
+Version 0.6.3
+-------------
+* Test against Django 6.0
 * Support animated CAPTCHAs (AVIF or GIF)
 
 Version 0.6.2
