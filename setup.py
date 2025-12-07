@@ -63,6 +63,7 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Security",
         "Topic :: Internet :: WWW/HTTP",
         "Framework :: Django",
@@ -71,6 +72,6 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     extras_require=EXTRAS_REQUIRE,
-    tests_require=["tox~=4.11.4"],
+    tests_require=["tox>=4.31", "tox-uv>=1.23"],
     cmdclass={"test": Tox},
 )
