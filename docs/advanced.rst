@@ -168,6 +168,28 @@ Use this for testing purposes. Warning: do NOT set this to True in production.
 
 Defaults to: False
 
+.. code:: python
+
+    from django.test import TestCase, Client
+    from django.urls import reverse
+    from captcha.conf import settings as captcha_settings
+
+    class ApplicationTestCase(TestCase):
+        def setUp(self):
+            self.client = Client()
+            self.url = reverse('application')
+            captcha_settings.CAPTCHA_TEST_MODE = True
+        
+        def test_post_valid_form(self):
+            data = {
+                'name': 'Your Name',
+                "captcha_0": "any-random-string",
+                "captcha_1": "PASSED",
+            }
+
+            response = self.client.post(self.url, data)
+            self.assertEqual(response.status_code, 200)
+
 
 CAPTCHA_GET_FROM_POOL
 ---------------------
