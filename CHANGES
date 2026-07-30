@@ -6,6 +6,7 @@ Version 0.7.0
 * Test against Django 6.1
 * Wrap the fixed random.seed() / reset in a try..finally, to avoid accidentally polluting the global RNG in case of an exception
 * math_challenge: avoid using eval()
+* Issue a loud warning if CAPTCHA_TEST_MODE is True and DEBUG is False
 
 Version 0.6.3
 -------------

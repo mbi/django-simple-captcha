@@ -387,6 +387,51 @@ class CaptchaCase(TestCase):
         self.assertTrue(str(r.content).find("Form validated") > 0)
         settings.CAPTCHA_TEST_MODE = __current_test_mode_setting
 
+    def test_test_mode_warns_when_debug_false(self):
+        # Regression test: CAPTCHA_TEST_MODE must warn loudly when DEBUG is off
+        # so production deployments don't silently ship with captcha disabled.
+        import warnings
+
+        from captcha.conf import settings as captcha_conf_settings
+
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            captcha_conf_settings._warn_if_test_mode_enabled(
+                test_mode=True, debug=False
+            )
+        self.assertTrue(
+            any(issubclass(w.category, RuntimeWarning) for w in caught),
+            "Expected a RuntimeWarning when CAPTCHA_TEST_MODE is on and DEBUG is False",
+        )
+
+    def test_test_mode_does_not_warn_when_debug_true(self):
+        import warnings
+
+        from captcha.conf import settings as captcha_conf_settings
+
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            captcha_conf_settings._warn_if_test_mode_enabled(test_mode=True, debug=True)
+        self.assertFalse(
+            any(issubclass(w.category, RuntimeWarning) for w in caught),
+            "No warning expected when DEBUG is True",
+        )
+
+    def test_test_mode_does_not_warn_when_disabled(self):
+        import warnings
+
+        from captcha.conf import settings as captcha_conf_settings
+
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            captcha_conf_settings._warn_if_test_mode_enabled(
+                test_mode=False, debug=False
+            )
+        self.assertFalse(
+            any(issubclass(w.category, RuntimeWarning) for w in caught),
+            "No warning expected when CAPTCHA_TEST_MODE is False",
+        )
+
     def test_get_version(self):
         import captcha
 

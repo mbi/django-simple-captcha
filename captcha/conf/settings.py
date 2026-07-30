@@ -1,4 +1,6 @@
+import logging
 import os
+import warnings
 
 from PIL.features import check as check_pil_feature
 
@@ -56,6 +58,25 @@ if CAPTCHA_DICTIONARY_MIN_LENGTH > CAPTCHA_DICTIONARY_MAX_LENGTH:
         CAPTCHA_DICTIONARY_MAX_LENGTH,
         CAPTCHA_DICTIONARY_MIN_LENGTH,
     )
+
+
+# CAPTCHA_TEST_MODE disables captcha verification (any answer "passed" is
+# accepted). Warn loudly when it is enabled outside of DEBUG to avoid silently
+# shipping an unprotected deployment.
+def _warn_if_test_mode_enabled(test_mode=CAPTCHA_TEST_MODE, debug=None):
+    if debug is None:
+        debug = getattr(settings, "DEBUG", False)
+    if test_mode and not debug:
+        msg = (
+            "CAPTCHA_TEST_MODE is enabled while Django DEBUG is False. Captcha "
+            "verification is effectively disabled: any answer is accepted. "
+            "This must never be enabled in a production deployment."
+        )
+        logging.getLogger(__name__).error(msg)
+        warnings.warn(msg, RuntimeWarning, stacklevel=2)
+
+
+_warn_if_test_mode_enabled()
 
 
 def _callable_from_string(string_or_callable):
