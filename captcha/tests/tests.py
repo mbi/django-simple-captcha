@@ -184,6 +184,37 @@ class CaptchaCase(TestCase):
             )
             self._assertFormError(r, "form", "captcha", gettext_lazy("Invalid CAPTCHA"))
 
+    def test_wrong_response_invalidates_store(self):
+        for urlname in ("captcha-test", "captcha-test-model-form"):
+            r = self.client.get(reverse(urlname))
+            self.assertEqual(r.status_code, 200)
+            hash_, response = self.__extract_hash_and_response(r)
+
+            # Wrong answer: form is invalid and the store is deleted
+            r = self.client.post(
+                reverse(urlname),
+                dict(
+                    captcha_0=hash_,
+                    captcha_1="wrong response",
+                    subject="xxx",
+                    sender="asasd@asdasd.com",
+                ),
+            )
+            self._assertFormError(r, "form", "captcha", gettext_lazy("Invalid CAPTCHA"))
+            self.assertFalse(CaptchaStore.objects.filter(hashkey=hash_).exists())
+
+            # The (previously) correct answer cannot be replayed
+            r = self.client.post(
+                reverse(urlname),
+                dict(
+                    captcha_0=hash_,
+                    captcha_1=response,
+                    subject="xxx",
+                    sender="asasd@asdasd.com",
+                ),
+            )
+            self._assertFormError(r, "form", "captcha", gettext_lazy("Invalid CAPTCHA"))
+
     def test_deleted_expired(self):
         self.default_store.expiration = timezone.now() - datetime.timedelta(minutes=5)
         self.default_store.save()
@@ -390,7 +421,10 @@ class CaptchaCase(TestCase):
     def test_test_mode_warns_when_debug_false(self):
         # Regression test: CAPTCHA_TEST_MODE must warn loudly when DEBUG is off
         # so production deployments don't silently ship with captcha disabled.
+        import logging
         import warnings
+
+        logging.disable(logging.CRITICAL)
 
         from captcha.conf import settings as captcha_conf_settings
 
@@ -403,6 +437,8 @@ class CaptchaCase(TestCase):
             any(issubclass(w.category, RuntimeWarning) for w in caught),
             "Expected a RuntimeWarning when CAPTCHA_TEST_MODE is on and DEBUG is False",
         )
+
+        logging.disable(logging.NOTSET)
 
     def test_test_mode_does_not_warn_when_debug_true(self):
         import warnings
@@ -666,6 +702,37 @@ class CaptchaCase(TestCase):
             dict(
                 captcha_code="xxx",
                 captcha_hashkey="wrong hash",
+            ),
+        )
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(json.loads(r.content), {"error": "Invalid CAPTCHA"})
+
+    @skipIf(
+        "rest_framework" not in django_settings.INSTALLED_APPS,
+        "Only run if DRF is installed",
+    )
+    def test_serializer_wrong_code_invalidates_store(self):
+        hashkey = self.default_store.hashkey
+        response = self.default_store.response
+
+        # Wrong code: validation fails and the store is deleted
+        r = self.client.post(
+            reverse("captcha-test-serializer"),
+            dict(
+                captcha_code="wrong code",
+                captcha_hashkey=hashkey,
+            ),
+        )
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(json.loads(r.content), {"error": "Invalid CAPTCHA"})
+        self.assertFalse(CaptchaStore.objects.filter(hashkey=hashkey).exists())
+
+        # The (previously) correct code cannot be replayed
+        r = self.client.post(
+            reverse("captcha-test-serializer"),
+            dict(
+                captcha_code=response,
+                captcha_hashkey=hashkey,
             ),
         )
         self.assertEqual(r.status_code, 400)

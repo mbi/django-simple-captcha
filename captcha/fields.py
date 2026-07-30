@@ -176,11 +176,14 @@ class CaptchaField(MultiValueField):
         elif not self.required and not response:
             pass
         else:
-            try:
-                CaptchaStore.objects.get(
-                    response=response, hashkey=value[0], expiration__gt=timezone.now()
-                ).delete()
-            except CaptchaStore.DoesNotExist:
+            store = CaptchaStore.objects.filter(
+                hashkey=value[0], expiration__gt=timezone.now()
+            ).first()
+            # A captcha can only be attempted once: invalidate the store
+            # even when the response is wrong, to prevent brute-force attacks.
+            if store is not None:
+                store.delete()
+            if store is None or store.response != response:
                 raise ValidationError(
                     getattr(self, "error_messages", {}).get(
                         "invalid", gettext_lazy("Invalid CAPTCHA")

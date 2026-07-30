@@ -7,6 +7,7 @@ Version 0.7.0
 * Wrap the fixed random.seed() / reset in a try..finally, to avoid accidentally polluting the global RNG in case of an exception
 * math_challenge: avoid using eval()
 * Issue a loud warning if CAPTCHA_TEST_MODE is True and DEBUG is False
+* Invalidate the captcha store after a single validation attempt, even when the response is wrong, to prevent brute-force attacks
 
 Version 0.6.3
 -------------
