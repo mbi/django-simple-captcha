@@ -1,6 +1,10 @@
 Version History
 ===============
 
+Version 0.7.1 (unreleased)
+--------------------------
+* Generate audio in a private per-request temp directory.
+
 Version 0.7.0
 -------------
 * Test against Django 6.1

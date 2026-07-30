@@ -1,7 +1,7 @@
 import json
 import os
 import random
-import secrets
+import shutil
 import subprocess
 import tempfile
 from io import BytesIO
@@ -223,84 +223,88 @@ def captcha_audio(request, key):
             text = text.replace("*", "times").replace("-", "minus").replace("+", "plus")
         else:
             text = ", ".join(list(text))
-        path = str(
-            os.path.join(tempfile.gettempdir(), f"{key}_{secrets.token_urlsafe(6)}.wav")
-        )
-        subprocess.run([settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", path])
 
-        # Add arbitrary noise if sox is installed
-        if settings.CAPTCHA_SOX_PATH:
-            try:
-                sample_rate = (
-                    subprocess.run(
-                        [settings.CAPTCHA_SOX_PATH, "--i", "-r", path],
-                        capture_output=True,
+        # Generate audio in a private per-request temp directory. mkdtemp()
+        # creates the directory with restrictive (0700 on POSIX) permissions,
+        # which prevents other users from pre-creating or symlinking the files
+        # we write into it (a TOCTOU/race that affected the previous approach of
+        # building paths by hand in the shared, world-writable
+        # tempfile.gettempdir()). The finally block below guarantees cleanup even
+        # on exception, so we no longer leak .wav files in the temp dir.
+        workdir = tempfile.mkdtemp(prefix="captcha_audio_")
+        try:
+            speech_path = os.path.join(workdir, "speech.wav")
+            subprocess.run(
+                [settings.CAPTCHA_FLITE_PATH, "-t", text, "-o", speech_path],
+                check=False,
+            )
+
+            final_path = speech_path
+
+            # Add arbitrary noise if sox is installed
+            if settings.CAPTCHA_SOX_PATH:
+                try:
+                    sample_rate = (
+                        subprocess.run(
+                            [settings.CAPTCHA_SOX_PATH, "--i", "-r", speech_path],
+                            capture_output=True,
+                        )
+                        .stdout.decode()
+                        .strip()
                     )
-                    .stdout.decode()
-                    .strip()
+                except Exception:
+                    sample_rate = "8000"
+
+                noise_path = os.path.join(workdir, "noise.wav")
+                merged_path = os.path.join(workdir, "merged.wav")
+                subprocess.run(
+                    [
+                        settings.CAPTCHA_SOX_PATH,
+                        "-r",
+                        sample_rate,
+                        "-n",
+                        noise_path,
+                        "synth",
+                        "2",
+                        "brownnoise",
+                        "gain",
+                        "-15",
+                    ],
+                    check=False,
                 )
-
-            except Exception:
-                sample_rate = "8000"
-
-            arbnoisepath = str(
-                os.path.join(
-                    tempfile.gettempdir(),
-                    f"{key}_{secrets.token_urlsafe(6)}_noise.wav",
+                subprocess.run(
+                    [
+                        settings.CAPTCHA_SOX_PATH,
+                        "-m",
+                        noise_path,
+                        speech_path,
+                        "-t",
+                        "wavpcm",
+                        "-b",
+                        "16",
+                        merged_path,
+                    ],
+                    check=False,
                 )
-            )
-            subprocess.run(
-                [
-                    settings.CAPTCHA_SOX_PATH,
-                    "-r",
-                    sample_rate,
-                    "-n",
-                    arbnoisepath,
-                    "synth",
-                    "2",
-                    "brownnoise",
-                    "gain",
-                    "-15",
-                ]
-            )
-            mergedpath = str(
-                os.path.join(
-                    tempfile.gettempdir(),
-                    f"{key}_{secrets.token_urlsafe(6)}_merged.wav",
+                final_path = merged_path
+
+            if os.path.isfile(final_path):
+                # Stream the file into a TemporaryFile (deleted on close) and
+                # return it; the workdir itself is torn down in finally.
+                temporary_file = tempfile.TemporaryFile()
+                with open(final_path, "rb") as original_file:
+                    temporary_file.write(original_file.read())
+                temporary_file.seek(0)
+
+                response = RangedFileResponse(
+                    request, temporary_file, content_type="audio/wav"
                 )
-            )
-            subprocess.run(
-                [
-                    settings.CAPTCHA_SOX_PATH,
-                    "-m",
-                    arbnoisepath,
-                    path,
-                    "-t",
-                    "wavpcm",
-                    "-b",
-                    "16",
-                    mergedpath,
-                ]
-            )
-            os.remove(arbnoisepath)
-            os.remove(path)
-            os.rename(mergedpath, path)
-
-        if os.path.isfile(path):
-            # Move the response file to a filelike that will be deleted on close
-            temporary_file = tempfile.TemporaryFile()
-            with open(path, "rb") as original_file:
-                temporary_file.write(original_file.read())
-            temporary_file.seek(0)
-            os.remove(path)
-
-            response = RangedFileResponse(
-                request, temporary_file, content_type="audio/wav"
-            )
-            response["Content-Disposition"] = 'attachment; filename="{}.wav"'.format(
-                key
-            )
-            return response
+                response[
+                    "Content-Disposition"
+                ] = 'attachment; filename="{}.wav"'.format(key)
+                return response
+        finally:
+            shutil.rmtree(workdir, ignore_errors=True)
     raise Http404
 
 
