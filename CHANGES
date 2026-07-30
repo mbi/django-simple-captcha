@@ -1,6 +1,10 @@
 Version History
 ===============
 
+Version 0.7.0
+-------------
+* Test against Django 6.1
+* Wrap the fixed random.seed() / reset in a try..finally, to avoid accidentally polluting the global RNG in case of an exception
 
 Version 0.6.3
 -------------
