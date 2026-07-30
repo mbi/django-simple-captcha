@@ -1,3 +1,4 @@
+import operator as operator_module
 import random
 
 from django.urls import reverse
@@ -6,15 +7,21 @@ from captcha.conf import settings
 
 
 def math_challenge():
-    operators = ("+", "*", "-")
+    _ARITHMETIC_OPS = {
+        "+": operator_module.add,
+        "-": operator_module.sub,
+        "*": operator_module.mul,
+    }
+
     operands = (random.randint(1, 10), random.randint(1, 10))
-    operator = random.choice(operators)
+    operator = random.choice(list(_ARITHMETIC_OPS.keys()))
     if operands[0] < operands[1] and "-" == operator:
         operands = (operands[1], operands[0])
     challenge = "%d%s%d" % (operands[0], operator, operands[1])
+    result = _ARITHMETIC_OPS[operator](operands[0], operands[1])
     return (
         "{}=".format(challenge.replace("*", settings.CAPTCHA_MATH_CHALLENGE_OPERATOR)),
-        str(eval(challenge)),
+        str(result),
     )
 
 
