@@ -50,17 +50,7 @@ def add_noise(image):
     return image
 
 
-def captcha_image(request, key, scale=1):
-    if scale == 2 and not settings.CAPTCHA_2X_IMAGE:
-        raise Http404
-    try:
-        store = CaptchaStore.objects.get(hashkey=key)
-    except CaptchaStore.DoesNotExist:
-        # HTTP 410 Gone status so that crawlers don't index these expired urls.
-        return HttpResponse(status=410)
-
-    random.seed(key)  # Do not generate different images for the same key
-
+def _captcha_image(store, scale):
     text = store.challenge
 
     if isinstance(settings.CAPTCHA_FONT_PATH, str):
@@ -193,12 +183,29 @@ def captcha_image(request, key, scale=1):
     response.write(out.read())
     response["Content-length"] = out.tell()
 
-    # At line :50 above we fixed the random seed so that we always generate the
-    # same image, see: https://github.com/mbi/django-simple-captcha/pull/194
-    # This is a problem though, because knowledge of the seed will let an attacker
-    # predict the next random (globally). We therefore reset the random here.
-    # Reported in https://github.com/mbi/django-simple-captcha/pull/221
-    random.seed()
+    return response
+
+
+def captcha_image(request, key, scale=1):
+    if scale == 2 and not settings.CAPTCHA_2X_IMAGE:
+        raise Http404
+    try:
+        store = CaptchaStore.objects.get(hashkey=key)
+    except CaptchaStore.DoesNotExist:
+        # HTTP 410 Gone status so that crawlers don't index these expired urls.
+        return HttpResponse(status=410)
+
+    try:
+        random.seed(key)  # Do not generate different images for the same key
+        response = _captcha_image(store, scale)
+
+    finally:
+        # We fixed the random seed so that we always generate the
+        # same image, see: https://github.com/mbi/django-simple-captcha/pull/194
+        # This is a problem though, because knowledge of the seed will let an attacker
+        # predict the next random (globally). We therefore reset the random here.
+        # Reported in https://github.com/mbi/django-simple-captcha/pull/221
+        random.seed()
 
     return response
 
