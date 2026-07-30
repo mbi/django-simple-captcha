@@ -8,6 +8,7 @@ Version 0.7.0
 * math_challenge: avoid using eval()
 * Issue a loud warning if CAPTCHA_TEST_MODE is True and DEBUG is False
 * Invalidate the captcha store after a single validation attempt, even when the response is wrong, to prevent brute-force attacks
+* Adds SECURITY.md
 
 Version 0.6.3
 -------------
