@@ -21,6 +21,13 @@ jobs:
          sudo apt-get install gettext
          python -m pip install --upgrade pip wheel
          pip install tox tox-gh-actions
+     - name: Check tox configuration
+       run: |
+         # A configuration error must not turn into "no environments, exit 0".
+         tox -l | tee /tmp/tox-envs
+         test -s /tmp/tox-envs
+         # Catches a config source that parses but yields the wrong environments.
+         grep -qx "lint" /tmp/tox-envs
      - name: Test with tox
        run: tox
 

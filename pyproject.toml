@@ -91,7 +91,9 @@ exclude_lines = [
 ]
 
 [tool.tox]
-min_version = "4.31"
+# This table must contain nothing but the legacy pointer: tox >= 4.6x treats any
+# other key here as native TOML configuration, ignores the pointer and starts
+# with an empty env list. The tox>=4.31 requirement lives in [tox] requires below.
 legacy_tox_ini = """
 [tox]
 requires =
