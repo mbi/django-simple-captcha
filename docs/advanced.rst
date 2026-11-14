@@ -168,6 +168,37 @@ Use this for testing purposes. Warning: do NOT set this to True in production.
 
 Defaults to: False
 
+Since ``CAPTCHA_TEST_MODE`` is read from ``captcha.conf.settings`` at import time,
+``override_settings`` has no effect on it. Set it on the module and restore the
+previous value when the test is done, e.g. with ``addCleanup``::
+
+    from django.test import TestCase
+    from django.urls import reverse
+
+    from captcha.conf import settings as captcha_settings
+
+
+    class ApplicationTestCase(TestCase):
+        def setUp(self):
+            self.url = reverse("application")
+            previous_test_mode = captcha_settings.CAPTCHA_TEST_MODE
+            captcha_settings.CAPTCHA_TEST_MODE = True
+            self.addCleanup(
+                setattr, captcha_settings, "CAPTCHA_TEST_MODE", previous_test_mode
+            )
+
+        def test_post_valid_form(self):
+            response = self.client.post(
+                self.url,
+                {
+                    # In test mode the hashkey can be anything and the answer is
+                    # ignored as long as it is "PASSED", in any case.
+                    "captcha_0": "any-random-string",
+                    "captcha_1": "PASSED",
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+
 
 CAPTCHA_GET_FROM_POOL
 ---------------------

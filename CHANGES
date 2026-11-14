@@ -4,6 +4,8 @@ Version History
 Version 0.7.1 (unreleased)
 --------------------------
 * Generate audio in a private per-request temp directory.
+* Documented how to bypass the CAPTCHA in tests, including restoring
+  CAPTCHA_TEST_MODE afterwards (#241, thanks @songsammy).
 
 Version 0.7.0
 -------------
