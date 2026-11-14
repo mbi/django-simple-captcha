@@ -6,10 +6,6 @@ from io import BytesIO
 from unittest import skipIf
 from unittest.mock import call, patch
 
-from PIL import Image
-from testfixtures import LogCapture
-
-import django
 from django.conf import settings as django_settings
 from django.core import management
 from django.core.exceptions import ImproperlyConfigured
@@ -17,6 +13,8 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy
+from PIL import Image
+from testfixtures import LogCapture
 
 from captcha.conf import settings
 from captcha.models import CaptchaStore
@@ -508,15 +506,9 @@ class CaptchaCase(TestCase):
         captcha_input = (
             '<input type="text" name="captcha_1" autocomplete="off" '
             'spellcheck="false" autocorrect="off" '
-            'autocapitalize="off" id="id_captcha_1" required />'
+            'autocapitalize="off" id="id_captcha_1" '
+            "required />"
         )
-        if django.VERSION >= (5, 0):
-            captcha_input = (
-                '<input type="text" name="captcha_1" autocomplete="off" '
-                'spellcheck="false" autocorrect="off" '
-                'autocapitalize="off" id="id_captcha_1" '
-                "required />"
-            )
         self.assertContains(r, captcha_input, html=True)
 
     def test_issue201_autocomplete_off_on_hiddeninput(self):
@@ -525,25 +517,15 @@ class CaptchaCase(TestCase):
         # Inspect the response context to find out the captcha key.
         key = r.context["form"]["captcha"].field.widget._key
 
-        # Assety that autocomplete=off is set on the hidden captcha field.
-        if django.VERSION >= (5, 0):
-            self.assertInHTML(
-                (
-                    f'<input type="hidden" name="captcha_0" value="{key}" '
-                    'id="id_captcha_0" autocomplete="off" '
-                    "required />"
-                ),
-                str(r.content),
-            )
-
-        else:
-            self.assertInHTML(
-                (
-                    f'<input type="hidden" name="captcha_0" value="{key}" '
-                    'id="id_captcha_0" autocomplete="off" required />'
-                ),
-                str(r.content),
-            )
+        # Assert that autocomplete=off is set on the hidden captcha field.
+        self.assertInHTML(
+            (
+                f'<input type="hidden" name="captcha_0" value="{key}" '
+                'id="id_captcha_0" autocomplete="off" '
+                "required />"
+            ),
+            str(r.content),
+        )
 
     def test_transparent_background(self):
         __current_test_mode_setting = settings.CAPTCHA_BACKGROUND_COLOR

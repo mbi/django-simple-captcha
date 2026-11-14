@@ -1,7 +1,6 @@
-from rest_framework import exceptions
-
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as gettext_lazy
+from rest_framework import exceptions
 
 from captcha.conf import settings
 from captcha.models import CaptchaStore

@@ -2,10 +2,9 @@ import logging
 import os
 import warnings
 
-from PIL.features import check as check_pil_feature
-
 from django.conf import settings
 from django.utils.module_loading import import_string
+from PIL.features import check as check_pil_feature
 
 
 CAPTCHA_FONT_PATH = getattr(

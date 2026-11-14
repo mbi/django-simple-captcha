@@ -1,35 +1,204 @@
-[tool.isort]
-profile = "black"
-lines_after_imports = 2
-multi_line_output = 3
-order_by_type = true
-known_django = "django"
-known_django_third_party = "django_*"
-known_first_party = "apps,captcha"
-sections = "FUTURE,STDLIB,THIRDPARTY,DJANGO,DJANGO_THIRD_PARTY,FIRSTPARTY,LOCALFOLDER"
-skip_glob= "**/migrations/**"
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
 
+[project]
+name = "django-simple-captcha"
+dynamic = ["version"]
+description = "A very simple, yet powerful, Django captcha application"
+readme = "README.rst"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Marco Bonetti", email = "mbonetti@gmail.com" }]
+keywords = ["django", "captcha", "security"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Security",
+]
+dependencies = [
+    "Django>=5.2",
+    "Pillow>=6.2.0",
+    "django-ranged-response==0.2.0",
+]
 
-[tool.black]
+[project.optional-dependencies]
+test = ["testfixtures"]
+
+[project.urls]
+Homepage = "https://github.com/mbi/django-simple-captcha"
+Source = "https://github.com/mbi/django-simple-captcha"
+Changelog = "https://github.com/mbi/django-simple-captcha/blob/master/CHANGES"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+# Unlike setup.py's find_packages(), the pyproject default discovers namespace
+# packages, which would sweep docs/ (and anything else without __init__.py) into
+# the wheel. Keep the old find_packages() behaviour.
+namespaces = false
+exclude = ["testproject", "testproject.*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "captcha.get_version" }
+
+[tool.ruff]
 line-length = 88
-target-version = ['py38']
-exclude = '''
+target-version = "py310"
+extend-exclude = ["migrations", "docs"]
 
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-    | node_modules
-  )/
-  | foo.py           # also separately exclude a file named foo.py in
-                     # the root of the project
-)
-'''
+[tool.ruff.lint]
+select = ["E", "W", "F", "I"]
+ignore = ["E501"]  # line length is the formatter's job
+
+[tool.ruff.lint.isort]
+# testproject puts its modules on sys.path directly (manage.py), so they must be
+# declared explicitly: ruff has no isort-style src_paths auto-detection.
+known-first-party = [
+    "apps",
+    "captcha",
+    "drf_settings",
+    "forms",
+    "jinja2_settings",
+    "settings",
+    "urls",
+    "views",
+]
+lines-after-imports = 2
+
+[tool.coverage.run]
+branch = true
+source = ["captcha"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.tox]
+min_version = "4.31"
+legacy_tox_ini = """
+[tox]
+requires =
+    tox>=4.31
+    tox-uv>=1.23
+
+envlist =
+    py{310,311,312,313}-django52,
+    py313-django{60,61},
+    py{310,312}-django52-jinja2,
+    py313-django52-drf,
+    gettext,
+    lint,
+    docs,
+    coverage
+
+[gh-actions]
+python =
+    3.13: py313-django52, py313-django52-drf, py313-django60, py313-django61
+    3.12: py312-django52, py312-django52-jinja2
+    3.11: py311-django52
+    3.10: py310-django52, py310-django52-jinja2
+
+[testenv]
+changedir = testproject
+commands =
+    python -Wd manage.py test captcha
+
+setenv =
+    PYTHONDONTWRITEBYTECODE=1
+
+deps =
+    django52: Django>=5.2,<5.3
+    django60: Django>=6.0,<6.1
+    django61: Django>=6.1a1,<6.2
+    py{310,311,312,313}-django{52,60,61}: python3-memcached
+    py313-django52-drf: djangorestframework
+    py{310,312}-django52-jinja2: jinja2
+
+extras =
+    test
+
+[testenv:py310-django52-jinja2]
+commands = python -Wd manage.py test captcha --settings jinja2_settings
+
+[testenv:py312-django52-jinja2]
+commands = python -Wd manage.py test captcha --settings jinja2_settings
+
+[testenv:py313-django52-drf]
+commands = python -Wd manage.py test captcha --settings drf_settings
+
+[testenv:gettext]
+basepython = python3.12
+changedir = captcha/locale/
+allowlist_externals = msgfmt
+
+commands =
+    msgfmt -c -o bg/LC_MESSAGES/django.mo bg/LC_MESSAGES/django.po
+    msgfmt -c -o cs/LC_MESSAGES/django.mo cs/LC_MESSAGES/django.po
+    msgfmt -c -o de/LC_MESSAGES/django.mo de/LC_MESSAGES/django.po
+    msgfmt -c -o en/LC_MESSAGES/django.mo en/LC_MESSAGES/django.po
+    msgfmt -c -o es/LC_MESSAGES/django.mo es/LC_MESSAGES/django.po
+    msgfmt -c -o fa/LC_MESSAGES/django.mo fa/LC_MESSAGES/django.po
+    msgfmt -c -o fr/LC_MESSAGES/django.mo fr/LC_MESSAGES/django.po
+    msgfmt -c -o it/LC_MESSAGES/django.mo it/LC_MESSAGES/django.po
+    msgfmt -c -o ja/LC_MESSAGES/django.mo ja/LC_MESSAGES/django.po
+    msgfmt -c -o nl/LC_MESSAGES/django.mo nl/LC_MESSAGES/django.po
+    msgfmt -c -o pl/LC_MESSAGES/django.mo pl/LC_MESSAGES/django.po
+    msgfmt -c -o pt_BR/LC_MESSAGES/django.mo pt_BR/LC_MESSAGES/django.po
+    msgfmt -c -o ru/LC_MESSAGES/django.mo ru/LC_MESSAGES/django.po
+    msgfmt -c -o sk/LC_MESSAGES/django.mo sk/LC_MESSAGES/django.po
+    msgfmt -c -o sv/LC_MESSAGES/django.mo sv/LC_MESSAGES/django.po
+    msgfmt -c -o tr/LC_MESSAGES/django.mo tr/LC_MESSAGES/django.po
+    msgfmt -c -o uk/LC_MESSAGES/django.mo uk/LC_MESSAGES/django.po
+    msgfmt -c -o zh_CN/LC_MESSAGES/django.mo zh_CN/LC_MESSAGES/django.po
+    msgfmt -c -o zh_Hans/LC_MESSAGES/django.mo zh_Hans/LC_MESSAGES/django.po
+
+[testenv:lint]
+basepython = python3.12
+skip_install = true
+changedir = {toxinidir}
+deps = ruff
+commands =
+    ruff check captcha testproject
+    ruff format --check captcha testproject
+
+[testenv:docs]
+basepython = python3.12
+deps =
+    sphinx
+    sphinx-book-theme
+
+changedir = docs
+commands =
+    sphinx-build -b html . _build/html
+
+[testenv:coverage]
+basepython = python3.12
+changedir = testproject
+passenv =
+    CAPTCHA_FLITE_PATH
+    CAPTCHA_SOX_PATH
+deps =
+    coverage
+    djangorestframework
+
+commands =
+    coverage run manage.py test captcha --settings drf_settings
+    coverage report
+"""

@@ -10,17 +10,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# import sys
-# import os
-
-# sys.path.insert(0, '..')
-# import captcha
-# print captcha.get_version()
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-# sys.path.append(os.path.abspath('.'))
+import importlib.util
+import pathlib
 
 # -- General configuration ----------------------------------------------------
 
@@ -48,8 +39,15 @@ copyright = "2011-2026 Marco Bonetti and contributors"
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
+# Read it from the package itself, so the docs can never drift from the release.
+_captcha_spec = importlib.util.spec_from_file_location(
+    "captcha", pathlib.Path(__file__).resolve().parent.parent / "captcha" / "__init__.py"
+)
+_captcha = importlib.util.module_from_spec(_captcha_spec)
+_captcha_spec.loader.exec_module(_captcha)
+
 # The short X.Y version.
-version = "0.7.0"
+version = _captcha.get_version()
 
 # The full version, including alpha/beta/rc tags.
 release = version

@@ -6,11 +6,10 @@ import subprocess
 import tempfile
 from io import BytesIO
 
-from PIL import Image, ImageDraw, ImageFont
-from ranged_response import RangedFileResponse
-
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404, HttpResponse
+from PIL import Image, ImageDraw, ImageFont
+from ranged_response import RangedFileResponse
 
 from captcha.conf import settings
 from captcha.helpers import captcha_audio_url, captcha_image_url
@@ -299,9 +298,9 @@ def captcha_audio(request, key):
                 response = RangedFileResponse(
                     request, temporary_file, content_type="audio/wav"
                 )
-                response[
-                    "Content-Disposition"
-                ] = 'attachment; filename="{}.wav"'.format(key)
+                response["Content-Disposition"] = (
+                    'attachment; filename="{}.wav"'.format(key)
+                )
                 return response
         finally:
             shutil.rmtree(workdir, ignore_errors=True)

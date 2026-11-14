@@ -1,9 +1,13 @@
 Version History
 ===============
 
-Version 0.7.1 (unreleased)
---------------------------
+Version 0.8.0
+-------------
 * Generate audio in a private per-request temp directory.
+* Drop support for Django < 5.2 and for Python 3.9 (Django 5.2 needs Python 3.10+).
+* Packaging and tooling moved to pyproject.toml: setup.py, setup.cfg, tox.ini and
+  .flake8 are gone; tox drives the same environments from the embedded config,
+  ruff replaces flake8 for linting and import sorting.
 * Documented how to bypass the CAPTCHA in tests, including restoring
   CAPTCHA_TEST_MODE afterwards (#241, thanks @songsammy).
 
